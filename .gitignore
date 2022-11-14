@@ -1,0 +1,13 @@
+Release/**
+Debug/**
+
+.vs/**
+.vscode/**
+
+*.vcxproj.user
+*.vcxproj.filters
+*.sdf
+*.suo
+.cproject
+.project
+*.aps
