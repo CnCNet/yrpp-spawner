@@ -6,7 +6,7 @@ class Spawner
 {
 public:
 	static bool Enabled;
-	static bool IsActive;
+	static bool Active;
 
 private:
 	static std::unique_ptr<SpawnerConfig> Config;

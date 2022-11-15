@@ -20,7 +20,7 @@
 #include <WWMouseClass.h>
 
 bool Spawner::Enabled = false;
-bool Spawner::IsActive = false;
+bool Spawner::Active = false;
 std::unique_ptr<SpawnerConfig> Spawner::Config = nullptr;
 
 void Spawner::Init()
@@ -34,10 +34,10 @@ void Spawner::Init()
 
 bool Spawner::StartGame()
 {
-	if (Spawner::IsActive)
+	if (Spawner::Active)
 		return 0;
 
-	Spawner::IsActive = true;
+	Spawner::Active = true;
 	Game::IsActive = true;
 
 	Game::InitUIStuff();
