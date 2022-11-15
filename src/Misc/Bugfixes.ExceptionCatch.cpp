@@ -1,5 +1,8 @@
 #include <Utilities/Macro.h>
 
+#pragma warning(push)
+#pragma warning(disable: 4702)
+
 LONG __fastcall PrintException(int exception_id, _EXCEPTION_POINTERS* ExceptionInfo)
 {
 	JMP_STD(0x4C8FE0);
@@ -49,3 +52,5 @@ LONG __fastcall TopLevelExceptionFilter(int exception_id, _EXCEPTION_POINTERS* E
 
 
 DEFINE_JUMP(LJMP, 0x6BE06F, GET_OFFSET(TopLevelExceptionFilter))
+
+#pragma warning(pop)
