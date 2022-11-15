@@ -88,6 +88,12 @@ void Spawner::AssignHouses()
 
 bool Spawner::StartNewScenario(const char* scenarioName)
 {
+	if (scenarioName[0] == 0)
+	{
+		MessageBox::Show(StringTable::LoadString("TXT_UNABLE_READ_SCENARIO"), StringTable::LoadString("TXT_OK"), 0);
+		return false;
+	}
+
 	const auto pSession = &SessionClass::Instance;
 	const auto pGameOptions = &GameOptionsClass::Instance;
 	const auto pGameModeOptions = &GameModeOptionsClass::Instance;
