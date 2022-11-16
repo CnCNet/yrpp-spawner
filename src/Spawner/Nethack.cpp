@@ -62,7 +62,8 @@ int WINAPI Nethack::RecvFrom(
 	int flags,
 	sockaddr_in* src_addr,
 	int* addrlen
-){
+)
+{
 	// call recvfrom first to get the packet
 	int ret = Tunnel::RecvFrom(sockfd, buf, len, flags, src_addr, addrlen);
 
@@ -98,7 +99,8 @@ int WINAPI Tunnel::SendTo(
 	int flags,
 	sockaddr_in* dest_addr,
 	int addrlen
-){
+)
+{
 	char TempBuf[1024 + 4];
 	uint16_t* BufFrom = reinterpret_cast<uint16_t*>(TempBuf);
 	uint16_t* BufTo = reinterpret_cast<uint16_t*>(TempBuf + 2);
@@ -127,7 +129,8 @@ int WINAPI Tunnel::RecvFrom(
 	int flags,
 	sockaddr_in* src_addr,
 	int* addrlen
-){
+)
+{
 	char TempBuf[1024 + 4];
 	uint16_t* BufFrom = reinterpret_cast<uint16_t*>(TempBuf);
 	uint16_t* BufTo = reinterpret_cast<uint16_t*>(TempBuf + 2);
