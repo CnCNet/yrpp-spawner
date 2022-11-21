@@ -28,7 +28,7 @@ indent_style = space
 indent_size = 2
 
 # vcxproj Code Style settings
-[*.vcxproj]
+[*.{vcxproj,props}]
 charset = utf-8
 end_of_line = crlf
 insert_final_newline = false
