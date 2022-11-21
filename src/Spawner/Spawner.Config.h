@@ -67,11 +67,11 @@ public:
 	int  Seed;
 	int  TechLevel;
 	bool IsCampaign;
-	// int  Tournament;
+	int  Tournament;
 	unsigned int WOLGameID;
 	char ScenarioName[60];
-	// char MapHash[255];
-	// char UIMapName[255];
+	char MapHash[255];
+	char UIMapName[255];
 
 	// Network Options
 	int Protocol;
@@ -126,11 +126,11 @@ public:
 		, Seed { 0 }
 		, TechLevel { 10 }
 		, IsCampaign { false }
-		// , Tournament { 0 }
+		, Tournament { 0 }
 		, WOLGameID { 0xDEADBEEF }
 		, ScenarioName { "" }
-		// , MapHash { "" }
-		// , UIMapName { "" }
+		, MapHash { "" }
+		, UIMapName { "" }
 
 		// Network Options
 		, Protocol { 2 }

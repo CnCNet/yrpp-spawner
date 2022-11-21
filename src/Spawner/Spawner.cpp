@@ -247,6 +247,7 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
+	Game::Network::Tournament       = Spawner::Config->Tournament;
 	Game::Network::WOLGameID        = Spawner::Config->WOLGameID;
 	Game::Network::ProtocolVersion  = Spawner::Config->Protocol;
 	Game::Network::FrameSendRate    = Spawner::Config->FrameSendRate;

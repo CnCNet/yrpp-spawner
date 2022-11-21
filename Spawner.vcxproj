@@ -40,6 +40,7 @@
     <ClCompile Include="src\Spawner\Spawner.Config.cpp" />
     <ClCompile Include="src\Spawner\Spawner.cpp" />
     <ClCompile Include="src\Spawner\Spawner.Hook.cpp" />
+    <ClCompile Include="src\Spawner\Statistics.cpp" />
 
     <ClCompile Include="src\Utilities\Debug.cpp" />
     <ClCompile Include="src\Utilities\Patch.cpp" />

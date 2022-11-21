@@ -41,11 +41,11 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		Seed             = pINI->ReadInteger(pSettingsSection, "Seed", Seed);
 		TechLevel        = pINI->ReadInteger(pSettingsSection, "TechLevel", TechLevel);
 		IsCampaign       = pINI->ReadBool(pSettingsSection, "IsSinglePlayer", IsCampaign);
-		// Tournament       = pINI->ReadInteger(pSettingsSection, "Tournament", Tournament);
+		Tournament       = pINI->ReadInteger(pSettingsSection, "Tournament", Tournament);
 		WOLGameID        = pINI->ReadInteger(pSettingsSection, "GameID", WOLGameID);
 		/* ScenarioName */ pINI->ReadString(pSettingsSection, "Scenario", ScenarioName, ScenarioName, sizeof(ScenarioName));
-		// /* MapHash      */ pINI->ReadString(pSettingsSection, "MapHash", MapHash, MapHash, sizeof(MapHash));
-		// /* UIMapName    */ pINI->ReadString(pSettingsSection, "UIMapName", UIMapName, UIMapName, sizeof(UIMapName));
+		/* MapHash      */ pINI->ReadString(pSettingsSection, "MapHash", MapHash, MapHash, sizeof(MapHash));
+		/* UIMapName    */ pINI->ReadString(pSettingsSection, "UIMapName", UIMapName, UIMapName, sizeof(UIMapName));
 	}
 
 	{ // Network Options
