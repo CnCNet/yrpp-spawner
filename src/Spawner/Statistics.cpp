@@ -76,13 +76,13 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 {
 	if (Spawner::Active && SessionClass::Instance->GameMode == GameMode::LAN)
 	{
-		GET(char*, buf, EAX);
+		GET(void*, buf, EAX);
 		int lengthOfPacket = *reinterpret_cast<int*>(0xB0BD90);
 
 		CCFileClass statsFile = CCFileClass("stats.dmp");
 		if (statsFile.Open(FileAccessMode::Write))
 		{
-			statsFile.Write(buf, lengthOfPacket);
+			statsFile.WriteBytes(buf, lengthOfPacket);
 			statsFile.Close();
 		}
 
