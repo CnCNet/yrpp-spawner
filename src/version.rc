@@ -1,6 +1,6 @@
 #include <windows.h>
 
-#include "Spawner.version.h"
+#include "version.h"
 
 #define IDI_APP    100
 #define ID_VERSION   1
@@ -20,12 +20,14 @@ BEGIN
  BEGIN
   BLOCK "040904b0"
   BEGIN
-   VALUE "ProductName", "YR-Spawner\0"
-   VALUE "FileDescription", FILE_DESCRIPTION "\0"
+   VALUE "CompanyName", "https://cncnet.org/"
+   VALUE "ProductName", "CnCNet5: Spawner\0"
+   VALUE "FileDescription", "CnCNet5: Spawner\0"
    VALUE "FileVersion", FILE_VERSION_STR "\0"
    VALUE "ProductVersion", PRODUCT_VERSION "\0"
-   VALUE "InternalName", "YR-Spawner.dll\0"
-   VALUE "OriginalFilename", "YR-Spawner.dll\0"
+   VALUE "InternalName", "YR-Spawner\0"
+   VALUE "OriginalFilename", "cncnet5.dll\0"
+   VALUE "LegalTrademarks", "Command & Conquer is a trademark of Westwood Studios\0"
 
 #ifndef IS_RELEASE_VER
    VALUE "SpecialBuild", "Testing version. Use at your own risk.\0"

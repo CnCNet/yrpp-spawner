@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <ProjectName>YR-Spawner</ProjectName>
+    <ProjectName>cncnet5</ProjectName>
     <RootNamespace>YR-Spawner</RootNamespace>
     <ProjectGuid>{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}</ProjectGuid>
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -50,7 +50,7 @@
     <!-- Root -->
     <ClInclude Include="src\Main.Config.h" />
     <ClInclude Include="src\Main.h" />
-    <ClInclude Include="src\Spawner.version.h" />
+    <ClInclude Include="src\version.h" />
     <!-- Misc -->
     <ClInclude Include="src\Misc\NoCD.h" />
     <!-- Spawner -->

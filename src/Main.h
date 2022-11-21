@@ -1,5 +1,5 @@
 #pragma once
-#include "Spawner.version.h"
+#include "version.h"
 #include "Main.Config.h"
 #include <Windows.h>
 #include <memory>
