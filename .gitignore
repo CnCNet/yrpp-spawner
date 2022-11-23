@@ -1,4 +1,5 @@
 Release/**
+DevBuild/**
 Debug/**
 
 .vs/**
