@@ -9,7 +9,7 @@
     <ShowAllFiles>true</ShowAllFiles>
     <YRppDir>YRpp</YRppDir>
   </PropertyGroup>
-  <!-- Compiled files -->
+  <!-- Import props -->
   <Import Project="Spawner.props" />
   <Import Project="YRpp\YRpp.props" />
   <!-- Compiled files -->
