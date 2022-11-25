@@ -1,11 +1,6 @@
 Downloads
 ---------
-
-You can choose one of the following:
-- [Latest stable branch build](https://github.com/CnCNet/yrpp-spawner/releases/latest) (most bug-free release but very slow on new features)
-- [Latest development branch builds](https://github.com/CnCNet/yrpp-spawner/releases) (a bit less bug-free releases, devbuilds get new features when they are finished)
-- [Latest development branch nightly](https://nightly.link/CnCNet/yrpp-spawner/blob/develop/.github/workflows/nightly.yml) (added unreleased features that will be in next devbuild)
-- Individual new feature nightly builds for testing can be found in [pull requests](https://github.com/CnCNet/yrpp-spawner/pulls)
+- [Latest releases](https://github.com/CnCNet/yrpp-spawner/releases)
 
 Building manually
 -----------------
@@ -28,6 +23,6 @@ Legal and License
 -----
 [![GPL v3](https://www.gnu.org/graphics/gplv3-127x51.png)](https://opensource.org/licenses/GPL-3.0)
 
-This project is an unofficial open-source community collaboration project to extend the Red Alert 2 Yuri's Revenge engine for modding and compatibility purposes.
+This project is an unofficial open-source community collaboration project to patch the Red Alert 2 Yuri's Revenge engine for CnCNet support & compatibility purposes.
 
 This project has no direct affiliation with Electronic Arts Inc. Command & Conquer, Command & Conquer Red Alert 2, Command & Conquer Yuri's Revenge are registered trademarks of Electronic Arts Inc. All Rights Reserved.
