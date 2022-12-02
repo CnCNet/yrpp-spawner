@@ -55,17 +55,22 @@ DEFINE_HOOK(0x6C7921, SendStatisticsPacket_AddField_MyId, 0x6)
 	return 0;
 }
 
-// Add Field ALYx
+// Add Player Fields
 DEFINE_HOOK(0x6C7989, SendStatisticsPacket_AddField_ALY, 0x6)
 {
 	if (Spawner::Active)
 	{
 		LEA_STACK(PacketClass*, pPacket, STACK_OFFSET(0x83A4, -0x8394));
 		GET(HouseClass*, pHouse, ESI);
+		const char id = *reinterpret_cast<char*>(0x841F43);
 
-		char fieldID[5] = "ALY.";
-		fieldID[3] = *reinterpret_cast<char*>(0x841F43);
-		pPacket->AddField<DWORD>(fieldID, pHouse->Allies.data);
+		char fieldALY[5] = "ALYx";
+		fieldALY[3] = id;
+		pPacket->AddField<DWORD>(fieldALY, pHouse->Allies.data);
+
+		char fieldBSP[5] = "BSPx";
+		fieldALY[3] = id;
+		pPacket->AddField<DWORD>(fieldBSP, pHouse->GetSpawnPosition());
 	}
 
 	return 0;
