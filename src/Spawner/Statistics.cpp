@@ -65,7 +65,7 @@ DEFINE_HOOK(0x6C7989, SendStatisticsPacket_AddField_ALY, 0x6)
 
 		char fieldID[5] = "ALY.";
 		fieldID[3] = *reinterpret_cast<char*>(0x841F43);
-		pPacket->AddField<LONG>(fieldID, pHouse->Allies.data);
+		pPacket->AddField<DWORD>(fieldID, pHouse->Allies.data);
 	}
 
 	return 0;
