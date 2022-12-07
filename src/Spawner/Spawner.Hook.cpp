@@ -32,7 +32,7 @@ DEFINE_DYNAMIC_JUMP(CALL, UDPInterfaceClass_MessageHandler_SendTo, 0x7B3D75, GET
 DEFINE_DYNAMIC_JUMP(CALL, UDPInterfaceClass_MessageHandler_RecvFrom, 0x7B3EEC, GET_OFFSET(Nethack::RecvFrom));
 
 // Skip Intro, EA_WWLOGO and Loadscreen
-DEFINE_DYNAMIC_JUMP(LJMP, InitIntro_Skip, 0x7782B7, 0x7782C4);
+DEFINE_DYNAMIC_JUMP(LJMP, InitIntro_Skip, 0x52CB50, 0x52CB6E);
 DEFINE_DYNAMIC_JUMP(LJMP, InitGame_SkipLogoAndLoadscreen, 0x52C5E0, 0x52C5F8);
 
 DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
