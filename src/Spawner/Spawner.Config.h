@@ -77,6 +77,7 @@ public:
 	bool HarvesterTruce;
 	bool FogOfWar;
 	bool MCVRedeploy;
+	char UIGameMode[255];
 
 	// SaveGame Options
 	bool LoadSaveGame;
@@ -136,6 +137,7 @@ public:
 		, HarvesterTruce { false }
 		, FogOfWar { false }
 		, MCVRedeploy { true }
+		, UIGameMode { "" }
 
 		// SaveGame
 		, LoadSaveGame { false }
