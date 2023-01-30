@@ -20,6 +20,7 @@
 #include "Spawner.h"
 #include "Nethack.h"
 
+#include <SessionClass.h>
 #include <Utilities/Macro.h>
 
 DEFINE_DYNAMIC_JUMP(CALL, MainGame_SelectGame1, 0x48CDD3, GET_OFFSET(Spawner::StartGame));
@@ -89,7 +90,6 @@ DEFINE_HOOK(0x553317, LoadProgressMgr_Draw_CooperativeDescription, 0x6)
 	return 0;
 }
 
-#include <SessionClass.h>
 DEFINE_HOOK(0x55D0CB, AuxLoop_Cooperative_EndgameCrashFix, 0x6)
 {
 	if (!Spawner::Enabled)
@@ -114,9 +114,12 @@ DEFINE_HOOK(0x6843C6, Scenario_LoadWait_SetConnTimeout, 0x5)
 
 DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	GET(HWND, hDlg, ESI);
 
-	if (SessionClass::Instance->IsSkirmish() || SessionClass::Instance->IsMultiplayer())
+	if (!SessionClass::Instance->IsCampaign())
 	{
 		HWND hItem = GetDlgItem(hDlg, 1062);
 		wchar_t modeName[256];
