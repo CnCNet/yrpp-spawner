@@ -111,3 +111,23 @@ DEFINE_HOOK(0x6843C6, Scenario_LoadWait_SetConnTimeout, 0x5)
 	R->ECX(Spawner::GetConfig()->ConnTimeout);
 	return 0x6843CB;
 }
+
+DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)
+{
+	GET(HWND, hDlg, ESI);
+
+	if (SessionClass::Instance->IsSkirmish() || SessionClass::Instance->IsMultiplayer())
+	{
+		HWND hItem = GetDlgItem(hDlg, 1062);
+		wchar_t modeName[256];
+		wsprintfW(modeName, L"%hs", Spawner::GetConfig()->UIGameMode);
+		SendMessageA(hItem, WW_STATIC_SETTEXT, 0, reinterpret_cast<LPARAM>(modeName));
+	}
+
+	HWND hItem = GetDlgItem(hDlg, 1819);
+	wchar_t scenarioName[256];
+	wsprintfW(scenarioName, L"%hs", Spawner::GetConfig()->UIMapName);
+	SendMessageA(hItem, WW_STATIC_SETTEXT, 0, reinterpret_cast<LPARAM>(scenarioName));
+
+	return 0x658168;
+}

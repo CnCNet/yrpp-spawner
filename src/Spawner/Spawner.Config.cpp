@@ -50,6 +50,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		HarvesterTruce = pINI->ReadBool(pSettingsSection, "HarvesterTruce", HarvesterTruce);
 		FogOfWar       = pINI->ReadBool(pSettingsSection, "FogOfWar", FogOfWar);
 		MCVRedeploy    = pINI->ReadBool(pSettingsSection, "MCVRedeploy", MCVRedeploy);
+		/* UIGameMode */ pINI->ReadString(pSettingsSection, "UIGameMode", UIGameMode, UIGameMode, sizeof(UIGameMode));
 	}
 
 	// SaveGame Options
