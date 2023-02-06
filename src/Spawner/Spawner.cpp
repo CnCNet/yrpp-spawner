@@ -93,7 +93,7 @@ void Spawner::AssignHouses()
 		const auto pPlayerConfig = &Spawner::Config->Players[i];
 		const auto pHouse = HouseClass::Array->GetItem(i);
 
-		pHouse->StartingPoint = pPlayerConfig->IsSpectator ? -2 : pPlayerConfig->SpawnLocations;
+		pHouse->StartingPoint = pPlayerConfig->SpawnLocations;
 
 		for (int j = 0; j < 8; j++)
 		{
