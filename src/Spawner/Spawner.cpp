@@ -171,7 +171,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 			if (pPlayer->IsSpectator && maxPlayers > 1)
 			{
 				if (pNode->Country < 0)
-					pNode->Country = 0;
+					pNode->Country = -3;
 
 				pNode->SpectatorFlag = 0xFFFFFFFF;
 				if (playerIndex == 0)
