@@ -78,7 +78,7 @@ void Spawner::AssignHouses()
 	for (int i = 0; i < 8; i++)
 	{
 		const auto pPlayerConfig = &Spawner::Config->Players[i];
-		if(pPlayerConfig->IsHuman) continue;
+		if (pPlayerConfig->IsHuman) continue;
 
 		pAISlots->Difficulties[i] = pPlayerConfig->Difficulty;
 		pAISlots->Countries[i]    = pPlayerConfig->Country;
@@ -157,7 +157,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 		for (char playerIndex = 0; playerIndex < maxPlayers; playerIndex++)
 		{
 			const auto pPlayer = &Spawner::Config->Players[playerIndex];
-			if(!pPlayer->IsHuman)
+			if (!pPlayer->IsHuman)
 				continue;
 
 			const auto pNode = GameCreate<NodeNameType>();
@@ -184,9 +184,9 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 
 				const auto Ip = inet_addr(pPlayer->Ip);
 				const auto Port = htons((u_short)pPlayer->Port);
-				ListAddress::Array[playerIndex-1].Ip = Ip;
-				ListAddress::Array[playerIndex-1].Port = Port;
-				if (Port != (u_short) Spawner::Config->ListenPort)
+				ListAddress::Array[playerIndex - 1].Ip = Ip;
+				ListAddress::Array[playerIndex - 1].Port = Port;
+				if (Port != (u_short)Spawner::Config->ListenPort)
 					Nethack::PortHack = false;
 			}
 		}
