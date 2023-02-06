@@ -58,6 +58,7 @@ public:
 	// Engine Options
 	bool Ra2Mode; // TODO
 	bool SkipScoreScreen;
+	bool WriteStatistics;
 
 	// Game Mode Options
 	int  MPModeIndex;
@@ -118,6 +119,7 @@ public:
 		// Engine Options
 		: Ra2Mode { false } // TODO
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
+		, WriteStatistics { true }
 
 		// Game Mode Options
 		, MPModeIndex { 1 }
