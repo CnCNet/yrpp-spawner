@@ -155,7 +155,7 @@ DEFINE_HOOK(0x6C882A, RegisterGameEndTime_CorrectDuration, 0x6)
 DEFINE_HOOK(0x448524, BuildingClass_Captured_SendStatistics, 0x7)
 {
 	return IsStatisticsEnabled()
-		? 0x64B2ED
+		? 0x44852D
 		: 0;
 }
 
