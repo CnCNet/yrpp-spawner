@@ -36,6 +36,12 @@ DEFINE_HOOK(0x6439F4, ProgressScreenClass_643720, 0x6)
 	return SessionClass::IsCampaign() ? 0x643A18 : 0x643A04;
 }
 
+// Use correct loading screen colors for Spectator
+DEFINE_HOOK(0x642B60, ProgressScreenClass_LoadTextColor3, 0x5)
+{
+	return SessionClass::IsCampaign() ? 0x642B8B : 0x642B6F;
+}
+
 // Allow skirmish spectators to control gamespeed
 DEFINE_HOOK(0x4E20BA, GameControlsClass_SomeDialog_SpectatorPatch, 0x5)
 {
