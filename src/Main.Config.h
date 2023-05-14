@@ -25,6 +25,7 @@ public:
 	bool DisableEdgeScrolling;
 	bool QuickExit;
 	bool SkipScoreScreen;
+	bool DDrawHandlesClose;
 
 	bool WindowedMode;
 	bool NoWindowFrame;
@@ -38,6 +39,7 @@ public:
 		, DisableEdgeScrolling { false }
 		, QuickExit { false }
 		, SkipScoreScreen { false }
+		, DDrawHandlesClose { false }
 
 		, WindowedMode { false }
 		, NoWindowFrame { false }
