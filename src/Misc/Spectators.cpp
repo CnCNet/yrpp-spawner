@@ -30,7 +30,7 @@ DEFINE_HOOK(0x4FC9E0, HouseClass_FlagToWinLose_SpectatorPatch, 0x6)
 		: 0;
 }
 
-// Allow spectator flag in skirmish
+// Use correct flag icon for Spectator
 DEFINE_HOOK(0x6439F4, ProgressScreenClass_643720, 0x6)
 {
 	return SessionClass::IsCampaign() ? 0x643A18 : 0x643A04;
