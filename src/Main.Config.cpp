@@ -39,7 +39,7 @@ void MainConfig::LoadFromINIFile()
 	}
 
 	const char* pVideoSection = "Video";
-	if (pINI->GetSection(pOptionsSection))
+	if (pINI->GetSection(pVideoSection))
 	{
 		this->WindowedMode   = pINI->ReadBool(pVideoSection, "Video.Windowed", this->WindowedMode);
 		this->NoWindowFrame  = pINI->ReadBool(pVideoSection, "NoWindowFrame", this->NoWindowFrame);
