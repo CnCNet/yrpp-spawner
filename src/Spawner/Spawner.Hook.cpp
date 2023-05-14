@@ -119,7 +119,7 @@ DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)
 
 	GET(HWND, hDlg, ESI);
 
-	if (!SessionClass::Instance->IsCampaign())
+	if (!SessionClass::IsCampaign())
 	{
 		HWND hItem = GetDlgItem(hDlg, 1062);
 		wchar_t modeName[256];
