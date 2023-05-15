@@ -19,19 +19,41 @@
 
 #include "Spawner.h"
 #include <Main.h>
-
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
-// TODO: Recursively create a directory if it doesn't exist
 
-const auto SavedGamesDir = "Saved Games\\%s";
+namespace SavedGames
+{
+	constexpr auto DirDefaultName = "Saved Games";
+	constexpr auto FileNamePrefix = "Saved Games\\%s";
+
+	// Create the directory if it doesn't exist
+	inline bool CreateSubdir()
+	{
+		HANDLE hDir = CreateFileA(DirDefaultName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+		if (hDir == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_NOT_FOUND)
+		{
+			Debug::Log("\nFolder Saved Games does not exist, creating...");
+			if (!CreateDirectoryA(DirDefaultName, nullptr))
+			{
+				Debug::Log("Cannot create folder Saved Games! WTF!\n");
+				CloseHandle(hDir);
+				return false;
+			}
+			Debug::Log("Done.\n");
+		}
+		CloseHandle(hDir);
+		return true;
+	}
+}
 
 DEFINE_HOOK(0x67E475, LoadGame_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ESI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
 		R->ESI(Main::readBuffer);
 	}
 
@@ -42,9 +64,9 @@ DEFINE_HOOK(0x559EB0, DeleteSave_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
-		GET_STACK(char*, pFileName, 0x4);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
-		R->Stack(0x4, Main::readBuffer);
+		REF_STACK(char*, pFileName, 0x4);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
+		pFileName = Main::readBuffer;
 	}
 
 	return 0;
@@ -54,8 +76,11 @@ DEFINE_HOOK(0x67CF11, SaveGame_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
+		if (!SavedGames::CreateSubdir())
+			return 0;
+
 		GET(char*, pFileName, EDI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
 		R->EDI(Main::readBuffer);
 	}
 
@@ -70,7 +95,7 @@ DEFINE_HOOK(0x55961C, LoadOptionsClass_RandomFilename_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ESI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
 		R->ESI(Main::readBuffer);
 	}
 
@@ -83,7 +108,7 @@ DEFINE_HOOK(0x5592D2, LoadOptionsClass_Dialog_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, EDX);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
 		R->EDX(Main::readBuffer);
 	}
 
@@ -100,7 +125,7 @@ DEFINE_HOOK(0x559C98, LoadOptionsClass_HasSaves_SGInSubdir, 0xB)
 	if (Spawner::Enabled)
 	{
 		result = Main::readBuffer;
-		sprintf(result, SavedGamesDir, pFileName);
+		sprintf(result, SavedGames::FileNamePrefix, pFileName);
 		// Always "Saved Games\*.SAV"
 	}
 
@@ -117,7 +142,7 @@ DEFINE_HOOK(0x559882, LoadOptionsClass_FillList_SGInSubdir, 0x5)
 		// TODO: Expand string size
 		LEA_STACK(char*, pFileName/*[128]*/, STACK_OFFSET(0x310, -0x2C0));
 		strcpy_s(Main::readBuffer, pFileName);
-		sprintf(pFileName, SavedGamesDir, Main::readBuffer);
+		sprintf(pFileName, SavedGames::FileNamePrefix, Main::readBuffer);
 		// Always "Saved Games\*.SAV"
 	}
 
@@ -129,7 +154,7 @@ DEFINE_HOOK(0x67FD26, LoadOptionsClass_ReadSaveInfo_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ECX);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		sprintf(Main::readBuffer, SavedGames::FileNamePrefix, pFileName);
 		R->ECX(Main::readBuffer);
 	}
 
