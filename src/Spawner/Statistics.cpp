@@ -156,69 +156,68 @@ DEFINE_HOOK(0x448524, BuildingClass_Captured_SendStatistics, 0x7)
 {
 	return IsStatisticsEnabled()
 		? 0x44852D
-		: 0;
+		: 0x448559;
 }
 
 DEFINE_HOOK(0x55D0FB, AuxLoop_SendStatistics_1, 0x5)
 {
 	return IsStatisticsEnabled()
 		? 0x55D100
-		: 0;
+		: 0x55D123;
 }
 
 DEFINE_HOOK(0x55D189, AuxLoop_SendStatistics_2, 0x5)
 {
 	return IsStatisticsEnabled()
 		? 0x55D18E
-		: 0;
+		: 0x55D1B1;
 }
 
 DEFINE_HOOK(0x64C7FA, ExecuteDoList_SendStatistics_1, 0x6)
 {
 	return IsStatisticsEnabled()
 		? 0x64C802
-		: 0;
+		: 0x64C850;
 }
 
 DEFINE_HOOK(0x64C81E, ExecuteDoList_SendStatistics_2, 0x6)
 {
 	return IsStatisticsEnabled()
 		? 0x64C826
-		: 0;
+		: 0x64C850;
 }
 
 DEFINE_HOOK(0x647AE8, QueueAIMultiplayer_SendStatistics_1, 0x6)
 {
 	return IsStatisticsEnabled()
 		? 0x647AF5
-		: 0;
+		: 0x6482A6;
 }
 
-DEFINE_HOOK(0x64824B, QueueAIMultiplayer_SendStatistics_2, 0x5)
+DEFINE_HOOK(0x648246, QueueAIMultiplayer_SendStatistics_2, 0x5)
 {
-	if (IsStatisticsEnabled())
-		R->EAX(GameMode::Internet);
-
-	return 0;
+	return IsStatisticsEnabled()
+		? 0x648257
+		: 0x64825C;
 }
 
 DEFINE_HOOK(0x64827D, QueueAIMultiplayer_SendStatistics_3, 0x6)
 {
 	return IsStatisticsEnabled()
 		? 0x648285
-		: 0;
+		: 0x6482A6;
 }
 
-DEFINE_HOOK(0x64AB6A, QueueProposeKickPlayer_SendStatistics, 0x7)
+DEFINE_HOOK(0x648081, QueueAIMultiplayer_SendStatistics_4, 0x6)
 {
 	return IsStatisticsEnabled()
-		? 0x64AB73
-		: 0;
+		? 0x64808E
+		: 0x648093;
 }
 
 DEFINE_HOOK(0x64B2E4, KickPlayerNow_SendStatistics, 0x7)
 {
 	return IsStatisticsEnabled()
 		? 0x64B2ED
-		: 0;
+		: 0x64B352;
 }
