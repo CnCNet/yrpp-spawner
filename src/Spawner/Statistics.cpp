@@ -25,6 +25,7 @@
 #include <ScenarioClass.h>
 #include <SessionClass.h>
 #include <Unsorted.h>
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
 bool __forceinline IsStatisticsEnabled()
@@ -206,8 +207,10 @@ DEFINE_HOOK(0x647AE8, QueueAIMultiplayer_SendStatistics_1, 0x7)
 		: DontSend;
 }
 
-DEFINE_HOOK(0x648246, QueueAIMultiplayer_SendStatistics_2, 0x5)
+DEFINE_HOOK(0x64823C, QueueAIMultiplayer_SendStatistics_2, 0x5)
 {
+	Debug::Log(reinterpret_cast<char*>(0xA8E378) /* "Failure executing DoList\n" */);
+
 	enum { Send = 0x648257, DontSend = 0x64825C };
 
 	return IsStatisticsEnabled() || (SessionClass::Instance->GameMode == GameMode::Internet)
@@ -224,7 +227,7 @@ DEFINE_HOOK(0x64827D, QueueAIMultiplayer_SendStatistics_3, 0x6)
 		: DontSend;
 }
 
-DEFINE_HOOK(0x648081, QueueAIMultiplayer_SendStatistics_4, 0x5)
+DEFINE_HOOK(0x648089, QueueAIMultiplayer_SendStatistics_4, 0x5)
 {
 	enum { Send = 0x64808E, DontSend = 0x648093 };
 
