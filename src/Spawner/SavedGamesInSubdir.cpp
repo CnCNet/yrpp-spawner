@@ -19,19 +19,43 @@
 
 #include "Spawner.h"
 #include <Main.h>
-
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
-// TODO: Recursively create a directory if it doesn't exist
+#include <filesystem>
 
-const auto SavedGamesDir = "Saved Games\\%s";
+namespace SavedGames
+{
+	constexpr auto DirName = "Saved Games"; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
+	constexpr auto FileNamePrefixFormat = "%s\\%s";
+
+	inline bool CreateSubdir()
+	{
+		if (!std::filesystem::exists(SavedGames::DirName))
+		{
+			Debug::Log("\nFolder Saved Games does not exist, creating...");
+			if (!std::filesystem::create_directories(SavedGames::DirName))
+			{
+				Debug::Log("Cannot create folder Saved Games! WTF!\n");
+				return false;
+			}
+			Debug::Log("Done.\n");
+		}
+		return true;
+	}
+
+	inline void FormatPath(char* buffer, const char* pFileName)
+	{
+		sprintf(buffer, SavedGames::FileNamePrefixFormat, SavedGames::DirName, pFileName);
+	}
+}
 
 DEFINE_HOOK(0x67E475, LoadGame_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ESI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->ESI(Main::readBuffer);
 	}
 
@@ -42,9 +66,9 @@ DEFINE_HOOK(0x559EB0, DeleteSave_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
-		GET_STACK(char*, pFileName, 0x4);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
-		R->Stack(0x4, Main::readBuffer);
+		REF_STACK(char*, pFileName, 0x4);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
+		pFileName = Main::readBuffer;
 	}
 
 	return 0;
@@ -54,8 +78,11 @@ DEFINE_HOOK(0x67CF11, SaveGame_SGInSubdir, 0x5)
 {
 	if (Spawner::Enabled)
 	{
+		if (!SavedGames::CreateSubdir())
+			return 0;
+
 		GET(char*, pFileName, EDI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->EDI(Main::readBuffer);
 	}
 
@@ -70,7 +97,7 @@ DEFINE_HOOK(0x55961C, LoadOptionsClass_RandomFilename_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ESI);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->ESI(Main::readBuffer);
 	}
 
@@ -83,7 +110,7 @@ DEFINE_HOOK(0x5592D2, LoadOptionsClass_Dialog_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, EDX);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->EDX(Main::readBuffer);
 	}
 
@@ -96,32 +123,34 @@ DEFINE_HOOK(0x559C98, LoadOptionsClass_HasSaves_SGInSubdir, 0xB)
 	LEA_STACK(void*, pFindFileData, STACK_OFFSET(0x348, -0x140));
 	LEA_STACK(char*, pFileName, STACK_OFFSET(0x348, -0x33C));
 
-	char* result = pFileName;
 	if (Spawner::Enabled)
 	{
-		result = Main::readBuffer;
-		sprintf(result, SavedGamesDir, pFileName);
-		// Always "Saved Games\*.SAV"
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
+		pFileName = Main::readBuffer; // Always "Saved Games\*.SAV"
 	}
 
-	R->EAX(result);
+	R->EAX(pFileName);
 	R->EDX(pFindFileData);
+
 	return 0x559CA3; // this is 0x559C98 + 0xB
 }
 
 // Fill a list of files
-DEFINE_HOOK(0x559882, LoadOptionsClass_FillList_SGInSubdir, 0x5)
+DEFINE_HOOK(0x559886, LoadOptionsClass_FillList_SGInSubdir, 0x8)
 {
+	GET(struct _WIN32_FIND_DATAA*, pFind, EDX);
+	GET(char*, pFileName, EAX);
+
 	if (Spawner::Enabled)
 	{
-		// TODO: Expand string size
-		LEA_STACK(char*, pFileName/*[128]*/, STACK_OFFSET(0x310, -0x2C0));
-		strcpy_s(Main::readBuffer, pFileName);
-		sprintf(pFileName, SavedGamesDir, Main::readBuffer);
-		// Always "Saved Games\*.SAV"
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
+		pFileName = Main::readBuffer; // Always "Saved Games\*.SAV"
 	}
 
-	return 0;
+	HANDLE result = FindFirstFileA(pFileName, pFind);
+	R->EAX(result);
+
+	return 0x55988E; // this is 0x559886 + 0x8
 }
 
 DEFINE_HOOK(0x67FD26, LoadOptionsClass_ReadSaveInfo_SGInSubdir, 0x5)
@@ -129,7 +158,7 @@ DEFINE_HOOK(0x67FD26, LoadOptionsClass_ReadSaveInfo_SGInSubdir, 0x5)
 	if (Spawner::Enabled)
 	{
 		GET(char*, pFileName, ECX);
-		sprintf(Main::readBuffer, SavedGamesDir, pFileName);
+		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->ECX(Main::readBuffer);
 	}
 
