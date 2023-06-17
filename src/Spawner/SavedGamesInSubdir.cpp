@@ -23,6 +23,7 @@
 #include <Utilities/Macro.h>
 
 #include <filesystem>
+
 namespace SavedGames
 {
 	constexpr auto DirName = "Saved Games"; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
