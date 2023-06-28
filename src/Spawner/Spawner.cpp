@@ -89,15 +89,19 @@ void Spawner::AssignHouses()
 
 	ScenarioClass::AssignHouses();
 
-	for (int i = -2 + HouseClass::Array->Count; i >= 0; i--)
+	int count = std::min(HouseClass::Array->Count, 8);
+	for (int indexOfHouseArray = 0; indexOfHouseArray < count; indexOfHouseArray++)
 	{
-		const auto pPlayerConfig = &Spawner::Config->Players[i];
-		const auto pHouse = HouseClass::Array->GetItem(i);
+		const auto pPlayerConfig = &Spawner::Config->Players[indexOfHouseArray];
+		const auto pHouse = HouseClass::Array->GetItem(indexOfHouseArray);
+
+		if (pHouse->Type->MultiplayPassive)
+			continue;
 
 
-		for (int j = 0; j < 8; j++)
+		for (int i = 0; i < 8; i++)
 		{
-			const int allyIndex = pPlayerConfig->Alliances[j];
+			const int allyIndex = pPlayerConfig->Alliances[i];
 			if (allyIndex != -1)
 				pHouse->Allies.Add(allyIndex);
 		}
