@@ -69,7 +69,7 @@ void NoCD::Apply()
 
 	// CD switch behavior changed to support true No-CD mode with no need to still have a drive
 	// Also, this should improve performance considerably when no disc is inserted into any CD drive
-	Debug::Log("Optimizing list of CD drives for NoCD mode.\n");
+	Debug::Log("[Spawner] Optimizing list of CD drives for NoCD mode.\n");
 	memset(GetCDClass::Instance->Drives, -1, 26);
 
 	char drv[] = "a:\\";
@@ -91,7 +91,7 @@ void NoCD::InitNoCDMode()
 {
 	if (!GetCDClass::Instance->Count)
 	{
-		Debug::Log("No CD drives detected. Switching to NoCD mode.\n");
+		Debug::Log("[Spawner] No CD drives detected. Switching to NoCD mode.\n");
 		NoCD::Apply();
 	}
 }

@@ -112,6 +112,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 	if (scenarioName[0] == 0)
 	{
 		MessageBox::Show(StringTable::LoadString("TXT_UNABLE_READ_SCENARIO"), StringTable::LoadString("TXT_OK"), 0);
+		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", scenarioName);
 		return false;
 	}
 
@@ -241,7 +242,7 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 	if (!ScenarioClass::LoadGame(saveGameName))
 	{
 		MessageBox::Show(StringTable::LoadString("TXT_ERROR_LOADING_GAME"), StringTable::LoadString("TXT_OK"), 0);
-		Debug::Log("Failed Load Game [%s]\n", saveGameName);
+		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
 		return false;
 	}
 
