@@ -16,30 +16,30 @@
   <ItemGroup>
     <!-- Root -->
     <ResourceCompile Include="src\version.rc" />
-    <ClCompile Include="src\Main.Config.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Main.Ext.cpp" />
     <ClCompile Include="src\Main.Hook.cpp" />
+    <ClCompile Include="src\Main.Config.cpp" />
     <!-- Misc -->
+    <ClCompile Include="src\Misc\Bugfixes.cpp" />
+    <ClCompile Include="src\Misc\Bugfixes.Perf.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.Blowfish.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.CommonCrashes.cpp" />
-    <ClCompile Include="src\Misc\Bugfixes.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.ExceptionCatch.cpp" />
-    <ClCompile Include="src\Misc\Bugfixes.Perf.cpp" />
-    <ClCompile Include="src\Misc\CopyProtection.cpp" />
-    <ClCompile Include="src\Misc\DisableEdgeScrolling.cpp" />
     <ClCompile Include="src\Misc\NoCD.cpp" />
+    <ClCompile Include="src\Misc\Observers.cpp" />
     <ClCompile Include="src\Misc\QuickExit.cpp" />
-    <ClCompile Include="src\Misc\SkipScoreScreen.cpp" />
-    <ClCompile Include="src\Misc\Spectators.cpp" />
     <ClCompile Include="src\Misc\VideoMode.cpp" />
+    <ClCompile Include="src\Misc\CopyProtection.cpp" />
+    <ClCompile Include="src\Misc\SkipScoreScreen.cpp" />
+    <ClCompile Include="src\Misc\SavedGamesInSubdir.cpp" />
+    <ClCompile Include="src\Misc\DisableEdgeScrolling.cpp" />
     <!-- Spawner -->
-    <ClCompile Include="src\Spawner\Nethack.cpp" />
-    <ClCompile Include="src\Spawner\RandomMap.cpp" />
-    <ClCompile Include="src\Spawner\SavedGamesInSubdir.cpp" />
-    <ClCompile Include="src\Spawner\Spawner.Config.cpp" />
     <ClCompile Include="src\Spawner\Spawner.cpp" />
     <ClCompile Include="src\Spawner\Spawner.Hook.cpp" />
+    <ClCompile Include="src\Spawner\Spawner.Config.cpp" />
+    <ClCompile Include="src\Spawner\Nethack.cpp" />
+    <ClCompile Include="src\Spawner\RandomMap.cpp" />
     <ClCompile Include="src\Spawner\Statistics.cpp" />
     <!-- Utilities -->
     <ClCompile Include="src\Utilities\Debug.cpp" />
@@ -48,15 +48,15 @@
   <!-- Header files -->
   <ItemGroup>
     <!-- Root -->
-    <ClInclude Include="src\Main.Config.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\version.h" />
+    <ClInclude Include="src\Main.Config.h" />
     <!-- Misc -->
     <ClInclude Include="src\Misc\NoCD.h" />
     <!-- Spawner -->
     <ClInclude Include="src\Spawner\Nethack.h" />
-    <ClInclude Include="src\Spawner\Spawner.Config.h" />
     <ClInclude Include="src\Spawner\Spawner.h" />
+    <ClInclude Include="src\Spawner\Spawner.Config.h" />
     <!-- Utilities -->
     <ClInclude Include="src\Utilities\Debug.h" />
     <ClInclude Include="src\Utilities\Macro.h" />

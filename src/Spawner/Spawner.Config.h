@@ -42,7 +42,7 @@ public:
 		, Country { -1 }
 		, Color { -1 }
 		, SpawnLocations { -2 }
-		, Alliances { -1,-1,-1,-1,-1,-1,-1,-1 }
+		, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
 		, IsSpectator { false }
 		, Difficulty { -1 }
 		, Ip { "" }

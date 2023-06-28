@@ -17,10 +17,10 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Spawner.h"
 #include <Main.h>
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
+#include <Spawner/Spawner.h>
 
 #include <filesystem>
 

@@ -21,7 +21,7 @@
 #include <SessionClass.h>
 #include <Unsorted.h>
 
-// Allow spectator in skirmish
+// Allow observer in skirmish
 DEFINE_HOOK_AGAIN(0x4FCBD0, HouseClass_FlagToWinLose_SpectatorPatch, 0x6)
 DEFINE_HOOK(0x4FC9E0, HouseClass_FlagToWinLose_SpectatorPatch, 0x6)
 {
@@ -30,41 +30,49 @@ DEFINE_HOOK(0x4FC9E0, HouseClass_FlagToWinLose_SpectatorPatch, 0x6)
 		: 0;
 }
 
-// Use correct flag icon for Spectator
-DEFINE_HOOK(0x6439F4, ProgressScreenClass_643720, 0x6)
-{
-	return SessionClass::IsCampaign() ? 0x643A18 : 0x643A04;
-}
-
-// Use correct loading screen colors for Spectator
-DEFINE_HOOK(0x642B60, ProgressScreenClass_LoadTextColor3, 0x5)
-{
-	return SessionClass::IsCampaign() ? 0x642B8B : 0x642B6F;
-}
-
-// Allow skirmish spectators to control gamespeed
-DEFINE_HOOK(0x4E20BA, GameControlsClass_SomeDialog_SpectatorPatch, 0x5)
+// Allow skirmish observer to control gamespeed
+DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog, 0x5)
 {
 	return (SessionClass::IsSkirmish() && Game::ObserverMode)
 		? 0x4E211A
 		: 0;
 }
 
-DEFINE_HOOK(0x5533E0, LoadProgressMgr_Draw_SpectatorPatch_SetBackground, 0x5)
+// Use correct flag icon for observer
+DEFINE_HOOK(0x6439F4, ProgressScreenClass__643720, 0x6)
+{
+	enum { AllowObserver = 0x643A04, NotAllowObserver = 0x643A18 };
+
+	return !SessionClass::IsCampaign()
+		? AllowObserver
+		: NotAllowObserver;
+}
+
+// Use correct loading screen colors for observer
+DEFINE_HOOK(0x642B60, ProgressScreenClass__LoadTextColor3, 0x5)
+{
+	enum { AllowObserver = 0x642B6F, NotAllowObserver = 0x642B8B };
+
+	return !SessionClass::IsCampaign()
+		? AllowObserver
+		: NotAllowObserver;
+}
+
+DEFINE_HOOK(0x5533E0, LoadProgressMgr__Draw_SetBackground, 0x5)
 {
 	return Game::ObserverMode
 		? 0x5533EF
 		: 0;
 }
 
-DEFINE_HOOK(0x5539E4, LoadProgressMgr_Draw_SpectatorPatch_LoadBriefing, 0x5)
+DEFINE_HOOK(0x5539E4, LoadProgressMgr__Draw_LoadBriefing, 0x5)
 {
 	return Game::ObserverMode
 		? 0x5539F3
 		: 0;
 }
 
-DEFINE_HOOK(0x5536A0, LoadProgressMgr_Draw_SpectatorPatch_CountryName, 0x5)
+DEFINE_HOOK(0x5536A0, LoadProgressMgr__Draw_CountryName, 0x5)
 {
 	return Game::ObserverMode
 		? 0x5536AF

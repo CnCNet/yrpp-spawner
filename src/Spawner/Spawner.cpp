@@ -72,18 +72,19 @@ bool Spawner::StartGame()
 
 void Spawner::AssignHouses()
 {
-	const auto pAISlots = &GameModeOptionsClass::Instance->AISlots;
+	{ // Adds AI Players
+		const auto pAISlots = &GameModeOptionsClass::Instance->AISlots;
+		for (int i = 0; i < 8; i++)
+		{
+			const auto pPlayerConfig = &Spawner::Config->Players[i];
+			if (pPlayerConfig->IsHuman)
+				continue;
 
-	// Added AI Players
-	for (int i = 0; i < 8; i++)
-	{
-		const auto pPlayerConfig = &Spawner::Config->Players[i];
-		if (pPlayerConfig->IsHuman) continue;
-
-		pAISlots->Difficulties[i] = pPlayerConfig->Difficulty;
-		pAISlots->Countries[i]    = pPlayerConfig->Country;
-		pAISlots->Colors[i]       = pPlayerConfig->Color;
-		pAISlots->Allies[i]       = -1;
+			pAISlots->Difficulties[i] = pPlayerConfig->Difficulty;
+			pAISlots->Countries[i]    = pPlayerConfig->Country;
+			pAISlots->Colors[i]       = pPlayerConfig->Color;
+			pAISlots->Allies[i]       = -1;
+		}
 	}
 
 	ScenarioClass::AssignHouses();
@@ -93,16 +94,24 @@ void Spawner::AssignHouses()
 		const auto pPlayerConfig = &Spawner::Config->Players[i];
 		const auto pHouse = HouseClass::Array->GetItem(i);
 
-		if (pPlayerConfig->IsSpectator && pHouse == HouseClass::CurrentPlayer)
-			HouseClass::Observer = pHouse;
-
-		pHouse->StartingPoint = pPlayerConfig->IsSpectator ? -2 : pPlayerConfig->SpawnLocations;
 
 		for (int j = 0; j < 8; j++)
 		{
 			const int allyIndex = pPlayerConfig->Alliances[j];
 			if (allyIndex != -1)
 				pHouse->Allies.Add(allyIndex);
+		}
+
+		if (pPlayerConfig->IsSpectator)
+		{
+			pHouse->StartingPoint = -2;
+
+			if (pHouse == HouseClass::CurrentPlayer)
+				HouseClass::Observer = pHouse;
+		}
+		else
+		{
+			pHouse->StartingPoint = pPlayerConfig->SpawnLocations;
 		}
 	}
 }
@@ -172,7 +181,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 			pNode->Color = pPlayer->Color;
 			pNode->Time = -1;
 
-			if (pPlayer->IsSpectator && maxPlayers > 1)
+			if (pPlayer->IsSpectator && !Spawner::Config->IsCampaign)
 			{
 				if (pNode->Country < 0)
 					pNode->Country = -3;
