@@ -96,7 +96,7 @@ void Spawner::AssignHouses()
 		if (pPlayerConfig->IsSpectator && pHouse == HouseClass::CurrentPlayer)
 			HouseClass::Observer = pHouse;
 
-		pHouse->StartingPoint = pPlayerConfig->SpawnLocations;
+		pHouse->StartingPoint = pPlayerConfig->IsSpectator ? -2 : pPlayerConfig->SpawnLocations;
 
 		for (int j = 0; j < 8; j++)
 		{
