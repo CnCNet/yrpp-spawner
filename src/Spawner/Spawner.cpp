@@ -149,6 +149,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 		// pGameModeOptions->MapDescription[0] = 0;
 
 		Game::Seed = Spawner::Config->Seed;
+		Game::TechLevel = Spawner::Config->TechLevel;
 		Game::PlayerColor = Spawner::Config->Players[0].Color;
 		GameOptionsClass::Instance->GameSpeed = Spawner::Config->GameSpeed;
 	}
