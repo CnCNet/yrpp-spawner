@@ -62,15 +62,16 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 // AI has stats
 DEFINE_HOOK(0x6C73F8, SendStatisticsPacket_AIHasStats, 0x6)
 {
+	enum { Send = 0x6C7406, DontSend = 0x6C7414 };
+
 	if (IsStatisticsEnabled())
 	{
 		GET(HouseClass*, pHouse, EAX);
-		if (pHouse && pHouse->Type && !pHouse->Type->MultiplayPassive)
-			return 0x6C7402;
-
-		return 0x6C7414;
+		return ((pHouse->Type && pHouse->Type->MultiplayPassive) || pHouse->GetSpawnPosition() == -1)
+			? DontSend
+			: Send;
 	}
-	return  0;
+	return 0;
 }
 
 // Use GameStockKeepingUnit instead IsWordDominationTour for GSKU Field
