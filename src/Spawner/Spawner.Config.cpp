@@ -90,7 +90,10 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 
 	// Players Options
 	for (int i = 0; i < 8; i++)
+	{
 		(&Players[i])->LoadFromINIFile(pINI, i);
+		(&Houses[i])->LoadFromINIFile(pINI, i);
+	}
 
 	// Extended Options
 	// TODO:
@@ -142,13 +145,12 @@ constexpr char* AlliancesTagArray[8] = {
 	"HouseAllyEight"
 };
 
-void PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
+void SpawnerConfig::PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 {
 	if (!pINI || index >= 8)
 		return;
 
 	const char* pSection = PlayerSectionArray[index];
-	const char* pAlliancesSection = AlliancesSectionArray[index];
 	const char* pMultiTag = MultiTagArray[index];
 
 	if (pINI->GetSection(pSection))
@@ -159,11 +161,12 @@ void PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 		if (pINI->ReadString(pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
 			mbstowcs(this->Name, Main::readBuffer, sizeof(this->Name));
 
-		this->Color       = pINI->ReadInteger(pSection, "Color", this->Color);
-		this->Country     = pINI->ReadInteger(pSection, "Side", this->Country);
-		this->IsSpectator = pINI->ReadBool(pSection, "IsSpectator", this->IsSpectator);
+		this->Color      = pINI->ReadInteger(pSection, "Color", this->Color);
+		this->Country    = pINI->ReadInteger(pSection, "Side", this->Country);
+		this->IsObserver = pINI->ReadBool(pSection, "IsSpectator", this->IsObserver);
+
 		pINI->ReadString(pSection, "Ip", this->Ip, this->Ip, sizeof(this->Ip));
-		this->Port        = pINI->ReadInteger(pSection, "Port", this->Port);
+		this->Port       = pINI->ReadInteger(pSection, "Port", this->Port);
 	}
 	else if (!IsHuman)
 	{
@@ -171,7 +174,17 @@ void PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 		this->Country     = pINI->ReadInteger("HouseCountries", pMultiTag, this->Country);
 		this->Difficulty  = pINI->ReadInteger("HouseHandicaps", pMultiTag, this->Difficulty);
 	}
+}
 
+void SpawnerConfig::HouseConfig::LoadFromINIFile(CCINIClass* pINI, int index)
+{
+	if (!pINI || index >= 8)
+		return;
+
+	const char* pAlliancesSection = AlliancesSectionArray[index];
+	const char* pMultiTag = MultiTagArray[index];
+
+	this->IsObserver     = pINI->ReadBool("IsSpectator", pMultiTag, this->IsObserver);
 	this->SpawnLocations = pINI->ReadInteger("SpawnLocations", pMultiTag, SpawnLocations);
 
 	if (pINI->GetSection(pAlliancesSection))

@@ -22,38 +22,53 @@
 
 class CCINIClass;
 
-class PlayerConfig
-{
-public:
-	bool IsHuman;
-	wchar_t Name[20];
-	int Color;
-	int Country;
-	int Difficulty;
-	int SpawnLocations;
-	int Alliances[8];
-	bool IsSpectator;
-	char Ip[0x20];
-	int Port;
-
-	PlayerConfig()
-		: IsHuman { false }
-		, Name { L"" }
-		, Color { -1 }
-		, Country { -1 }
-		, Difficulty { -1 }
-		, SpawnLocations { -2 }
-		, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
-		, IsSpectator { false }
-		, Ip { "0.0.0.0" }
-		, Port { -1 }
-	{ }
-
-	void LoadFromINIFile(CCINIClass* pINI, int index);
-};
-
 class SpawnerConfig
 {
+
+	// Used to create NodeNameType
+	// The order of entries may differ from HouseConfig
+	struct PlayerConfig
+	{
+		bool IsHuman;
+		wchar_t Name[20];
+		int Color;
+		int Country;
+		int Difficulty;
+		bool IsObserver;
+		char Ip[0x20];
+		int Port;
+
+		PlayerConfig()
+			: IsHuman { false }
+			, Name { L"" }
+			, Color { -1 }
+			, Country { -1 }
+			, Difficulty { -1 }
+			, IsObserver { false }
+			, Ip { "0.0.0.0" }
+			, Port { -1 }
+		{ }
+
+		void LoadFromINIFile(CCINIClass* pINI, int index);
+	};
+
+	// Used to augment the generated HouseClass
+	// The order of entries may differ from PlayerConfig
+	struct HouseConfig
+	{
+		bool IsObserver;
+		int SpawnLocations;
+		int Alliances[8];
+
+		HouseConfig()
+			: IsObserver { false }
+			, SpawnLocations { -2 }
+			, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
+		{ }
+
+		void LoadFromINIFile(CCINIClass* pINI, int index);
+	};
+
 public:
 	// Engine Options
 	bool Ra2Mode; // TODO
@@ -109,6 +124,9 @@ public:
 
 	// Players Options
 	PlayerConfig Players[8];
+
+	// Houses Options
+	HouseConfig Houses[8];
 
 	// Extended Options
 	// TODO:
@@ -179,6 +197,19 @@ public:
 			PlayerConfig(),
 			PlayerConfig(),
 			PlayerConfig()
+		}
+
+		// Houses Options
+		, Houses {
+			HouseConfig(),
+			HouseConfig(),
+			HouseConfig(),
+			HouseConfig(),
+
+			HouseConfig(),
+			HouseConfig(),
+			HouseConfig(),
+			HouseConfig()
 		}
 
 		// Extended Options

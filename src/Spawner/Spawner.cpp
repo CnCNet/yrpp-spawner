@@ -77,29 +77,41 @@ void Spawner::AssignHouses()
 	int count = std::min(HouseClass::Array->Count, 8);
 	for (int indexOfHouseArray = 0; indexOfHouseArray < count; indexOfHouseArray++)
 	{
-		const auto pPlayerConfig = &Spawner::Config->Players[indexOfHouseArray];
 		const auto pHouse = HouseClass::Array->GetItem(indexOfHouseArray);
+		const auto pHousesConfig = &Spawner::Config->Houses[indexOfHouseArray];
 
 		if (pHouse->Type->MultiplayPassive)
 			continue;
 
 		for (int i = 0; i < 8; i++)
 		{
-			const int alliesIndex = pPlayerConfig->Alliances[i];
+			const int alliesIndex = pHousesConfig->Alliances[i];
 			if (alliesIndex != -1)
 				pHouse->Allies.Add(alliesIndex);
 		}
 
-		if (pPlayerConfig->IsSpectator)
+		if (pHouse->IsHumanPlayer && (pHousesConfig->IsObserver || pHousesConfig->SpawnLocations == 90))
 		{
-			pHouse->StartingPoint = -2;
-
 			if (pHouse == HouseClass::CurrentPlayer)
 				HouseClass::Observer = pHouse;
+
+			{ // Remove SpawnLocations for Observer
+				const auto pHouseIndices = ScenarioClass::Instance->HouseIndices;
+				for (int i = 0; i < 16; i++)
+				{
+					if (pHouse->ArrayIndex == pHouseIndices[i])
+						pHouseIndices[i] = -1;
+				}
+				pHouse->StartingPoint = -1;
+			}
 		}
 		else
 		{
-			pHouse->StartingPoint = pPlayerConfig->SpawnLocations;
+			int nSpawnLocations = pHousesConfig->SpawnLocations;
+			if (nSpawnLocations != -2)
+				nSpawnLocations = std::clamp(nSpawnLocations, 0, 7);
+
+			pHouse->StartingPoint = nSpawnLocations;
 		}
 	}
 }
@@ -158,7 +170,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 		const auto pAISlots = &pGameModeOptions->AISlots;
 		for (char slotIndex = 0; slotIndex < 8; slotIndex++)
 		{
-			const auto pPlayerConfig = &Spawner::GetConfig()->Players[slotIndex];
+			const auto pPlayerConfig = &Spawner::Config->Players[slotIndex];
 			if (pPlayerConfig->IsHuman)
 				continue;
 
@@ -186,7 +198,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 			pNode->Color = pPlayer->Color;
 			pNode->Time = -1;
 
-			if (pPlayer->IsSpectator && !Spawner::Config->IsCampaign)
+			if (pPlayer->IsObserver && !Spawner::Config->IsCampaign)
 			{
 				if (pNode->Country < 0)
 					pNode->Country = -3;
