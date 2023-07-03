@@ -26,7 +26,7 @@
 #include <Misc/NoCD.h>
 
 HANDLE Main::hInstance = nullptr;
-std::unique_ptr<MainConfig> Main::Config = std::make_unique<MainConfig>();;
+std::unique_ptr<MainConfig> Main::Config = std::make_unique<MainConfig>();
 
 void Main::ExeRun()
 {

@@ -72,21 +72,6 @@ bool Spawner::StartGame()
 
 void Spawner::AssignHouses()
 {
-	{ // Adds AI Players
-		const auto pAISlots = &GameModeOptionsClass::Instance->AISlots;
-		for (int i = 0; i < 8; i++)
-		{
-			const auto pPlayerConfig = &Spawner::Config->Players[i];
-			if (pPlayerConfig->IsHuman)
-				continue;
-
-			pAISlots->Difficulties[i] = pPlayerConfig->Difficulty;
-			pAISlots->Countries[i]    = pPlayerConfig->Country;
-			pAISlots->Colors[i]       = pPlayerConfig->Color;
-			pAISlots->Allies[i]       = -1;
-		}
-	}
-
 	ScenarioClass::AssignHouses();
 
 	int count = std::min(HouseClass::Array->Count, 8);
@@ -98,12 +83,11 @@ void Spawner::AssignHouses()
 		if (pHouse->Type->MultiplayPassive)
 			continue;
 
-
 		for (int i = 0; i < 8; i++)
 		{
-			const int allyIndex = pPlayerConfig->Alliances[i];
-			if (allyIndex != -1)
-				pHouse->Allies.Add(allyIndex);
+			const int alliesIndex = pPlayerConfig->Alliances[i];
+			if (alliesIndex != -1)
+				pHouse->Allies.Add(alliesIndex);
 		}
 
 		if (pPlayerConfig->IsSpectator)
@@ -130,11 +114,16 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 	}
 
 	const auto pSession = &SessionClass::Instance;
-	const auto pGameOptions = &GameOptionsClass::Instance;
 	const auto pGameModeOptions = &GameModeOptionsClass::Instance;
 
 	strcpy_s(&Game::ScenarioName, 0x200, scenarioName);
 	pSession->ReadScenarioDescriptions();
+
+	{ // Set MPGameMode
+		pSession->MPGameMode = MPGameModeClass::Get(Spawner::Config->MPModeIndex);
+		if (!pSession->MPGameMode)
+			pSession->MPGameMode = MPGameModeClass::Get(1);
+	}
 
 	{ // Set Options
 		pGameModeOptions->MPModeIndex       = Spawner::Config->MPModeIndex;
@@ -154,18 +143,29 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 		// pGameModeOptions->AISlots
 		pGameModeOptions->AlliesAllowed     = Spawner::Config->AlliesAllowed;
 		pGameModeOptions->HarvesterTruce    = Spawner::Config->HarvesterTruce;
-		// pGameModeOptions->CTF
+		// pGameModeOptions->CaptureTheFlag
 		pGameModeOptions->FogOfWar          = Spawner::Config->FogOfWar;
 		pGameModeOptions->MCVRedeploy       = Spawner::Config->MCVRedeploy;
-		// pGameModeOptions->MapDescription
+		// pGameModeOptions->MapDescription[0] = 0;
 
-		Game::PlayerColor = Spawner::Config->Players[0].Color;
-
-		pGameOptions->GameSpeed = Spawner::Config->GameSpeed;
 		Game::Seed = Spawner::Config->Seed;
+		Game::PlayerColor = Spawner::Config->Players[0].Color;
+		GameOptionsClass::Instance->GameSpeed = Spawner::Config->GameSpeed;
+	}
 
-		if (!MPGameModeClass::Set(Config->MPModeIndex))
-			MPGameModeClass::Set(1);
+	{ // Added AI Players
+		const auto pAISlots = &pGameModeOptions->AISlots;
+		for (char slotIndex = 0; slotIndex < 8; slotIndex++)
+		{
+			const auto pPlayerConfig = &Spawner::GetConfig()->Players[slotIndex];
+			if (pPlayerConfig->IsHuman)
+				continue;
+
+			pAISlots->Difficulties[slotIndex] = pPlayerConfig->Difficulty;
+			pAISlots->Countries[slotIndex]    = pPlayerConfig->Country;
+			pAISlots->Colors[slotIndex]       = pPlayerConfig->Color;
+			pAISlots->Allies[slotIndex] = -1;
+		}
 	}
 
 	{ // Added Human Players

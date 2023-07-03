@@ -98,7 +98,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
 }
 
-const char* PlayerSectionArray[8] = {
+constexpr char* PlayerSectionArray[8] = {
 	"Settings",
 	"Other1",
 	"Other2",
@@ -109,7 +109,7 @@ const char* PlayerSectionArray[8] = {
 	"Other7"
 };
 
-const char* MultiTagArray[8] = {
+constexpr char* MultiTagArray[8] = {
 	"Multi1",
 	"Multi2",
 	"Multi3",
@@ -120,7 +120,7 @@ const char* MultiTagArray[8] = {
 	"Multi8"
 };
 
-const char* AlliancesSectionArray[8] = {
+constexpr char* AlliancesSectionArray[8] = {
 	"Multi1_Alliances",
 	"Multi2_Alliances",
 	"Multi3_Alliances",
@@ -131,7 +131,7 @@ const char* AlliancesSectionArray[8] = {
 	"Multi8_Alliances"
 };
 
-const char* AlliancesTagArray[8] = {
+constexpr char* AlliancesTagArray[8] = {
 	"HouseAllyOne",
 	"HouseAllyTwo",
 	"HouseAllyThree",
@@ -159,20 +159,21 @@ void PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 		if (pINI->ReadString(pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
 			mbstowcs(this->Name, Main::readBuffer, sizeof(this->Name));
 
-		this->Country     = pINI->ReadInteger(pSection, "Side", this->Country);
 		this->Color       = pINI->ReadInteger(pSection, "Color", this->Color);
+		this->Country     = pINI->ReadInteger(pSection, "Side", this->Country);
 		this->IsSpectator = pINI->ReadBool(pSection, "IsSpectator", this->IsSpectator);
 		pINI->ReadString(pSection, "Ip", this->Ip, this->Ip, sizeof(this->Ip));
 		this->Port        = pINI->ReadInteger(pSection, "Port", this->Port);
 	}
 	else if (!IsHuman)
 	{
-		this->Difficulty  = pINI->ReadInteger("HouseHandicaps", pMultiTag, this->Difficulty);
-		this->Country     = pINI->ReadInteger("HouseCountries", pMultiTag, this->Country);
 		this->Color       = pINI->ReadInteger("HouseColors", pMultiTag, this->Color);
+		this->Country     = pINI->ReadInteger("HouseCountries", pMultiTag, this->Country);
+		this->Difficulty  = pINI->ReadInteger("HouseHandicaps", pMultiTag, this->Difficulty);
 	}
 
-	SpawnLocations = pINI->ReadInteger("SpawnLocations", pMultiTag, SpawnLocations);
+	this->SpawnLocations = pINI->ReadInteger("SpawnLocations", pMultiTag, SpawnLocations);
+
 	if (pINI->GetSection(pAlliancesSection))
 	{
 		for(int i = 0; i < 8; i++)

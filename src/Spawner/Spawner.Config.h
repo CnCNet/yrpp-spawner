@@ -27,25 +27,25 @@ class PlayerConfig
 public:
 	bool IsHuman;
 	wchar_t Name[20];
-	int Country;
 	int Color;
+	int Country;
+	int Difficulty;
 	int SpawnLocations;
 	int Alliances[8];
 	bool IsSpectator;
-	int Difficulty;
 	char Ip[0x20];
 	int Port;
 
 	PlayerConfig()
 		: IsHuman { false }
 		, Name { L"" }
-		, Country { -1 }
 		, Color { -1 }
+		, Country { -1 }
+		, Difficulty { -1 }
 		, SpawnLocations { -2 }
 		, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
 		, IsSpectator { false }
-		, Difficulty { -1 }
-		, Ip { "" }
+		, Ip { "0.0.0.0" }
 		, Port { -1 }
 	{ }
 

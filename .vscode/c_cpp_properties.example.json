@@ -26,7 +26,7 @@
         "${workspaceFolder}/src",
         "${workspaceFolder}/YRpp",
         "${ucrtPath}",
-        "${windowsSdk71APath}/Include",
+        "${windowsSdk71APath}/Include"
       ],
       "defines": [
         "SYR_VER=2",
