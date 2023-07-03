@@ -23,63 +23,35 @@
 #include <SessionClass.h>
 #include <Utilities/Macro.h>
 
-DEFINE_DYNAMIC_JUMP(CALL, MainGame_SelectGame1, 0x48CDD3, GET_OFFSET(Spawner::StartGame));
-DEFINE_DYNAMIC_JUMP(CALL, MainGame_SelectGame2, 0x48CFAA, GET_OFFSET(Spawner::StartGame));
-
-DEFINE_DYNAMIC_JUMP(CALL, AssignHouses_DoSpawnerStuff1, 0x68745E, GET_OFFSET(Spawner::AssignHouses));
-DEFINE_DYNAMIC_JUMP(CALL, AssignHouses_DoSpawnerStuff2, 0x68ACFF, GET_OFFSET(Spawner::AssignHouses));
-
-DEFINE_DYNAMIC_JUMP(CALL, UDPInterfaceClass_MessageHandler_SendTo, 0x7B3D75, GET_OFFSET(Nethack::SendTo));
-DEFINE_DYNAMIC_JUMP(CALL, UDPInterfaceClass_MessageHandler_RecvFrom, 0x7B3EEC, GET_OFFSET(Nethack::RecvFrom));
-
-// Skip Intro, EA_WWLOGO and Loadscreen
-DEFINE_DYNAMIC_JUMP(LJMP, InitIntro_Skip, 0x52CB50, 0x52CB6E);
-DEFINE_DYNAMIC_JUMP(LJMP, InitGame_SkipLogoAndLoadscreen, 0x52C5E0, 0x52C5F8);
-
 DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 {
 	if (Spawner::Enabled)
 	{
 		Spawner::Init();
 
-		MainGame_SelectGame1->Apply();
-		MainGame_SelectGame2->Apply();
+		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame);
+		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame);
 
-		AssignHouses_DoSpawnerStuff1->Apply();
-		AssignHouses_DoSpawnerStuff2->Apply();
+		{ // HousesStuff
+			Patch::Apply_CALL(0x68745E, Spawner::AssignHouses);
+			Patch::Apply_CALL(0x68ACFF, Spawner::AssignHouses);
 
-		UDPInterfaceClass_MessageHandler_SendTo->Apply();
-		UDPInterfaceClass_MessageHandler_RecvFrom->Apply();
+			Patch::Apply_LJMP(0x5D74A0, 0x5D7570); // MPGameModeClass_AllyTeams
+			Patch::Apply_LJMP(0x501721, 0x501736); // HouseClass_ComputerParanoid
+			Patch::Apply_LJMP(0x686A9E, 0x686AC6); // RemoveAIPlayers
+		}
 
-		InitIntro_Skip->Apply();
-		InitGame_SkipLogoAndLoadscreen->Apply();
+		Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);
+		Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom);
+
+		{ // Skip Intro, EA_WWLOGO and Loadscreen
+			Patch::Apply_LJMP(0x52CB50, 0x52CB6E); // InitIntro_Skip
+			Patch::Apply_LJMP(0x52C5E0, 0x52C5F8); // InitGame_SkipLogoAndLoadscreen
+		}
 	}
 
 	return 0;
 }
-
-#pragma region HousesStuff
-DEFINE_HOOK(0x5D74A0, MPGameModeClass_AllyTeams, 0x7)
-{
-	return Spawner::Enabled
-		? 0x5D7570
-		: 0;
-}
-
-DEFINE_HOOK(0x501721, HouseClass_ComputerParanoid, 0x5)
-{
-	return Spawner::Enabled
-		? 0x501736
-		: 0;
-}
-
-DEFINE_HOOK(0x686A9E, RemoveAIPlayers, 0x6)
-{
-	return Spawner::Enabled
-		? 0x686AC6
-		: 0;
-}
-#pragma endregion HousesStuff
 
 #pragma region Cooperative
 DEFINE_HOOK(0x553317, LoadProgressMgr_Draw_CooperativeDescription, 0x6)

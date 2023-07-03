@@ -48,10 +48,6 @@ void MainConfig::LoadFromINIFile()
 	}
 }
 
-DEFINE_DYNAMIC_PATCH(NoWindowFrame_PATCH, 0x777CC0,
-	0x68, 0x00, 0x00, 0x0A, 0x86 // push    0x860A0000; vs 0x02CA0000
-);
-
 void MainConfig::ApplyStaticOptions()
 {
 	if (this->SingleProcAffinity)
@@ -61,12 +57,15 @@ void MainConfig::ApplyStaticOptions()
 		SetProcessAffinityMask(process, processAffinityMask);
 	}
 
-	if(this->WindowedMode)
+	if (this->WindowedMode)
 	{
 		GameOptionsClass::WindowedMode = true;
 
-		if(this->NoWindowFrame)
-			NoWindowFrame_PATCH->Apply();
+		if (this->NoWindowFrame)
+			Patch::Apply_RAW(0x777CC0, // CreateMainWindow
+			{
+				0x68, 0x00, 0x00, 0x0A, 0x86 // push    0x860A0000; vs 0x02CA0000
+			});
 	}
 
 	// Set 3rd party ddraw.dll options
