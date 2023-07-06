@@ -165,6 +165,16 @@ DEFINE_HOOK(0x642BC3, ProgressScreenClass__GetPlayerColorSchemes, 0x5)
 		: NotAllowObserver;
 }
 
+// Enable observer sidebar bar in skirmish
+DEFINE_HOOK(0x6A557A, SidebarClass__InitIO, 0x5)
+{
+	enum { AllowObserver = 0x6A558D, NotAllowObserver = 0x6A5830 };
+
+	return !SessionClass::IsCampaign()
+		? AllowObserver
+		: NotAllowObserver;
+}
+
 #pragma endregion Curent player is Observer
 
 #pragma region Show house on Observer sidebar
@@ -173,7 +183,8 @@ bool inline ShowHouseOnObserverSidebar(HouseClass* pHouse)
 	if (pHouse->Type->MultiplayPassive)
 		return false;
 
-	if (!pHouse->IsHumanPlayer)
+	const bool bShowAI = (Spawner::Enabled && Spawner::GetConfig()->ObserverSidebar_ShowAI);
+	if (!bShowAI && !pHouse->IsHumanPlayer)
 		return false;
 
 	if (HouseIsObserver(pHouse))
