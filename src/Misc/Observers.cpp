@@ -166,3 +166,40 @@ DEFINE_HOOK(0x642BC3, ProgressScreenClass__GetPlayerColorSchemes, 0x5)
 }
 
 #pragma endregion Curent player is Observer
+
+#pragma region Show house on Observer sidebar
+bool inline ShowHouseOnObserverSidebar(HouseClass* pHouse)
+{
+	if (pHouse->Type->MultiplayPassive)
+		return false;
+
+	if (!pHouse->IsHumanPlayer)
+		return false;
+
+	if (HouseIsObserver(pHouse))
+		return false;
+
+	return true;
+}
+
+DEFINE_HOOK(0x6A55AB, SidebarClass__InitIO_ShowHouseOnObserverSidebar1, 0xA)
+{
+	enum { Draw = 0x6A55C8, DontDraw = 0x6A55CF };
+	GET(HouseClass*, pHouse, EAX);
+
+	return ShowHouseOnObserverSidebar(pHouse)
+		? Draw
+		: DontDraw;
+}
+
+DEFINE_HOOK(0x6A57E2, SidebarClass__InitIO_ShowHouseOnObserverSidebar2, 0xA)
+{
+	enum { Draw = 0x6A57FF, DontDraw = 0x6A580E };
+	GET(HouseClass*, pHouse, EAX);
+
+	return ShowHouseOnObserverSidebar(pHouse)
+		? Draw
+		: DontDraw;
+}
+
+#pragma endregion Show house on Observer sidebar
