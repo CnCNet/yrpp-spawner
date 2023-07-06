@@ -41,39 +41,24 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 			Patch::Apply_LJMP(0x686A9E, 0x686AC6); // RemoveAIPlayers
 		}
 
-		Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);
-		Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom);
+		{ // Nethack
+			Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);
+			Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom);
+		}
 
 		{ // Skip Intro, EA_WWLOGO and Loadscreen
 			Patch::Apply_LJMP(0x52CB50, 0x52CB6E); // InitIntro_Skip
 			Patch::Apply_LJMP(0x52C5E0, 0x52C5F8); // InitGame_SkipLogoAndLoadscreen
 		}
+
+		{ // Cooperative
+			Patch::Apply_LJMP(0x553321, 0x5533C5); // LoadProgressMgr_Draw_CooperativeDescription
+			Patch::Apply_LJMP(0x55D0DF, 0x55D0E8); // AuxLoop_Cooperative_EndgameCrashFix
+		}
 	}
 
 	return 0;
 }
-
-#pragma region Cooperative
-DEFINE_HOOK(0x553317, LoadProgressMgr_Draw_CooperativeDescription, 0x6)
-{
-	if (Spawner::Enabled)
-		R->ECX(0);
-
-	return 0;
-}
-
-DEFINE_HOOK(0x55D0CB, AuxLoop_Cooperative_EndgameCrashFix, 0x6)
-{
-	if (!Spawner::Enabled)
-		return 0;
-
-	auto pGameMod = R->ECX<void*>();
-	if (pGameMod && SessionClass::IsMultiplayer())
-		return 0x55D0E8; // original = 0x55D0DF
-
-	return 0x55D0ED;
-}
-#pragma endregion Cooperative
 
 DEFINE_HOOK(0x6843C6, Scenario_LoadWait_SetConnTimeout, 0x5)
 {

@@ -21,8 +21,14 @@
 #include <Helpers/Macro.h>
 #include <HouseClass.h>
 
-// TODO: Don't show an observer in another observer's panel
+#pragma region HouseClass is Observer
 
+bool inline HouseIsObserver(HouseClass* pHouse)
+{
+	return (pHouse->GetSpawnPosition() == -1);
+}
+
+// Skip set spawn point for all spectators
 DEFINE_HOOK(0x5D69CA, MultiplayerGameMode__5D6890_SetObserverSpawn, 0x7)
 {
 	return Spawner::Enabled
@@ -34,7 +40,7 @@ DEFINE_HOOK(0x5D69CA, MultiplayerGameMode__5D6890_SetObserverSpawn, 0x7)
 DEFINE_HOOK(0x5C98E5, MultiplayerScore__5C98A0_SkipObserverScore, 0x6)
 {
 	GET(HouseClass*, pHouse, EDI);
-	return pHouse->GetSpawnPosition() == -1
+	return HouseIsObserver(pHouse)
 		? 0x5C9A7E
 		: 0;
 }
@@ -43,7 +49,7 @@ DEFINE_HOOK(0x5C98E5, MultiplayerScore__5C98A0_SkipObserverScore, 0x6)
 DEFINE_HOOK(0x65838B, RadarClass__658330_SetObserverColorScheme, 0x5)
 {
 	GET(HouseClass*, pHouse, EBX);
-	if (pHouse->GetSpawnPosition() == -1)
+	if (HouseIsObserver(pHouse))
 	{
 		R->EAX(pHouse);
 		return 0x65838B + 0x5;
@@ -56,16 +62,16 @@ DEFINE_HOOK(0x65838B, RadarClass__658330_SetObserverColorScheme, 0x5)
 DEFINE_HOOK(0x65846D, RadarClass__658330_SetObserverFlag, 0x6)
 {
 	GET(HouseClass*, pHouse, EBX);
-	return pHouse->GetSpawnPosition() == -1
+	return HouseIsObserver(pHouse)
 		? 0x658480
 		: 0;
 }
 
-// Slip defeated message to all spectators
+// Skip defeated message to all spectators
 DEFINE_HOOK(0x4FC343, HouseClass__MPlayer_Defeated, 0x5)
 {
 	GET(HouseClass*, pHouse, ESI);
-	if (pHouse->GetSpawnPosition() == -1)
+	if (HouseIsObserver(pHouse))
 	{
 		R->EAX(pHouse);
 		return 0x4FC343 + 0x5;
@@ -74,33 +80,60 @@ DEFINE_HOOK(0x4FC343, HouseClass__MPlayer_Defeated, 0x5)
 	return 0;
 }
 
-// For Curent player if all human players are Observers
-// ===============================
+#pragma endregion HouseClass is Observer
+
+#pragma region All human players is Observer
 
 // Do not end skirmish match if player is Observers
-// TODO: Do not end the match if all human players are Observers
+// TODO: Do not end the match if all human players is Observer
 DEFINE_HOOK_AGAIN(0x4FCBD0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
 DEFINE_HOOK(0x4FC9E0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
 {
 	// GET(HouseClass*, pHouse, ECX);
-	return (SessionClass::IsSkirmish() && Game::ObserverMode)
+	return true || (SessionClass::IsSkirmish() && Game::ObserverMode)
 		? 0x4FCDBC
 		: 0;
 }
 
 // Allow skirmish observer to control gamespeed
-// TODO: Allow control speed in skirmish if all human players are Observers
+// TODO: Allow control speed in skirmish if all human players is Observer
 DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog, 0x5)
 {
 	enum { AllowControlSpeed = 0x4E211A, ForbidControlSpeed = 0x4E20C3 };
 
-	return true || (SessionClass::IsSkirmish() && Game::ObserverMode)
+	return (SessionClass::IsSkirmish() && Game::ObserverMode)
 		? AllowControlSpeed
 		: 0;
 }
 
-// For Curent player
-// ===============================
+#pragma endregion All human players is Observer
+
+#pragma region Curent player is Observer
+
+DEFINE_HOOK(0x5533E0, LoadProgressMgr__Draw_SetBackground, 0x5)
+{
+	return Game::ObserverMode
+		? 0x5533EF
+		: 0;
+}
+
+DEFINE_HOOK(0x5539E4, LoadProgressMgr__Draw_LoadBriefing, 0x5)
+{
+	return Game::ObserverMode
+		? 0x5539F3
+		: 0;
+}
+
+DEFINE_HOOK(0x5536A0, LoadProgressMgr__Draw_CountryName, 0x5)
+{
+	return Game::ObserverMode
+		? 0x5536AF
+		: 0;
+}
+
+#pragma endregion Curent player is Observer
+
+#pragma region Observer in Skirmish
 
 // Use correct flag icon for observer on loading screen in skirmish
 DEFINE_HOOK(0x6439F4, ProgressScreenClass__643720, 0x6)
@@ -132,23 +165,4 @@ DEFINE_HOOK(0x642BC3, ProgressScreenClass__GetPlayerColorSchemes, 0x5)
 		: NotAllowObserver;
 }
 
-DEFINE_HOOK(0x5533E0, LoadProgressMgr__Draw_SetBackground, 0x5)
-{
-	return Game::ObserverMode
-		? 0x5533EF
-		: 0;
-}
-
-DEFINE_HOOK(0x5539E4, LoadProgressMgr__Draw_LoadBriefing, 0x5)
-{
-	return Game::ObserverMode
-		? 0x5539F3
-		: 0;
-}
-
-DEFINE_HOOK(0x5536A0, LoadProgressMgr__Draw_CountryName, 0x5)
-{
-	return Game::ObserverMode
-		? 0x5536AF
-		: 0;
-}
+#pragma endregion Curent player is Observer

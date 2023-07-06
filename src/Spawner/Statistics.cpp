@@ -59,18 +59,24 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 	return 0;
 }
 
-// AI has stats
-DEFINE_HOOK(0x6C73F8, SendStatisticsPacket_AIHasStats, 0x6)
+// Send AI player
+// Dont send observer
+DEFINE_HOOK(0x6C73F8, SendStatisticsPacket_HouseFilter, 0x6)
 {
 	enum { Send = 0x6C7406, DontSend = 0x6C7414 };
 
 	if (IsStatisticsEnabled())
 	{
 		GET(HouseClass*, pHouse, EAX);
-		return ((pHouse->Type && pHouse->Type->MultiplayPassive) || pHouse->GetSpawnPosition() == -1)
+
+		const bool isMultiplayPassive = (pHouse && pHouse->Type && pHouse->Type->MultiplayPassive);
+		const bool isObserver = (pHouse && pHouse->GetSpawnPosition() == -1);
+
+		return (isMultiplayPassive || isObserver)
 			? DontSend
 			: Send;
 	}
+
 	return 0;
 }
 
@@ -85,7 +91,7 @@ DEFINE_HOOK(0x6C7053, SendStatisticsPacket_SaveGameStockKeepingUnit, 0x6)
 
 // Add Field HASH
 // And use UIMapName instead ScenarioName for SCEN Field
-DEFINE_HOOK(0x6C735E, SendStatisticsPacket_AddField_HASH, 0xA)
+DEFINE_HOOK(0x6C735E, SendStatisticsPacket_AddField_HASH, 0x5)
 {
 	if (IsStatisticsEnabled())
 	{
@@ -95,10 +101,7 @@ DEFINE_HOOK(0x6C735E, SendStatisticsPacket_AddField_HASH, 0xA)
 		return 0x6C737D;
 	}
 
-	// vanilla code
-	auto pField = GameCreate<FieldClass>();
-	R->EAX(pField);
-	return 0x6C735A;
+	return 0;
 }
 
 // Add Field MYID
