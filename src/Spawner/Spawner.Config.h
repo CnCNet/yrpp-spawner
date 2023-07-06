@@ -137,7 +137,7 @@ public:
 		// Engine Options
 		: Ra2Mode { false } // TODO
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
-		, WriteStatistics { true }
+		, WriteStatistics { false }
 
 		// Game Mode Options
 		, MPModeIndex { 1 }
