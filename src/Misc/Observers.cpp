@@ -90,7 +90,7 @@ DEFINE_HOOK_AGAIN(0x4FCBD0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
 DEFINE_HOOK(0x4FC9E0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
 {
 	// GET(HouseClass*, pHouse, ECX);
-	return true || (SessionClass::IsSkirmish() && Game::ObserverMode)
+	return (SessionClass::IsSkirmish() && Game::ObserverMode)
 		? 0x4FCDBC
 		: 0;
 }
