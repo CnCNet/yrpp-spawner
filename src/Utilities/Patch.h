@@ -30,9 +30,9 @@
 #pragma warning(disable : 4324)
 struct __declspec(novtable) Patch
 {
-	const DWORD offset;
-	const DWORD size;
-	const byte* pData;
+	DWORD offset;
+	DWORD size;
+	byte* pData;
 
 	void Apply();
 
