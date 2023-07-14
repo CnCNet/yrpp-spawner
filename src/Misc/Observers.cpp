@@ -23,6 +23,19 @@
 
 #pragma region HouseClass is Observer
 
+// Skip match-end logic if MPlayerDefeated called for observer
+DEFINE_HOOK(0x4FC262, HouseClass__MPlayerDefeated_SkipObserver, 0x6)
+{
+	if (Spawner::Enabled && !SessionClass::IsCampaign())
+	{
+		GET(HouseClass*, pHouse, ESI);
+		if (pHouse->IsInitiallyObserver())
+			return 0x4FC690;
+	}
+
+	return 0;
+}
+
 // Skip set spawn point for all observers
 DEFINE_HOOK(0x5D69BF, MPGameMode__AssignStartingPositions_SetObserverSpawn, 0x5)
 {
@@ -62,31 +75,7 @@ DEFINE_HOOK(0x65846D, RadarClass__658330_SetObserverFlag, 0x6)
 		: 0;
 }
 
-// Skip defeated message to all observers
-DEFINE_HOOK(0x4FC343, HouseClass__MPlayer_Defeated, 0x5)
-{
-	GET(HouseClass*, pHouse, ESI);
-	if (pHouse->IsInitiallyObserver())
-	{
-		R->EAX(pHouse);
-		return 0x4FC343 + 0x5;
-	}
-
-	return 0;
-}
-
 #pragma endregion HouseClass is Observer
-
-// Do not end skirmish match if player is Observers
-// TODO: Do not end the match if all human players is Observer
-DEFINE_HOOK_AGAIN(0x4FCBD0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
-DEFINE_HOOK(0x4FC9E0, HouseClass__FlagToWinLose_ObserverPatch, 0x6)
-{
-	// GET(HouseClass*, pHouse, ECX);
-	return (SessionClass::IsSkirmish() && Game::ObserverMode)
-		? 0x4FCDBC
-		: 0;
-}
 
 // Allow skirmish observer to control gamespeed
 // TODO: Allow control speed in skirmish if all human players is Observer
