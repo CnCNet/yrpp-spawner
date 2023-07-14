@@ -26,6 +26,7 @@
     <ClCompile Include="src\Misc\Bugfixes.Blowfish.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.CommonCrashes.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.ExceptionCatch.cpp" />
+    <ClCompile Include="src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
     <ClCompile Include="src\Misc\NoCD.cpp" />
     <ClCompile Include="src\Misc\Observers.cpp" />
     <ClCompile Include="src\Misc\QuickExit.cpp" />
