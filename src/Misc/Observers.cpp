@@ -24,10 +24,10 @@
 #pragma region HouseClass is Observer
 
 // Skip set spawn point for all observers
-DEFINE_HOOK(0x5D69CA, MultiplayerGameMode__5D6890_SetObserverSpawn, 0x7)
+DEFINE_HOOK(0x5D69BF, MPGameMode__AssignStartingPositions_SetObserverSpawn, 0x5)
 {
 	return Spawner::Enabled
-		? 0x5D69CA + 0x7
+		? 0x5D69D1
 		: 0;
 }
 
