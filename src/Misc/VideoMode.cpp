@@ -83,11 +83,7 @@ DEFINE_JUMP(LJMP, 0x56017A, 0x560183) // OptionsDlg_WndProc_RemoveResLimit
 DEFINE_JUMP(LJMP, 0x5601E3, 0x5601FC) // OptionsDlg_WndProc_RemoveHiResCheck
 
 // Fixes the layout for some screen resolutions, for example 1152x648
-DEFINE_HOOK(0x72ECA4, UIStuff_72EC70, 0x6)
-{
-	__asm {cmp esi, 600}; // original = 768
-	return 0x72ECAA;
-}
+DEFINE_PATCH_TYPED(WORD, 0x72ECA6, 600 /*original = 768*/);
 
 // Cap the sidebar height to 1376 pixels
 DEFINE_HOOK(0x6A518E, SidebarClass_InitGUI, 0x5)

@@ -39,7 +39,17 @@ struct __declspec(novtable) Patch
 	// static
 	static void ApplyStatic();
 
-	static void Apply_RAW(DWORD offset, std::initializer_list<byte> data);
+	template <typename T>
+	static void Apply_TYPED(DWORD offset, std::initializer_list<T> data)
+	{
+		Patch patch = { offset, data.size(), const_cast<byte*>(reinterpret_cast<const byte*>(data.begin())) };
+		patch.Apply();
+	};
+
+	static inline void Apply_RAW(DWORD offset, std::initializer_list<byte> data)
+	{
+		Apply_TYPED<byte>(offset, data);
+	};
 
 	static void Apply_LJMP(DWORD offset, DWORD pointer);
 	static inline void Apply_LJMP(DWORD offset, void* pointer)
@@ -59,10 +69,14 @@ struct __declspec(novtable) Patch
 		Apply_CALL6(offset, reinterpret_cast<DWORD>(pointer));
 	};
 
-	static void Apply_VTABLE(DWORD offset, DWORD pointer);
-	static inline void Apply_VTABLE(DWORD offset, void* pointer)
+	static inline void Apply_OFFSET(DWORD offset, DWORD pointer)
 	{
-		Apply_VTABLE(offset, reinterpret_cast<DWORD>(pointer));
+		Patch::Apply_TYPED<DWORD>(offset, { pointer });
+	};
+
+	static inline void Apply_OFFSET(DWORD offset, void* pointer)
+	{
+		Apply_OFFSET(offset, reinterpret_cast<DWORD>(pointer));
 	};
 };
 #pragma warning(pop)

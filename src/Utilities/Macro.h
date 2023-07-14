@@ -90,13 +90,13 @@ struct _CALL6
 	{ };
 };
 
-typedef JumpType VTABLE;
-struct _VTABLE
+typedef JumpType OFFSET;
+struct _OFFSET
 {
 	DWORD pointer;
 
 	constexpr
-		_VTABLE(DWORD offset, DWORD pointer) :
+		_OFFSET(DWORD offset, DWORD pointer) :
 		pointer(pointer)
 	{ };
 };
@@ -116,12 +116,15 @@ struct _VTABLE
 		Patch patch = {offset, size, (byte*)data};                \
 	}
 
-#define DEFINE_PATCH(offset, ...)                                 \
+#define DEFINE_PATCH_TYPED(type, offset, ...)                     \
 	namespace STATIC_PATCH##offset                                \
 	{                                                             \
-		const byte data[] = {__VA_ARGS__};                        \
+		const type data[] = {__VA_ARGS__};                        \
 	}                                                             \
 	_ALLOCATE_STATIC_PATCH(offset, sizeof(data), data);
+
+#define DEFINE_PATCH(offset, ...)                                 \
+	DEFINE_PATCH_TYPED(byte, offset, __VA_ARGS__);
 
 #define DEFINE_JUMP(jumpType, offset, pointer)                    \
 	namespace STATIC_PATCH##offset                                \
@@ -139,12 +142,15 @@ struct _VTABLE
 	}                                                             \
 	Patch* const name = &DYNAMIC_PATCH_##name::patch;
 
-#define DEFINE_DYNAMIC_PATCH(name, offset, ...)                   \
+#define DEFINE_DYNAMIC_PATCH_TYPED(type, name, offset, ...)       \
 	namespace DYNAMIC_PATCH_##name                                \
 	{                                                             \
-		const byte data[] = {__VA_ARGS__};                        \
+		const byte type[] = {__VA_ARGS__};                        \
 	}                                                             \
 	_ALLOCATE_DYNAMIC_PATCH(name, offset, sizeof(data), data);
+
+#define DEFINE_DYNAMIC_PATCH(type, name, offset, ...)             \
+	DEFINE_DYNAMIC_PATCH_TYPED(byte, name, offset, __VA_ARGS__
 
 #define DEFINE_DYNAMIC_JUMP(jumpType, name, offset, pointer)      \
 	namespace DYNAMIC_PATCH_##name                                \

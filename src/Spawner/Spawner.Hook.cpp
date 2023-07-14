@@ -29,12 +29,12 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 	{
 		Spawner::Init();
 
-		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame);
-		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame);
+		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame); // Main_Game
+		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame); // Main_Game
 
 		{ // HousesStuff
-			Patch::Apply_CALL(0x68745E, Spawner::AssignHouses);
-			Patch::Apply_CALL(0x68ACFF, Spawner::AssignHouses);
+			Patch::Apply_CALL(0x68745E, Spawner::AssignHouses); // Read_Scenario_INI
+			Patch::Apply_CALL(0x68ACFF, Spawner::AssignHouses); // ScenarioClass::Read_INI
 
 			Patch::Apply_LJMP(0x5D74A0, 0x5D7570); // MPGameModeClass_AllyTeams
 			Patch::Apply_LJMP(0x501721, 0x501736); // HouseClass_ComputerParanoid
@@ -42,8 +42,8 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 		}
 
 		{ // Nethack
-			Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);
-			Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom);
+			Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);   // UDPInterfaceClass::Message_Handler
+			Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom); // UDPInterfaceClass::Message_Handler
 		}
 
 		{ // Skip Intro, EA_WWLOGO and Loadscreen
@@ -55,18 +55,13 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 			Patch::Apply_LJMP(0x553321, 0x5533C5); // LoadProgressMgr_Draw_CooperativeDescription
 			Patch::Apply_LJMP(0x55D0DF, 0x55D0E8); // AuxLoop_Cooperative_EndgameCrashFix
 		}
+
+		// Set ConnTimeout
+		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); //  Scenario_Load_Wait
+
 	}
 
 	return 0;
-}
-
-DEFINE_HOOK(0x6843C6, Scenario_LoadWait_SetConnTimeout, 0x5)
-{
-	if (!Spawner::Enabled)
-		return 0;
-
-	R->ECX(Spawner::GetConfig()->ConnTimeout);
-	return 0x6843CB;
 }
 
 DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)
