@@ -23,12 +23,7 @@
 
 #pragma region HouseClass is Observer
 
-bool inline HouseIsObserver(HouseClass* pHouse)
-{
-	return (pHouse->GetSpawnPosition() == -1);
-}
-
-// Skip set spawn point for all spectators
+// Skip set spawn point for all observers
 DEFINE_HOOK(0x5D69CA, MultiplayerGameMode__5D6890_SetObserverSpawn, 0x7)
 {
 	return Spawner::Enabled
@@ -36,20 +31,20 @@ DEFINE_HOOK(0x5D69CA, MultiplayerGameMode__5D6890_SetObserverSpawn, 0x7)
 		: 0;
 }
 
-// Skip score field for all spectators
+// Skip score field for all observers
 DEFINE_HOOK(0x5C98E5, MultiplayerScore__5C98A0_SkipObserverScore, 0x6)
 {
 	GET(HouseClass*, pHouse, EDI);
-	return HouseIsObserver(pHouse)
+	return pHouse->IsInitiallyObserver()
 		? 0x5C9A7E
 		: 0;
 }
 
-// Use correct colors in diplomacy menu for all spectators
+// Use correct colors in diplomacy menu for all observers
 DEFINE_HOOK(0x65838B, RadarClass__658330_SetObserverColorScheme, 0x5)
 {
 	GET(HouseClass*, pHouse, EBX);
-	if (HouseIsObserver(pHouse))
+	if (pHouse->IsInitiallyObserver())
 	{
 		R->EAX(pHouse);
 		return 0x65838B + 0x5;
@@ -58,20 +53,20 @@ DEFINE_HOOK(0x65838B, RadarClass__658330_SetObserverColorScheme, 0x5)
 	return 0;
 }
 
-// Use correct flag icon in diplomacy menu for all spectators
+// Use correct flag icon in diplomacy menu for all observers
 DEFINE_HOOK(0x65846D, RadarClass__658330_SetObserverFlag, 0x6)
 {
 	GET(HouseClass*, pHouse, EBX);
-	return HouseIsObserver(pHouse)
+	return pHouse->IsInitiallyObserver()
 		? 0x658480
 		: 0;
 }
 
-// Skip defeated message to all spectators
+// Skip defeated message to all observers
 DEFINE_HOOK(0x4FC343, HouseClass__MPlayer_Defeated, 0x5)
 {
 	GET(HouseClass*, pHouse, ESI);
-	if (HouseIsObserver(pHouse))
+	if (pHouse->IsInitiallyObserver())
 	{
 		R->EAX(pHouse);
 		return 0x4FC343 + 0x5;
@@ -81,8 +76,6 @@ DEFINE_HOOK(0x4FC343, HouseClass__MPlayer_Defeated, 0x5)
 }
 
 #pragma endregion HouseClass is Observer
-
-#pragma region All human players is Observer
 
 // Do not end skirmish match if player is Observers
 // TODO: Do not end the match if all human players is Observer
@@ -105,8 +98,6 @@ DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog, 0x5)
 		? AllowControlSpeed
 		: 0;
 }
-
-#pragma endregion All human players is Observer
 
 #pragma region Curent player is Observer
 
@@ -187,7 +178,7 @@ bool inline ShowHouseOnObserverSidebar(HouseClass* pHouse)
 	if (!bShowAI && !pHouse->IsHumanPlayer)
 		return false;
 
-	if (HouseIsObserver(pHouse))
+	if (pHouse->IsInitiallyObserver())
 		return false;
 
 	return true;
