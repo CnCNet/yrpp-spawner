@@ -90,10 +90,21 @@ void Spawner::AssignHouses()
 				pHouse->Allies.Add(alliesIndex);
 		}
 
-		if (pHouse->IsHumanPlayer && (pHousesConfig->IsObserver || pHousesConfig->SpawnLocations == 90))
+		if (!pHouse->IsHumanPlayer || !(pHousesConfig->IsObserver || pHousesConfig->SpawnLocations == 90))
 		{
-			if (pHouse == HouseClass::CurrentPlayer)
+			int nSpawnLocations = pHousesConfig->SpawnLocations;
+			if (nSpawnLocations != -2)
+				nSpawnLocations = std::clamp(nSpawnLocations, 0, 7);
+
+			pHouse->StartingPoint = nSpawnLocations;
+		}
+		else // if IsObserver
+		{
+			if (HouseClass::CurrentPlayer == pHouse)
+			{
 				HouseClass::Observer = pHouse;
+				TabClass::Instance->ThumbActive = false;
+			}
 
 			{ // Remove SpawnLocations for Observer
 				const auto pHouseIndices = ScenarioClass::Instance->HouseIndices;
@@ -104,14 +115,6 @@ void Spawner::AssignHouses()
 				}
 				pHouse->StartingPoint = -1;
 			}
-		}
-		else
-		{
-			int nSpawnLocations = pHousesConfig->SpawnLocations;
-			if (nSpawnLocations != -2)
-				nSpawnLocations = std::clamp(nSpawnLocations, 0, 7);
-
-			pHouse->StartingPoint = nSpawnLocations;
 		}
 	}
 }
