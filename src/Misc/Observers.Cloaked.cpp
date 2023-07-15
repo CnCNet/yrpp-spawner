@@ -104,6 +104,7 @@ DEFINE_HOOK(0x6F4F10, TechnoClass_6F4EB0_Cloak, 0x5)
 	if (pTechnoOwner && pTechnoOwner->IsAlliedWith(HouseClass::CurrentPlayer))
 		return DontUnselect;
 
+	R->EAX<HouseClass*>(HouseClass::CurrentPlayer);
 	return CheckSensedByHouses;
 }
 
