@@ -161,7 +161,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 		// pGameModeOptions->CaptureTheFlag
 		pGameModeOptions->FogOfWar          = Spawner::Config->FogOfWar;
 		pGameModeOptions->MCVRedeploy       = Spawner::Config->MCVRedeploy;
-		// pGameModeOptions->MapDescription[0] = 0;
+		wcscpy(pGameModeOptions->MapDescription, Spawner::Config->UIMapName);
 
 		Game::Seed = Spawner::Config->Seed;
 		Game::TechLevel = Spawner::Config->TechLevel;

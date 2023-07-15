@@ -50,7 +50,9 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		HarvesterTruce = pINI->ReadBool(pSettingsSection, "HarvesterTruce", HarvesterTruce);
 		FogOfWar       = pINI->ReadBool(pSettingsSection, "FogOfWar", FogOfWar);
 		MCVRedeploy    = pINI->ReadBool(pSettingsSection, "MCVRedeploy", MCVRedeploy);
-		/* UIGameMode */ pINI->ReadString(pSettingsSection, "UIGameMode", UIGameMode, UIGameMode, sizeof(UIGameMode));
+
+		if (pINI->ReadString_WithoutAresHook(pSettingsSection, "UIGameMode", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
+			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIGameMode, _countof(UIGameMode));
 	}
 
 	// SaveGame Options
@@ -65,7 +67,9 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		WOLGameID        = pINI->ReadInteger(pSettingsSection, "GameID", WOLGameID);
 		/* ScenarioName */ pINI->ReadString(pSettingsSection, "Scenario", ScenarioName, ScenarioName, sizeof(ScenarioName));
 		/* MapHash      */ pINI->ReadString(pSettingsSection, "MapHash", MapHash, MapHash, sizeof(MapHash));
-		/* UIMapName    */ pINI->ReadString(pSettingsSection, "UIMapName", UIMapName, UIMapName, sizeof(UIMapName));
+
+		if (pINI->ReadString_WithoutAresHook(pSettingsSection, "UIMapName", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
+			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIMapName, _countof(UIMapName));
 	}
 
 	{ // Network Options

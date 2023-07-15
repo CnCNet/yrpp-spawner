@@ -93,7 +93,7 @@ public:
 	bool HarvesterTruce;
 	bool FogOfWar;
 	bool MCVRedeploy;
-	char UIGameMode[255];
+	wchar_t UIGameMode[60];
 
 	// SaveGame Options
 	bool LoadSaveGame;
@@ -107,7 +107,7 @@ public:
 	unsigned int WOLGameID;
 	char ScenarioName[60];
 	char MapHash[255];
-	char UIMapName[255];
+	wchar_t UIMapName[45];
 
 	// Network Options
 	int Protocol;
@@ -158,7 +158,7 @@ public:
 		, HarvesterTruce { false }
 		, FogOfWar { false }
 		, MCVRedeploy { true }
-		, UIGameMode { "" }
+		, UIGameMode { L"" }
 
 		// SaveGame
 		, LoadSaveGame { false }
@@ -172,7 +172,7 @@ public:
 		, WOLGameID { 0xDEADBEEF }
 		, ScenarioName { "" }
 		, MapHash { "" }
-		, UIMapName { "" }
+		, UIMapName { L"" }
 
 		// Network Options
 		, Protocol { 2 }

@@ -96,7 +96,7 @@ DEFINE_HOOK(0x6C735E, SendStatisticsPacket_AddField_HASH, 0x5)
 	if (IsStatisticsEnabled())
 	{
 		LEA_STACK(PacketClass*, pPacket, STACK_OFFSET(0x83A4, -0x8394));
-		pPacket->AddField<char*>("SCEN", Spawner::GetConfig()->UIMapName);
+		pPacket->AddField<wchar_t*>("SCEN", Spawner::GetConfig()->UIMapName, sizeof(Spawner::GetConfig()->UIMapName));
 		pPacket->AddField<char*>("HASH", Spawner::GetConfig()->MapHash);
 		return 0x6C737D;
 	}

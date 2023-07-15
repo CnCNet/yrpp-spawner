@@ -63,6 +63,9 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 			Patch::Apply_RAW(0x48D930, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
 			Patch::Apply_RAW(0x55F0AD, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
 		}
+
+		// Show GameMode in DiplomacyDialog in Skirmish
+		Patch::Apply_LJMP(0x658117, 0x658126);  // RadarClass_DiplomacyDialog
 	}
 
 	return 0;
@@ -79,25 +82,21 @@ DEFINE_HOOK(0x55EDD2, MessageInput_UnicodePlayerName, 0x5)
 	return 0x55EE00;
 }
 
-DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)
+// Display UIGameMode if is set
+// Otherwise use mode name from MPModesMD.ini
+DEFINE_HOOK(0x65813E, RadarClass__DiplomacyDialog_UIGameMode, 0x9)
 {
-	if (!Spawner::Enabled)
-		return 0;
+	if (Spawner::Enabled && Spawner::GetConfig()->UIGameMode[0])
+		R->EAX(Spawner::GetConfig()->UIGameMode);
 
-	GET(HWND, hDlg, ESI);
+	return 0;
+}
 
-	if (!SessionClass::IsCampaign())
-	{
-		HWND hItem = GetDlgItem(hDlg, 1062);
-		wchar_t modeName[256];
-		wsprintfW(modeName, L"%hs", Spawner::GetConfig()->UIGameMode);
-		SendMessageA(hItem, WW_STATIC_SETTEXT, 0, reinterpret_cast<LPARAM>(modeName));
-	}
+// Clear UIGameMode on game load
+DEFINE_HOOK(0x689669, ScenarioClass_Load_Suffix, 0x6)
+{
+	if (Spawner::Enabled)
+		Spawner::GetConfig()->UIGameMode[0] = 0;
 
-	HWND hItem = GetDlgItem(hDlg, 1819);
-	wchar_t scenarioName[256];
-	wsprintfW(scenarioName, L"%hs", Spawner::GetConfig()->UIMapName);
-	SendMessageA(hItem, WW_STATIC_SETTEXT, 0, reinterpret_cast<LPARAM>(scenarioName));
-
-	return 0x658168;
+	return 0;
 }
