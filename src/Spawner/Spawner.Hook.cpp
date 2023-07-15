@@ -59,9 +59,24 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 		// Set ConnTimeout
 		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); //  Scenario_Load_Wait
 
+		{ // Add support unicode player name in ingame chat
+			Patch::Apply_RAW(0x48D930, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
+			Patch::Apply_RAW(0x55F0AD, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
+		}
 	}
 
 	return 0;
+}
+
+// Add support unicode player name in ingame chat
+DEFINE_HOOK(0x55EDD2, MessageInput_UnicodePlayerName, 0x5)
+{
+	if (!Spawner::Enabled)
+		return 0;
+
+	GET(wchar_t*, UIName, ECX);
+	wcscpy(reinterpret_cast<wchar_t*>(0xA8D63C), UIName);
+	return 0x55EE00;
 }
 
 DEFINE_HOOK(0x658117, DiplomacyDialog_ModeScenarioDescriptions, 0x5)

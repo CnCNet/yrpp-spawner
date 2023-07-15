@@ -159,8 +159,8 @@ void SpawnerConfig::PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 		this->IsHuman = true;
 		this->Difficulty = -1;
 
-		if (pINI->ReadString(pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
-			mbstowcs(this->Name, Main::readBuffer, sizeof(this->Name));
+		if (pINI->ReadString_WithoutAresHook(pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
+			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, -1, this->Name, _countof(this->Name));
 
 		this->Color      = pINI->ReadInteger(pSection, "Color", this->Color);
 		this->Country    = pINI->ReadInteger(pSection, "Side", this->Country);
