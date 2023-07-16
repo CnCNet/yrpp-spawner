@@ -23,9 +23,11 @@
 
 #include <CCINIClass.h>
 #include <GameOptionsClass.h>
+#include <GameStrings.h>
 #include <GScreenClass.h>
 #include <HouseClass.h>
 #include <IPXManagerClass.h>
+#include <LoadOptionsClass.h>
 #include <MessageBox.h>
 #include <MouseClass.h>
 #include <MPGameModeClass.h>
@@ -123,7 +125,10 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 {
 	if (scenarioName[0] == 0)
 	{
-		MessageBox::Show(StringTable::LoadString("TXT_UNABLE_READ_SCENARIO"), StringTable::LoadString("TXT_OK"), 0);
+		MessageBox::Show(
+			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
+			StringTable::LoadString(GameStrings::TXT_OK),
+			0);
 		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", scenarioName);
 		return false;
 	}
@@ -207,8 +212,7 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 					pNode->Country = -3;
 
 				pNode->SpectatorFlag = 0xFFFFFFFF;
-				if (playerIndex == 0)
-					Game::ObserverMode = true;
+				Game::ObserverMode = (playerIndex == 0);
 			}
 
 			if (playerIndex > 0)
@@ -262,15 +266,12 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 
 bool Spawner::LoadSavedGame(const char* saveGameName)
 {
-	auto& InScenario1 = *reinterpret_cast<bool*>(0xA8E378);
-	auto& InScenario2 = *reinterpret_cast<bool*>(0xA8ED5C);
-
-	InScenario1 = false;
-	InScenario2 = false;
-
-	if (!ScenarioClass::LoadGame(saveGameName))
+	if (!saveGameName[0] || !LoadOptionsClass::LoadMission(saveGameName))
 	{
-		MessageBox::Show(StringTable::LoadString("TXT_ERROR_LOADING_GAME"), StringTable::LoadString("TXT_OK"), 0);
+		MessageBox::Show(
+			StringTable::LoadString(GameStrings::TXT_ERROR_LOADING_GAME),
+			StringTable::LoadString(GameStrings::TXT_OK),
+			0);
 		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
 		return false;
 	}
