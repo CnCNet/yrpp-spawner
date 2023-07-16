@@ -6,6 +6,9 @@
 #define _STR(x) _STR_(x)
 #define _STR_(x) #x
 
+#define PRODUCT_NAME "YR-Spawner"
+#define FILE_DESCRIPTION "CnCNet5: Spawner"
+
 #pragma region Release build version numbering
 
 // Indicates project maturity and completeness
