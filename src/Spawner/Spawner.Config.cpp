@@ -100,7 +100,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	}
 
 	// Extended Options
-	ObserverSidebar_ShowAI = pINI->ReadBool(pSettingsSection, "ObserverSidebar.ShowAI", ObserverSidebar_ShowAI);
+	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 	// TODO:
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);

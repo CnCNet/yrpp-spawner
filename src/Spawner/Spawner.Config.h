@@ -129,7 +129,7 @@ public:
 	HouseConfig Houses[8];
 
 	// Extended Options
-	bool ObserverSidebar_ShowAI;
+	bool Observer_ShowAIOnSidebar;
 	// TODO:
 	// bool QuickMatch;
 	// bool RunAutoSS;
@@ -214,7 +214,7 @@ public:
 		}
 
 		// Extended Options
-		, ObserverSidebar_ShowAI { false}
+		, Observer_ShowAIOnSidebar { false }
 		// TODO:
 		// , QuickMatch { false }
 		// , RunAutoSS { false }
