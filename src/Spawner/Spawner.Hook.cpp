@@ -83,10 +83,19 @@ DEFINE_HOOK(0x55EDD2, MessageInput_UnicodePlayerName, 0x5)
 
 // Display UIGameMode if is set
 // Otherwise use mode name from MPModesMD.ini
-DEFINE_HOOK(0x65813E, RadarClass__DiplomacyDialog_UIGameMode, 0x9)
+DEFINE_HOOK(0x65812E, RadarClass__DiplomacyDialog_UIGameMode, 0x6)
 {
+	enum { Show = 0x65813E, DontShow = 0x65814D };
+
 	if (Spawner::Enabled && Spawner::GetConfig()->UIGameMode[0])
+	{
+		R->EBX(R->EAX());
 		R->EAX(Spawner::GetConfig()->UIGameMode);
+		return Show;
+	}
+
+	if (!SessionClass::Instance->MPGameMode)
+		return DontShow;
 
 	return 0;
 }
