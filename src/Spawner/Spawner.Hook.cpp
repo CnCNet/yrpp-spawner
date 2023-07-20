@@ -65,7 +65,10 @@ DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
 		}
 
 		// Show GameMode in DiplomacyDialog in Skirmish
-		Patch::Apply_LJMP(0x658117, 0x658126);  // RadarClass_DiplomacyDialog
+		Patch::Apply_LJMP(0x658117, 0x658126); // RadarClass_DiplomacyDialog
+
+		// Leaves bottom bar closed for losing players during last game frames
+		Patch::Apply_LJMP(0x6D1639, 0x6D1640); // TabClass_6D1610
 	}
 
 	return 0;
