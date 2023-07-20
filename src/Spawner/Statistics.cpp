@@ -70,7 +70,7 @@ DEFINE_HOOK(0x6C73F8, SendStatisticsPacket_HouseFilter, 0x6)
 		GET(HouseClass*, pHouse, EAX);
 
 		const bool isMultiplayPassive = (pHouse && pHouse->Type && pHouse->Type->MultiplayPassive);
-		const bool isObserver = (pHouse && pHouse->GetSpawnPosition() == -1);
+		const bool isObserver = (pHouse && pHouse->IsInitiallyObserver());
 
 		return (isMultiplayPassive || isObserver)
 			? DontSend
