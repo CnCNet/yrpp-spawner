@@ -194,3 +194,21 @@ DEFINE_HOOK(0x6A57E2, SidebarClass__InitIO_ShowHouseOnObserverSidebar2, 0xA)
 }
 
 #pragma endregion Show house on Observer sidebar
+
+// Set observer mode after game load
+DEFINE_HOOK(0x67E720, LoadGame_After, 0x5)
+{
+	if (!Spawner::Enabled || SessionClass::IsCampaign())
+		return 0;
+
+	HouseClass* pCurrentPlayer = HouseClass::CurrentPlayer;
+	if (pCurrentPlayer->Defeated)
+	{
+		if (pCurrentPlayer->IsInitiallyObserver())
+			HouseClass::Observer = pCurrentPlayer;
+
+		pCurrentPlayer->AcceptDefeat();
+	}
+
+	return 0;
+}
