@@ -56,23 +56,23 @@ DEFINE_HOOK(0x5C98E5, MultiplayerScore__5C98A0_SkipObserverScore, 0x6)
 // Use correct colors in diplomacy menu for all observers
 DEFINE_HOOK(0x65838B, RadarClass__658330_SetObserverColorScheme, 0x5)
 {
-	GET(HouseClass*, pHouse, EBX);
-	if (pHouse->IsInitiallyObserver())
-	{
-		R->EAX(pHouse);
-		return 0x65838B + 0x5;
-	}
+	if (!Spawner::Enabled)
+		return 0;
 
-	return 0;
+	GET(HouseClass*, pHouse, EBX);
+	R->EAX<HouseClass*>(pHouse->IsInitiallyObserver() ? HouseClass::CurrentPlayer : (HouseClass*) nullptr);
+	return 0x65838B + 0x5;
 }
 
 // Use correct flag icon in diplomacy menu for all observers
 DEFINE_HOOK(0x65846D, RadarClass__658330_SetObserverFlag, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	GET(HouseClass*, pHouse, EBX);
-	return pHouse->IsInitiallyObserver()
-		? 0x658480
-		: 0;
+	R->ECX(pHouse->IsInitiallyObserver() ? -3 : pHouse->Type->ArrayIndex);
+	return 0x658485;
 }
 
 #pragma endregion HouseClass is Observer
