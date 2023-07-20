@@ -28,10 +28,6 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	if (!pINI || !pINI->GetSection(pSettingsSection))
 		return;
 
-	// Engine Options
-	Ra2Mode         = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode); // TODO
-	SkipScoreScreen = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
-
 	{ // Game Mode Options
 		MPModeIndex    = pINI->ReadInteger(pSettingsSection, "GameMode", MPModeIndex);
 		Bases          = pINI->ReadBool(pSettingsSection, "Bases", Bases);
@@ -100,9 +96,12 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	}
 
 	// Extended Options
+	SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
+	WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
 	AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 	// TODO:
+	// Ra2Mode          = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode); // TODO
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
 }

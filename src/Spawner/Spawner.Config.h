@@ -70,11 +70,6 @@ class SpawnerConfig
 	};
 
 public:
-	// Engine Options
-	bool Ra2Mode; // TODO
-	bool SkipScoreScreen;
-	bool WriteStatistics;
-
 	// Game Mode Options
 	int  MPModeIndex;
 	bool Bases;
@@ -104,7 +99,7 @@ public:
 	int  TechLevel;
 	bool IsCampaign;
 	int  Tournament;
-	unsigned int WOLGameID;
+	DWORD WOLGameID;
 	char ScenarioName[60];
 	char MapHash[255];
 	wchar_t UIMapName[45];
@@ -129,20 +124,18 @@ public:
 	HouseConfig Houses[8];
 
 	// Extended Options
+	bool SkipScoreScreen;
+	bool WriteStatistics;
 	bool AINamesByDifficulty;
 	bool Observer_ShowAIOnSidebar;
 	// TODO:
+	// bool Ra2Mode;
 	// bool QuickMatch;
 	// bool RunAutoSS;
 
 	SpawnerConfig() // default values
-		// Engine Options
-		: Ra2Mode { false } // TODO
-		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
-		, WriteStatistics { false }
-
 		// Game Mode Options
-		, MPModeIndex { 1 }
+		: MPModeIndex { 1 }
 		, Bases { true }
 		, Credits { 10000 }
 		, BridgeDestroy { true }
@@ -215,9 +208,12 @@ public:
 		}
 
 		// Extended Options
+		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
+		, WriteStatistics { false }
 		, AINamesByDifficulty { false }
 		, Observer_ShowAIOnSidebar { false }
 		// TODO:
+		// , Ra2Mode { false }
 		// , QuickMatch { false }
 		// , RunAutoSS { false }
 	{ }
