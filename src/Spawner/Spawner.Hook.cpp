@@ -20,7 +20,9 @@
 #include "Spawner.h"
 #include "Nethack.h"
 
+#include <HouseClass.h>
 #include <SessionClass.h>
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
 DEFINE_HOOK(0x52BA78, InitGame_Before, 0x5)
@@ -111,3 +113,79 @@ DEFINE_HOOK(0x689669, ScenarioClass_Load_Suffix, 0x6)
 
 	return 0;
 }
+
+#pragma region MPlayerDefeated
+namespace MPlayerDefeated
+{
+	HouseClass* pThis = nullptr;
+}
+
+DEFINE_HOOK(0x4FC0B6, HouseClass__MPlayerDefeated_SaveArgument, 0x5)
+{
+	if (Spawner::Enabled || !SessionClass::IsCampaign())
+		MPlayerDefeated::pThis = R->ECX<HouseClass*>();
+
+	return 0;
+}
+
+// Skip match-end logic if MPlayerDefeated called for observer
+DEFINE_HOOK_AGAIN(0x4FC332, HouseClass__MPlayerDefeated_SkipObserver, 0x5)
+DEFINE_HOOK(0x4FC262, HouseClass__MPlayerDefeated_SkipObserver, 0x6)
+{
+	enum { ProcEpilogue = 0x4FC6BC };
+
+	if (!MPlayerDefeated::pThis)
+		return 0;
+
+	return MPlayerDefeated::pThis->IsObserver()
+		? ProcEpilogue
+		: 0;
+}
+
+DEFINE_HOOK(0x4FC551, HouseClass__MPlayerDefeated_NoEnemies, 0x5)
+{
+	enum { ProcEpilogue = 0x4FC6BC };
+
+	if (!MPlayerDefeated::pThis)
+		return 0;
+
+	for (const auto pHouse : *HouseClass::Array)
+	{
+		if (pHouse == MPlayerDefeated::pThis || pHouse->Type->MultiplayPassive || pHouse->Defeated)
+			continue;
+
+		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAllie(MPlayerDefeated::pThis))
+		{
+			Debug::Log("[Spawner] MPlayer_Defeated() - Defeated player has a living ally");
+			if (Spawner::GetConfig()->DefeatedBecomesObserver)
+				MPlayerDefeated::pThis->MakeObserver();
+
+			return ProcEpilogue;
+		}
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
+{
+	enum { ProcEpilogue = 0x4FC6BC, FinishMatch = 0x4FC591 };
+
+	if (!MPlayerDefeated::pThis)
+		return 0;
+
+	GET_STACK(int, numHumans, STACK_OFFSET(0xC0, -0xA8));
+	GET_STACK(int, numAlive, STACK_OFFSET(0xC0, -0xAC));
+
+	if (numAlive > 1 && (numHumans != 0 || Spawner::GetConfig()->ContinueWithoutHumans))
+	{
+		if (Spawner::GetConfig()->DefeatedBecomesObserver)
+			MPlayerDefeated::pThis->MakeObserver();
+
+		return ProcEpilogue;
+	}
+
+	return FinishMatch;
+}
+
+#pragma endregion MPlayerDefeated

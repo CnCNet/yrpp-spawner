@@ -18,23 +18,10 @@
 */
 
 #include <Spawner/Spawner.h>
-#include <Helpers/Macro.h>
+#include <Utilities/Macro.h>
 #include <HouseClass.h>
 
 #pragma region HouseClass is Observer
-
-// Skip match-end logic if MPlayerDefeated called for observer
-DEFINE_HOOK(0x4FC262, HouseClass__MPlayerDefeated_SkipObserver, 0x6)
-{
-	if (Spawner::Enabled && !SessionClass::IsCampaign())
-	{
-		GET(HouseClass*, pHouse, ESI);
-		if (pHouse->IsInitiallyObserver())
-			return 0x4FC690;
-	}
-
-	return 0;
-}
 
 // Skip set spawn point for all observers
 DEFINE_HOOK(0x5D69BF, MPGameMode__AssignStartingPositions_SetObserverSpawn, 0x5)
@@ -47,10 +34,12 @@ DEFINE_HOOK(0x5D69BF, MPGameMode__AssignStartingPositions_SetObserverSpawn, 0x5)
 // Skip score field for all observers
 DEFINE_HOOK(0x5C98E5, MultiplayerScore__5C98A0_SkipObserverScore, 0x6)
 {
+	enum { Skip = 0x5C9A7E, Show = 0x5C98F1 };
+
 	GET(HouseClass*, pHouse, EDI);
 	return pHouse->IsInitiallyObserver()
-		? 0x5C9A7E
-		: 0;
+		? Skip
+		: Show;
 }
 
 // Use correct colors in diplomacy menu for all observers
@@ -192,6 +181,9 @@ DEFINE_HOOK(0x6A57E2, SidebarClass__InitIO_ShowHouseOnObserverSidebar2, 0xA)
 		? Draw
 		: DontDraw;
 }
+
+// Don't set LightGrey ColorScheme for failed observers
+DEFINE_JUMP(LJMP, 0x6A91F7, 0x6A9212); // SidebarClass_StripClass_AI
 
 #pragma endregion Show house on Observer sidebar
 

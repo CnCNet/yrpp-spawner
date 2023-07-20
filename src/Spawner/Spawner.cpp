@@ -127,11 +127,8 @@ void Spawner::AssignHouses()
 		}
 		else // if IsObserver
 		{
-			if (HouseClass::CurrentPlayer == pHouse)
-			{
-				HouseClass::Observer = pHouse;
+			if (pHouse->MakeObserver())
 				TabClass::Instance->ThumbActive = false;
-			}
 
 			{ // Remove SpawnLocations for Observer
 				const auto pHouseIndices = ScenarioClass::Instance->HouseIndices;

@@ -127,6 +127,8 @@ public:
 	bool SkipScoreScreen;
 	bool WriteStatistics;
 	bool AINamesByDifficulty;
+	bool ContinueWithoutHumans;
+	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
 	// TODO:
 	// bool Ra2Mode;
@@ -211,6 +213,8 @@ public:
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
 		, WriteStatistics { false }
 		, AINamesByDifficulty { false }
+		, ContinueWithoutHumans { false }
+		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
 		// TODO:
 		// , Ra2Mode { false }
