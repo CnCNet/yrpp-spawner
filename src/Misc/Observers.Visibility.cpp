@@ -203,3 +203,20 @@ DEFINE_HOOK(0x7467CA, UnitClass_CantTargetDesguise, 0x5)
 		: 0;
 }
 #pragma endregion
+
+// Allow Observer to see Pips
+#pragma region
+DEFINE_HOOK(0x6F677D, TechnoClass_DrawSelection_Observer1, 0x5)
+{
+	return HouseClass::IsCurrentPlayerObserver()
+		? 0x6F67B2
+		: 0;
+}
+
+DEFINE_HOOK(0x6F6A58, TechnoClass_DrawSelection_Observer2, 0x6)
+{
+	return HouseClass::IsCurrentPlayerObserver()
+		? 0x6F6A8E
+		: 0;
+}
+#pragma endregion

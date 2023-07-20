@@ -29,7 +29,7 @@
     <ClCompile Include="src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
     <ClCompile Include="src\Misc\NoCD.cpp" />
     <ClCompile Include="src\Misc\Observers.cpp" />
-    <ClCompile Include="src\Misc\Observers.Cloaked.cpp" />
+    <ClCompile Include="src\Misc\Observers.Visibility.cpp" />
     <ClCompile Include="src\Misc\QuickExit.cpp" />
     <ClCompile Include="src\Misc\VideoMode.cpp" />
     <ClCompile Include="src\Misc\CopyProtection.cpp" />
