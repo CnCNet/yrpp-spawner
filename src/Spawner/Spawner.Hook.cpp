@@ -77,8 +77,7 @@ DEFINE_HOOK(0x55EDD2, MessageInput_UnicodePlayerName, 0x5)
 	if (!Spawner::Enabled)
 		return 0;
 
-	GET(wchar_t*, UIName, ECX);
-	wcscpy(reinterpret_cast<wchar_t*>(0xA8D63C), UIName);
+	wcscpy(reinterpret_cast<wchar_t*>(0xA8D63C), NodeNameType::Array->GetItem(0)->Name);
 	return 0x55EE00;
 }
 
