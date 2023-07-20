@@ -92,6 +92,31 @@ void Spawner::AssignHouses()
 				pHouse->Allies.Add(alliesIndex);
 		}
 
+		// Set AI UIName
+		if (Spawner::Config->AINamesByDifficulty && !pHouse->IsHumanPlayer)
+		{
+			const auto pAIConfig = &Spawner::Config->Players[indexOfHouseArray];
+
+			switch (pAIConfig->Difficulty)
+			{
+			case 0:
+				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::GUI_AIHard));
+				break;
+
+			case 1:
+				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::GUI_AINormal));
+				break;
+
+			case 2:
+				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::GUI_AIEasy));
+				break;
+
+			default:
+				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::TXT_COMPUTER));
+				break;
+			}
+		}
+
 		if (!pHouse->IsHumanPlayer || !(pHousesConfig->IsObserver || pHousesConfig->SpawnLocations == 90))
 		{
 			int nSpawnLocations = pHousesConfig->SpawnLocations;

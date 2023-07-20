@@ -17,9 +17,9 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <Main.h>
 #include "Spawner.Config.h"
 
-#include <Main.h>
 #include <CCINIClass.h>
 
 void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
@@ -100,6 +100,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	}
 
 	// Extended Options
+	AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 	// TODO:
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);

@@ -129,6 +129,7 @@ public:
 	HouseConfig Houses[8];
 
 	// Extended Options
+	bool AINamesByDifficulty;
 	bool Observer_ShowAIOnSidebar;
 	// TODO:
 	// bool QuickMatch;
@@ -214,6 +215,7 @@ public:
 		}
 
 		// Extended Options
+		, AINamesByDifficulty { false }
 		, Observer_ShowAIOnSidebar { false }
 		// TODO:
 		// , QuickMatch { false }
