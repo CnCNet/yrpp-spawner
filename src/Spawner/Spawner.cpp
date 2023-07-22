@@ -234,7 +234,9 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 					pNode->Country = -3;
 
 				pNode->SpectatorFlag = 0xFFFFFFFF;
-				Game::ObserverMode = (playerIndex == 0);
+
+				if (playerIndex == 0)
+					Game::ObserverMode = true;
 			}
 
 			if (playerIndex > 0)
