@@ -42,7 +42,14 @@ struct __declspec(novtable) Patch
 	template <typename T>
 	static void Apply_TYPED(DWORD offset, std::initializer_list<T> data)
 	{
-		Patch patch = { offset, data.size(), const_cast<byte*>(reinterpret_cast<const byte*>(data.begin())) };
+		Patch patch = { offset, data.size() * sizeof(T), const_cast<byte*>(reinterpret_cast<const byte*>(data.begin())) };
+		patch.Apply();
+	};
+
+	template <size_t Size>
+	static inline void Apply_RAW(DWORD offset, const char(&str)[Size])
+	{
+		Patch patch = { offset, Size, (byte*)str };
 		patch.Apply();
 	};
 
