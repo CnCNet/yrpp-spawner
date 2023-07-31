@@ -21,6 +21,7 @@
 class MainConfig
 {
 public:
+	bool MPDebug;
 	bool SingleProcAffinity;
 	bool DisableEdgeScrolling;
 	bool QuickExit;
@@ -35,7 +36,8 @@ public:
 	void ApplyStaticOptions();
 
 	MainConfig()
-		: SingleProcAffinity { true }
+		: MPDebug { false }
+		, SingleProcAffinity { true }
 		, DisableEdgeScrolling { false }
 		, QuickExit { false }
 		, SkipScoreScreen { false }

@@ -18,10 +18,11 @@
 */
 
 #include "Main.Config.h"
+#include <Utilities/Macro.h>
 
 #include <CCINIClass.h>
 #include <GameOptionsClass.h>
-#include <Utilities/Macro.h>
+#include <Unsorted.h>
 
 void MainConfig::LoadFromINIFile()
 {
@@ -32,6 +33,7 @@ void MainConfig::LoadFromINIFile()
 	const char* pOptionsSection = "Options";
 	if (pINI->GetSection(pOptionsSection))
 	{
+		this->MPDebug              = pINI->ReadBool(pOptionsSection, "MPDEBUG", this->MPDebug);
 		this->SingleProcAffinity   = pINI->ReadBool(pOptionsSection, "SingleProcAffinity", this->SingleProcAffinity);
 		this->DisableEdgeScrolling = pINI->ReadBool(pOptionsSection, "DisableEdgeScrolling", this->DisableEdgeScrolling);
 		this->QuickExit            = pINI->ReadBool(pOptionsSection, "QuickExit", this->QuickExit);
@@ -50,6 +52,13 @@ void MainConfig::LoadFromINIFile()
 
 void MainConfig::ApplyStaticOptions()
 {
+	if (this->MPDebug)
+	{
+		Game::EnableMPDebug     = true;
+		Game::DrawMPDebugStats  = true;
+		Game::EnableMPSyncDebug = true;
+	}
+
 	if (this->SingleProcAffinity)
 	{
 		auto const process = GetCurrentProcess();
