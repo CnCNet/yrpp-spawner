@@ -22,6 +22,8 @@ class MainConfig
 {
 public:
 	bool MPDebug;
+	bool DumpTypes;
+
 	bool SingleProcAffinity;
 	bool DisableEdgeScrolling;
 	bool QuickExit;
@@ -37,6 +39,8 @@ public:
 
 	MainConfig()
 		: MPDebug { false }
+		, DumpTypes { false }
+
 		, SingleProcAffinity { true }
 		, DisableEdgeScrolling { false }
 		, QuickExit { false }

@@ -20,6 +20,8 @@
 #include <Main.h>
 #include "Spawner.h"
 #include "Nethack.h"
+#include <Utilities/Debug.h>
+#include <Utilities/DumperTypes.h>
 
 #include <CCINIClass.h>
 #include <GameOptionsClass.h>
@@ -37,7 +39,6 @@
 #include <time.h>
 #include <UDPInterfaceClass.h>
 #include <Unsorted.h>
-#include <Utilities/Debug.h>
 #include <WWMouseClass.h>
 
 bool Spawner::Enabled = false;
@@ -69,6 +70,10 @@ bool Spawner::StartGame()
 		: StartNewScenario(Config->ScenarioName);
 
 	Spawner::PrepareScreen();
+
+	if (Main::GetConfig()->DumpTypes)
+		DumperTypes::Dump();
+
 	return result;
 }
 

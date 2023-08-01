@@ -75,6 +75,10 @@ void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 			NoCD::Apply();
 			Spawner::Enabled = true;
 		}
+		else if (0 == _stricmp(pArg, "-DumpTypes"))
+		{
+			Main::Config->DumpTypes = true;
+		}
 	}
 
 	NoCD::InitNoCDMode();
