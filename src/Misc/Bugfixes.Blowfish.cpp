@@ -19,6 +19,8 @@
 
 #include <Utilities/Macro.h>
 #include <Utilities/Debug.h>
+
+#include <Unsorted.h>
 #include <GameStrings.h>
 
 /*
@@ -67,7 +69,7 @@ HRESULT __stdcall Blowfish_Loader(
 		FreeLibrary(hDll);
 
 		const char* Message = "File Blowfish.dll was not found\n";
-		MessageBox(0, Message, "Fatal error ", MB_ICONERROR);
+		Imports::MessageBoxA(0, Message, "Fatal error ", MB_ICONERROR);
 		Debug::FatalErrorAndExit(Message);
 	}
 
