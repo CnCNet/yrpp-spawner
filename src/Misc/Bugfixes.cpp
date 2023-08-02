@@ -18,9 +18,22 @@
 */
 
 #include <Utilities/Macro.h>
+#include <Unsorted.h>
 
 // skip error "А mouse is required for playing Yurts Revenge" - remove the GetSystemMetrics check
 DEFINE_JUMP(LJMP, 0x6BD8A4, 0x6BD8C2); // WinMain
+
+// Prevents accidental exit when pressing the spacebar while waiting
+// Remove focus from the Leave Game button in the player waiting window
+DEFINE_HOOK(0x648CCC, WaitForPlayers, 0x6)
+{
+	GET(HWND, hDlg, ECX);
+
+	if (auto listbox = Imports::GetDlgItem(hDlg, 1617))
+		Imports::SetFocus(listbox);
+
+	return 0;
+}
 
 // A patch to prevent framerate drops when a player spams the 'type select' key
 // Skip call GScreenClass::FlagToRedraw(1)
