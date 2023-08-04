@@ -41,6 +41,8 @@
     <ClCompile Include="src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="src\Spawner\Spawner.Config.cpp" />
     <ClCompile Include="src\Spawner\Nethack.cpp" />
+    <ClCompile Include="src\Spawner\Ra2Mode.cpp" />
+    <ClCompile Include="src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="src\Spawner\RandomMap.cpp" />
     <ClCompile Include="src\Spawner\Statistics.cpp" />
     <!-- Utilities -->
@@ -56,12 +58,14 @@
     <!-- Misc -->
     <ClInclude Include="src\Misc\NoCD.h" />
     <!-- Spawner -->
-    <ClInclude Include="src\Spawner\Nethack.h" />
     <ClInclude Include="src\Spawner\Spawner.h" />
     <ClInclude Include="src\Spawner\Spawner.Config.h" />
+    <ClInclude Include="src\Spawner\Nethack.h" />
+    <ClInclude Include="src\Spawner\Ra2Mode.h" />
     <!-- Utilities -->
     <ClInclude Include="src\Utilities\Debug.h" />
-    <ClInclude Include="src\Utilities\Macro.h" />
     <ClInclude Include="src\Utilities\Patch.h" />
+    <ClInclude Include="src\Utilities\DumperTypes.h" />
+    <ClInclude Include="src\Utilities\Macro.h" />
   </ItemGroup>
 </Project>

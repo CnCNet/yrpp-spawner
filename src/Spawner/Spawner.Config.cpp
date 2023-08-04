@@ -96,6 +96,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	}
 
 	// Extended Options
+	Ra2Mode                  = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode);
 	SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
 	WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
 	AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
@@ -103,7 +104,6 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	DefeatedBecomesObserver  = pINI->ReadBool(pSettingsSection, "DefeatedBecomesObserver", DefeatedBecomesObserver);
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 	// TODO:
-	// Ra2Mode          = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode); // TODO
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
 }

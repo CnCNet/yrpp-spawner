@@ -124,6 +124,7 @@ public:
 	HouseConfig Houses[8];
 
 	// Extended Options
+	bool Ra2Mode;
 	bool SkipScoreScreen;
 	bool WriteStatistics;
 	bool AINamesByDifficulty;
@@ -131,7 +132,6 @@ public:
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
 	// TODO:
-	// bool Ra2Mode;
 	// bool QuickMatch;
 	// bool RunAutoSS;
 
@@ -210,6 +210,7 @@ public:
 		}
 
 		// Extended Options
+		, Ra2Mode { false }
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
 		, WriteStatistics { false }
 		, AINamesByDifficulty { false }
@@ -217,7 +218,6 @@ public:
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
 		// TODO:
-		// , Ra2Mode { false }
 		// , QuickMatch { false }
 		// , RunAutoSS { false }
 	{ }
