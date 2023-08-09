@@ -23,11 +23,7 @@
 
 int GetSection(const char* sectionName, void** pVirtualAddress)
 {
-	char buf[MAX_PATH + 1] = { 0 };
-	GetModuleFileName(NULL, buf, sizeof(buf));
-
 	auto hInstance = Main::hInstance;
-
 	auto pHeader = reinterpret_cast<PIMAGE_NT_HEADERS>(((PIMAGE_DOS_HEADER)hInstance)->e_lfanew + (long)hInstance);
 
 	for (int i = 0; i < pHeader->FileHeader.NumberOfSections; i++)
