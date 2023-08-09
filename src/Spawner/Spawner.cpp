@@ -330,7 +330,7 @@ void Spawner::InitNetwork()
 
 	Game::Network::Tournament       = Spawner::Config->Tournament;
 	Game::Network::WOLGameID        = Spawner::Config->WOLGameID;
-	Game::Network::ProtocolVersion  = Spawner::Config->Protocol;
+	Game::Network::ProtocolVersion  = 2;
 	Game::Network::FrameSendRate    = Spawner::Config->FrameSendRate;
 	Game::Network::ReconnectTimeout = Spawner::Config->ReconnectTimeout;
 	Game::Network::MaxAhead         = Spawner::Config->MaxAhead;
