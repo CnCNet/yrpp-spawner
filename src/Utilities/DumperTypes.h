@@ -18,7 +18,7 @@
 */
 
 #pragma once
-#include <fstream>
+#include <CCFileClass.h>
 
 #include <HouseTypeClass.h>
 
@@ -44,35 +44,46 @@
 
 class DumperTypes
 {
-	template <typename T>
-	static  __forceinline void LogType(const char* pSectionName, std::ofstream& file)
+	static void writeLog(CCFileClass& file, const char* pSectionName)
 	{
-		file << pSectionName;
-		file << "\n";
+		file.WriteBytes(const_cast<char*>(pSectionName), strlen(pSectionName));
+	}
 
-		int i = 1;
+	template <typename T>
+	static void LogType(const char* pSectionName, CCFileClass& file)
+	{
+		writeLog(file, pSectionName);
+		writeLog(file, "\n");
+
+		int index = 1;
+		char indexStr[10];;
+
 		for (auto pItem : *T::Array)
 		{
-			file << i++;
-			file << "=";
-			file << pItem->get_ID();
-			if (strcmp(pItem->get_ID(), pItem->Name) != 0)
+			sprintf(indexStr, "%d", index++);
+			writeLog(file, indexStr);
+
+			writeLog(file, "=");
+			char* id = (char*)pItem->get_ID();
+			writeLog(file, id);
+
+			if (strcmp(id, pItem->Name) != 0)
 			{
-				file << " ;";
-				file << pItem->Name;
+				writeLog(file, " ;");
+				writeLog(file, pItem->Name);
 			}
-			file << "\n";
+			writeLog(file, "\n");
 		}
 
-		file << "\n";
+		writeLog(file, "\n");
 	};
 
 public:
 	static void Dump()
 	{
-		std::ofstream file("DumpRulesTypes.ini");
+		CCFileClass file = CCFileClass("DumpRulesTypes.ini");
 
-		if (file.is_open())
+		if (file.Open(FileAccessMode::Write))
 		{
 			LogType<HouseTypeClass>("[Countries]", file);
 
@@ -96,7 +107,7 @@ public:
 
 			LogType<BulletTypeClass>("[Projectiles]", file);
 
-			file.close();
+			file.Close();
 		}
 	};
 };
