@@ -23,6 +23,7 @@ class MainConfig
 public:
 	bool MPDebug;
 	bool DumpTypes;
+	int RA2ModeSaveID;
 
 	bool SingleProcAffinity;
 	bool DisableEdgeScrolling;

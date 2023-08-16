@@ -32,8 +32,11 @@ DEFINE_HOOK(0x6BD7CB, WinMain_SpawnerInit, 0x5)
 	{
 		Spawner::Init();
 
-		if (Spawner::GetConfig()->Ra2Mode)
+		if (Spawner::GetConfig()->Ra2Mode ||
+			(Spawner::GetConfig()->LoadSaveGame && Ra2Mode::CheckSaveGameID(Spawner::GetConfig()->SaveGameName)))
+		{
 			Ra2Mode::Apply();
+		}
 
 		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame); // Main_Game
 		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame); // Main_Game

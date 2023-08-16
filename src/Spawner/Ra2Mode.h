@@ -28,6 +28,5 @@ public:
 	};
 
 	static void Apply();
-	static void Ra2Mode::InitMIXResources();
-	static void Ra2Mode::UninitMIXResources();
+	static bool Ra2Mode::CheckSaveGameID(const char* saveGameName);
 };

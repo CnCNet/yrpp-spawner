@@ -19,9 +19,11 @@
 
 #include "Ra2Mode.h"
 
+#include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <BuildingClass.h>
 #include <HouseClass.h>
+#include <LoadOptionsClass.h>
 
 bool Ra2Mode::Enabled = false;
 
@@ -103,6 +105,21 @@ void Ra2Mode::Apply()
 		Patch::Apply_RAW(0x830A18, "MPModes.ini");   // MPModesMD.ini
 		Patch::Apply_RAW(0x839724, "MISSION.INI");   // MISSIONMD.INI
 	}
+}
+
+bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
+{
+	if (saveGameName[0])
+	{
+		SavegameInformation savegameInfo;
+		if (SavegameInformation::ReadFromFile(saveGameName, &savegameInfo))
+		{
+			if (savegameInfo.Version == Main::GetConfig()->RA2ModeSaveID)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 // Allow allies to repair on service depot

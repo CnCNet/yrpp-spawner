@@ -79,6 +79,10 @@ void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 		{
 			Main::Config->DumpTypes = true;
 		}
+		else if (strstr(pArg, "-RA2ModeSaveID="))
+		{
+			Main::Config->RA2ModeSaveID = strtoul(pArg - 1 + sizeof("-RA2ModeSaveID="), 0, 0);
+		}
 	}
 
 	NoCD::InitNoCDMode();
