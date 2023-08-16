@@ -155,7 +155,7 @@ DEFINE_HOOK(0x4FC551, HouseClass__MPlayerDefeated_NoEnemies, 0x5)
 
 	for (const auto pHouse : *HouseClass::Array)
 	{
-		if (pHouse == MPlayerDefeated::pThis || pHouse->Type->MultiplayPassive || pHouse->Defeated)
+		if (pHouse->Defeated || pHouse == MPlayerDefeated::pThis || pHouse->Type->MultiplayPassive)
 			continue;
 
 		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAllie(MPlayerDefeated::pThis))
@@ -181,7 +181,10 @@ DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
 	GET_STACK(int, numHumans, STACK_OFFSET(0xC0, -0xA8));
 	GET_STACK(int, numAlive, STACK_OFFSET(0xC0, -0xAC));
 
-	if (numAlive > 1 && (numHumans != 0 || Spawner::GetConfig()->ContinueWithoutHumans))
+	bool continueWithoutHumans = Spawner::GetConfig()->ContinueWithoutHumans ||
+		(SessionClass::IsSkirmish() && HouseClass::CurrentPlayer->IsInitiallyObserver());
+
+	if (numAlive > 1 && (numHumans != 0 || continueWithoutHumans))
 	{
 		if (Spawner::GetConfig()->DefeatedBecomesObserver)
 			MPlayerDefeated::pThis->MakeObserver();
