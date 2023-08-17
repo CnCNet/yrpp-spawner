@@ -41,6 +41,18 @@
 #include <Unsorted.h>
 #include <WWMouseClass.h>
 
+void __fastcall PlayMovie_FromID(
+		const char* movieName,
+		int queue_theme = -1,
+		char use_hidden_surface1 = -1,
+		char stretch_movie = -1,
+		char use_hidden_surface2 = -1,
+		char set_state_1 = -1
+)
+{
+	JMP_STD(0x5BED40);
+}
+
 bool Spawner::Enabled = false;
 bool Spawner::Active = false;
 std::unique_ptr<SpawnerConfig> Spawner::Config = nullptr;
@@ -61,6 +73,14 @@ bool Spawner::StartGame()
 
 	Spawner::Active = true;
 	Game::IsActive = true;
+
+	if (Config->IsCampaign && strstr(Config->ScenarioName, "PlayIntro->"))
+	{
+		PlayMovie_FromID("EA_WWLOGO");
+		char* introMoveName = Config->ScenarioName - 1 + sizeof("PlayIntro->");
+		PlayMovie_FromID(introMoveName);
+		return false;
+	}
 
 	Game::InitUIStuff();
 	Spawner::LoadSidesStuff();
