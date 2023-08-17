@@ -81,13 +81,16 @@ void Ra2Mode::Apply()
 		Patch::Apply_LJMP(0x530680, 0x530709);
 		Patch::Apply_LJMP(0x5316C9, 0x5316CF);
 
-		// LOADMD.MIX
-		Patch::Apply_LJMP(0x552CDE, 0x552D0F);
+		// MOVMD03.MIX
+		Patch::Apply_LJMP(0x530E8B, 0x530EDF);
 	}
 
 	{ // Change mixes priority
 		Patch::Apply_RAW(0x826638, "LOCALMD.MIX"); // LOCAL.MIX
 		Patch::Apply_RAW(0x826644, "LOCAL.MIX");   // LOCALMD.MIX
+
+		Patch::Apply_RAW(0x8298B8, "LOADMD.MIX"); // LOAD.MIX
+		Patch::Apply_RAW(0x8298C4, "LOAD.MIX");   // LOADMD.MIX
 	}
 
 	{ // Rename files
@@ -96,14 +99,18 @@ void Ra2Mode::Apply()
 		Patch::Apply_RAW(0x81C284, "MULTI.MIX");     // MULTIMD.MIX
 		Patch::Apply_RAW(0x81C210, "MOVIES%02d.MIX");// MOVMD%02d.MIX
 		Patch::Apply_RAW(0x81C2EC, "MAPS%02d.MIX");  // MAPSMD%02d.MIX
+		Patch::Apply_RAW(0x82679C, "MAPS*.MIX");     // MAPSMD*.MIX
 
 		Patch::Apply_RAW(0x825D94, "THEME.INI");     // THEMEMD.INI
 		Patch::Apply_RAW(0x825DF0, "EVA.INI");       // EVAMD.INI
 		Patch::Apply_RAW(0x825E50, "SOUND.INI");     // SOUNDMD.INI
 		Patch::Apply_RAW(0x826198, "BATTLE.INI");    // BATTLEMD.INI
 		Patch::Apply_RAW(0x82621C, "AI.INI");        // AIMD.INI
+		Patch::Apply_RAW(0x830370, "MAPSEL.INI");    // MAPSELMD.INI
 		Patch::Apply_RAW(0x830A18, "MPModes.ini");   // MPModesMD.ini
 		Patch::Apply_RAW(0x839724, "MISSION.INI");   // MISSIONMD.INI
+
+		Patch::Apply_RAW(0x840D40, "ra2.str");       // ra2md.str
 	}
 }
 
