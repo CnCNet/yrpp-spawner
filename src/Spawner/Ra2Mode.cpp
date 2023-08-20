@@ -109,8 +109,6 @@ void Ra2Mode::Apply()
 		Patch::Apply_RAW(0x830370, "MAPSEL.INI");    // MAPSELMD.INI
 		Patch::Apply_RAW(0x830A18, "MPModes.ini");   // MPModesMD.ini
 		Patch::Apply_RAW(0x839724, "MISSION.INI");   // MISSIONMD.INI
-
-		Patch::Apply_RAW(0x840D40, "ra2.str");       // ra2md.str
 	}
 }
 
