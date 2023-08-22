@@ -20,6 +20,7 @@
 #include <Main.h>
 #include "Spawner.h"
 #include "Nethack.h"
+#include "ProtocolZero.h"
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
 
@@ -348,15 +349,29 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
-	Game::Network::Tournament       = Spawner::Config->Tournament;
-	Game::Network::WOLGameID        = Spawner::Config->WOLGameID;
-	Game::Network::ProtocolVersion  = 2;
-	Game::Network::FrameSendRate    = Spawner::Config->FrameSendRate;
-	Game::Network::ReconnectTimeout = Spawner::Config->ReconnectTimeout;
-	Game::Network::MaxAhead         = Spawner::Config->MaxAhead;
+	if (Spawner::Config->Protocol == 0)
+	{
+		ProtocolZero::Enable = true;
+		Game::Network::FrameSendRate = 2;
+		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
+	}
+	else /* if (Spawner::Config->Protocol == 2) */
+	{
+		ProtocolZero::Enable = false;
+		Game::Network::FrameSendRate = Spawner::Config->FrameSendRate;
+	}
+
+	Game::Network::MaxAhead = Spawner::Config->MaxAhead == -1
+		? Game::Network::FrameSendRate * 6
+		: Spawner::Config->MaxAhead;
+
 	Game::Network::MaxMaxAhead      = 0;
+	Game::Network::ProtocolVersion  = 2;
 	Game::Network::LatencyFudge     = 0;
 	Game::Network::RequestedFPS     = 60;
+	Game::Network::Tournament       = Spawner::Config->Tournament;
+	Game::Network::WOLGameID        = Spawner::Config->WOLGameID;
+	Game::Network::ReconnectTimeout = Spawner::Config->ReconnectTimeout;
 
 	Game::Network::Init();
 }

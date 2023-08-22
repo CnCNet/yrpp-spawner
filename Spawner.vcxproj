@@ -20,6 +20,8 @@
     <ClCompile Include="src\Main.Ext.cpp" />
     <ClCompile Include="src\Main.Hook.cpp" />
     <ClCompile Include="src\Main.Config.cpp" />
+    <!-- Ext -->
+    <ClCompile Include="src\Ext\Event\Body.cpp" />
     <!-- Misc -->
     <ClCompile Include="src\Misc\Bugfixes.cpp" />
     <ClCompile Include="src\Misc\Bugfixes.Perf.cpp" />
@@ -41,6 +43,9 @@
     <ClCompile Include="src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="src\Spawner\Spawner.Config.cpp" />
     <ClCompile Include="src\Spawner\Nethack.cpp" />
+    <ClCompile Include="src\Spawner\ProtocolZero.cpp" />
+    <ClCompile Include="src\Spawner\ProtocolZero.Hook.cpp" />
+    <ClCompile Include="src\Spawner\ProtocolZero.LatencyLevel.cpp" />
     <ClCompile Include="src\Spawner\Ra2Mode.cpp" />
     <ClCompile Include="src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="src\Spawner\RandomMap.cpp" />
@@ -55,12 +60,16 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\Main.Config.h" />
+    <!-- Ext -->
+    <ClInclude Include="src\Ext\Event\Body.h" />
     <!-- Misc -->
     <ClInclude Include="src\Misc\NoCD.h" />
     <!-- Spawner -->
     <ClInclude Include="src\Spawner\Spawner.h" />
     <ClInclude Include="src\Spawner\Spawner.Config.h" />
     <ClInclude Include="src\Spawner\Nethack.h" />
+    <ClInclude Include="src\Spawner\ProtocolZero.h" />
+    <ClInclude Include="src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="src\Spawner\Ra2Mode.h" />
     <!-- Utilities -->
     <ClInclude Include="src\Utilities\Debug.h" />

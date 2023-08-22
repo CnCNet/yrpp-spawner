@@ -110,6 +110,7 @@ public:
 	int ReconnectTimeout;
 	int ConnTimeout;
 	int MaxAhead;
+	int PreCalcMaxAhead;
 
 	// Tunnel Options
 	int  TunnelId;
@@ -175,7 +176,8 @@ public:
 		, FrameSendRate { 4 }
 		, ReconnectTimeout { 2400 }
 		, ConnTimeout { 3600 }
-		, MaxAhead { FrameSendRate * 6 }
+		, MaxAhead { -1 }
+		, PreCalcMaxAhead { 0 }
 
 		// Tunnel Options
 		, TunnelId { 0 }

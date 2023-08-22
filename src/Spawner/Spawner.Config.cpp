@@ -73,7 +73,8 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		FrameSendRate    = pINI->ReadInteger(pSettingsSection, "FrameSendRate", FrameSendRate);
 		ReconnectTimeout = pINI->ReadInteger(pSettingsSection, "ReconnectTimeout", ReconnectTimeout);
 		ConnTimeout      = pINI->ReadInteger(pSettingsSection, "ConnTimeout", ConnTimeout);
-		MaxAhead         = pINI->ReadInteger(pSettingsSection, "MaxAhead", FrameSendRate * 6);
+		MaxAhead         = pINI->ReadInteger(pSettingsSection, "MaxAhead", MaxAhead);
+		PreCalcMaxAhead  = pINI->ReadInteger(pSettingsSection, "PreCalcMaxAhead", PreCalcMaxAhead);
 	}
 
 	{ // Tunnel Options
