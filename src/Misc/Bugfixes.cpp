@@ -25,12 +25,9 @@ DEFINE_JUMP(LJMP, 0x6BD8A4, 0x6BD8C2); // WinMain
 
 // Prevents accidental exit when pressing the spacebar while waiting
 // Remove focus from the Leave Game button in the player waiting window
-DEFINE_HOOK(0x648CCC, WaitForPlayers, 0x6)
+DEFINE_HOOK(0x648CCC, WaitForPlayers_RemoveFocusFromLeaveGameBtn, 0x6)
 {
-	GET(HWND, hDlg, ECX);
-
-	if (auto listbox = Imports::GetDlgItem(hDlg, 1617))
-		Imports::SetFocus(listbox);
+	Imports::SetFocus(0);
 
 	return 0;
 }
