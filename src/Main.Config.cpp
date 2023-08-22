@@ -38,7 +38,7 @@ void MainConfig::LoadFromINIFile()
 		this->DisableEdgeScrolling = pINI->ReadBool(pOptionsSection, "DisableEdgeScrolling", this->DisableEdgeScrolling);
 		this->QuickExit            = pINI->ReadBool(pOptionsSection, "QuickExit", this->QuickExit);
 		this->SkipScoreScreen      = pINI->ReadBool(pOptionsSection, "SkipScoreScreen", this->SkipScoreScreen);
-		this->DDrawHandlesClose    = pINI->ReadInteger(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
+		this->DDrawHandlesClose    = pINI->ReadBool(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
 	}
 
 	const char* pVideoSection = "Video";
@@ -91,8 +91,8 @@ void MainConfig::ApplyStaticOptions()
 	// Set 3rd party ddraw.dll options
 	if (HMODULE hDDraw = LoadLibraryA("ddraw.dll"))
 	{
-		if (bool* handleClose = (bool*)GetProcAddress(hDDraw, "GameHandlesClose"))
-			*handleClose = !this->DDrawHandlesClose;
+		if (bool* gameHandlesClose = (bool*)GetProcAddress(hDDraw, "GameHandlesClose"))
+			*gameHandlesClose = !this->DDrawHandlesClose;
 
 		LPDWORD TargetFPS = (LPDWORD)GetProcAddress(hDDraw, "TargetFPS");
 		if (TargetFPS && this->DDrawTargetFPS != -1)
