@@ -10,6 +10,7 @@
 
 bool ProtocolZero::Enable = false;
 int ProtocolZero::WorstMaxAhead = 24;
+unsigned char ProtocolZero::MaxLatencyLevel = 0xff;
 
 void ProtocolZero::SendResponseTime2()
 {

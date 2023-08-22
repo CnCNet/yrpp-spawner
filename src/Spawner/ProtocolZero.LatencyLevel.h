@@ -21,7 +21,6 @@ enum class LatencyLevelEnum : uint8_t
 class LatencyLevel
 {
 public:
-	static LatencyLevelEnum MaxLatencyLevel;
 	static LatencyLevelEnum CurentLatencyLevel;
 	static uint8_t NewFrameSendRate;
 

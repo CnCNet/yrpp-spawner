@@ -111,6 +111,7 @@ public:
 	int ConnTimeout;
 	int MaxAhead;
 	int PreCalcMaxAhead;
+	byte MaxLatencyLevel;
 
 	// Tunnel Options
 	int  TunnelId;
@@ -178,6 +179,7 @@ public:
 		, ConnTimeout { 3600 }
 		, MaxAhead { -1 }
 		, PreCalcMaxAhead { 0 }
+		, MaxLatencyLevel { 0xFF }
 
 		// Tunnel Options
 		, TunnelId { 0 }

@@ -9,7 +9,8 @@ private:
 
 public:
 	static bool Enable;
-	static int WorstMaxAhead; // = 24
+	static unsigned char MaxLatencyLevel;
+	static int WorstMaxAhead;
 
 	static void SendResponseTime2();
 	static void HandleResponseTime2(EventExt* event);

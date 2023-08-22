@@ -352,6 +352,7 @@ void Spawner::InitNetwork()
 	if (Spawner::Config->Protocol == 0)
 	{
 		ProtocolZero::Enable = true;
+		ProtocolZero::MaxLatencyLevel = Spawner::Config->MaxLatencyLevel;
 		Game::Network::FrameSendRate = 2;
 		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
 	}

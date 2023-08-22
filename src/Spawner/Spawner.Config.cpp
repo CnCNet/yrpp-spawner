@@ -75,6 +75,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		ConnTimeout      = pINI->ReadInteger(pSettingsSection, "ConnTimeout", ConnTimeout);
 		MaxAhead         = pINI->ReadInteger(pSettingsSection, "MaxAhead", MaxAhead);
 		PreCalcMaxAhead  = pINI->ReadInteger(pSettingsSection, "PreCalcMaxAhead", PreCalcMaxAhead);
+		MaxLatencyLevel  = (byte)pINI->ReadInteger(pSettingsSection, "MaxLatencyLevel", (int)MaxLatencyLevel);
 	}
 
 	{ // Tunnel Options

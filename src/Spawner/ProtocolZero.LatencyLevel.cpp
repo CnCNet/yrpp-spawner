@@ -1,10 +1,10 @@
+#include "ProtocolZero.h"
 #include "ProtocolZero.LatencyLevel.h"
 
 #include <HouseClass.h>
 #include <MessageListClass.h>
 #include <Utilities/Debug.h>
 
-LatencyLevelEnum LatencyLevel::MaxLatencyLevel = LatencyLevelEnum::LATENCY_LEVEL_MAX;
 LatencyLevelEnum LatencyLevel::CurentLatencyLevel = LatencyLevelEnum::LATENCY_LEVEL_INITIAL;
 unsigned char LatencyLevel::NewFrameSendRate = 3;
 
@@ -13,8 +13,9 @@ void LatencyLevel::Apply(LatencyLevelEnum newLatencyLevel)
 	if (newLatencyLevel > LatencyLevelEnum::LATENCY_LEVEL_MAX)
 		newLatencyLevel = LatencyLevelEnum::LATENCY_LEVEL_MAX;
 
-	if (newLatencyLevel > MaxLatencyLevel)
-		newLatencyLevel = MaxLatencyLevel;
+	auto maxLatencyLevel = static_cast<LatencyLevelEnum>(ProtocolZero::MaxLatencyLevel);
+	if (newLatencyLevel > maxLatencyLevel)
+		newLatencyLevel = maxLatencyLevel;
 
 	if (newLatencyLevel <= CurentLatencyLevel)
 		return;
