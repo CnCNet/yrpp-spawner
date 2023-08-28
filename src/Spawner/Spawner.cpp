@@ -136,10 +136,6 @@ void Spawner::AssignHouses()
 			case 2:
 				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::GUI_AIEasy));
 				break;
-
-			default:
-				wcscpy_s(pHouse->UIName, StringTable::LoadString(GameStrings::TXT_COMPUTER));
-				break;
 			}
 		}
 
