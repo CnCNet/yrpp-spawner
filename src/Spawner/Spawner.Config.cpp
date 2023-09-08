@@ -21,6 +21,31 @@
 #include "Spawner.Config.h"
 
 #include <CCINIClass.h>
+#include <MixFileClass.h>
+
+constexpr const char* NONE_STR = "<none>";
+
+inline void ReadFiles(CCINIClass* pINI, const char* pSection, std::list<std::pair<int, std::string>>& files)
+{
+	if (!pINI->GetSection(pSection))
+		return;
+
+	const int itemsCount = pINI->GetKeyCount(pSection);
+	for (int i = 0; i < itemsCount; ++i)
+	{
+		auto		pKey			= pINI->GetKeyName(pSection, i);
+		char*	pEnd			= nullptr;
+		auto		index			= std::strtol(pKey, &pEnd, 10);
+		if (pEnd == pKey || *pEnd != 0)
+			continue;
+
+		char fileName[0x80];
+		pINI->ReadString(pSection, pKey, "", fileName);
+
+		if (fileName[0] != 0 || _strcmpi(fileName, NONE_STR) != 0)
+			files.emplace_back(index, fileName);
+	}
+}
 
 void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 {
@@ -108,6 +133,18 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// TODO:
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
+
+	// Custom Mixes
+	ReadFiles(pINI, "mixes_preload", PreloadMixes);
+	ReadFiles(pINI, "mixes_postload", PostloadMixes);
+
+	auto predicate = [](std::pair<int, std::string> const& a, std::pair<int, std::string> const& b) -> bool
+	{
+		return a.first < b.first;
+	};
+
+	PreloadMixes.sort(predicate);
+	PostloadMixes.sort(predicate);
 }
 
 constexpr char* PlayerSectionArray[8] = {

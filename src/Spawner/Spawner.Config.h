@@ -19,6 +19,7 @@
 
 #pragma once
 #include <Main.h>
+#include <list>
 
 class CCINIClass;
 
@@ -137,6 +138,10 @@ public:
 	// bool QuickMatch;
 	// bool RunAutoSS;
 
+	// Custom mixes
+	std::list<std::pair<int, std::string>> PreloadMixes;
+	std::list<std::pair<int, std::string>> PostloadMixes;
+
 	SpawnerConfig() // default values
 		// Game Mode Options
 		: MPModeIndex { 1 }
@@ -224,6 +229,10 @@ public:
 		// TODO:
 		// , QuickMatch { false }
 		// , RunAutoSS { false }
+
+		// Custom Mixes
+		, PreloadMixes()
+		, PostloadMixes()
 	{ }
 
 	void LoadFromINIFile(CCINIClass* pINI);

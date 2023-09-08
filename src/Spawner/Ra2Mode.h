@@ -22,6 +22,8 @@ class Ra2Mode
 {
 	static bool Enabled;
 public:
+	static constexpr const char* MixFileName = "ra2mode.mix";
+
 	static bool IsEnabled()
 	{
 		return Ra2Mode::Enabled;
