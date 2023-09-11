@@ -64,7 +64,7 @@ void NoCD::Apply()
 		Patch::Apply_RAW(0x531289,             // InitSecondaryMIXes_SkipMovies
 		{
 			0xB0, 0x01, // mov    al, 1
-			0x90		// nop
+			0x90        // nop
 		});
 	}
 
