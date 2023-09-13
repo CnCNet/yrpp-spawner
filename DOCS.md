@@ -6,7 +6,7 @@ Postloaded mixes will be overwritten by any other mix files content (include ori
 > Overwite priority it's loading order:\
 Preload mixes -> Original mixes -> Postload mixes
 
-Configuration file (spawn.ini) allow to configure mix loading via two sections: *mixes_preload* for preloading, *mixes_postload* for postloading.
+Configuration file (spawn.ini) allow to configure mix loading via two sections: *PreloadMixes* for preloading, *PostloadMixes* for postloading.
 This section it is just a sorted list of filenames. 
 
 Example:

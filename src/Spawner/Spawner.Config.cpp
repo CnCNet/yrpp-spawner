@@ -23,9 +23,7 @@
 #include <CCINIClass.h>
 #include <MixFileClass.h>
 
-constexpr const char* NONE_STR = "<none>";
-
-inline void ReadFiles(CCINIClass* pINI, const char* pSection, std::list<std::pair<int, std::string>>& files)
+inline void ReadListFromSection(CCINIClass* pINI, const char* pSection, std::list<std::string>& strings)
 {
 	if (!pINI->GetSection(pSection))
 		return;
@@ -33,17 +31,12 @@ inline void ReadFiles(CCINIClass* pINI, const char* pSection, std::list<std::pai
 	const int itemsCount = pINI->GetKeyCount(pSection);
 	for (int i = 0; i < itemsCount; ++i)
 	{
-		auto		pKey			= pINI->GetKeyName(pSection, i);
-		char*	pEnd			= nullptr;
-		auto		index			= std::strtol(pKey, &pEnd, 10);
-		if (pEnd == pKey || *pEnd != 0)
-			continue;
+		auto pKey = pINI->GetKeyName(pSection, i);
+		std::string& str = strings.emplace_back(); str.resize(0x80);
+		pINI->ReadString(pSection, pKey, NONE_STR, (char*) str.c_str(), str.size()); str.resize(strlen(str.c_str()));
 
-		char fileName[0x80];
-		pINI->ReadString(pSection, pKey, "", fileName);
-
-		if (fileName[0] != 0 || _strcmpi(fileName, NONE_STR) != 0)
-			files.emplace_back(index, fileName);
+		if (str == NONE_STR)
+			strings.remove(str);
 	}
 }
 
@@ -135,16 +128,8 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
 
 	// Custom Mixes
-	ReadFiles(pINI, "mixes_preload", PreloadMixes);
-	ReadFiles(pINI, "mixes_postload", PostloadMixes);
-
-	auto predicate = [](std::pair<int, std::string> const& a, std::pair<int, std::string> const& b) -> bool
-	{
-		return a.first < b.first;
-	};
-
-	PreloadMixes.sort(predicate);
-	PostloadMixes.sort(predicate);
+	ReadListFromSection(pINI, "PreloadMixes", PreloadMixes);
+	ReadListFromSection(pINI, "PostloadMixes", PostloadMixes);
 }
 
 constexpr char* PlayerSectionArray[8] = {

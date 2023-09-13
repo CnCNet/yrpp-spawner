@@ -26,7 +26,7 @@
 
 #include <list>
 
-static std::list<MixFileClass*> CustomMixes		= {  };
+static std::list<MixFileClass*> CustomMixes = {  };
 
 inline void FreeMixes(std::list<MixFileClass*>& mixes)
 {
@@ -45,28 +45,27 @@ DEFINE_HOOK(0x5301AC, InitBootstrapMixfiles_CustomMixes_Preload, 0x5)
 {
 	FreeMixes(CustomMixes);
 
-	auto	config	= Spawner::GetConfig();
-	for (auto& pair : config->PreloadMixes)
+	auto config = Spawner::GetConfig();
+	for (auto& mixName : config->PreloadMixes)
 	{
-		CustomMixes.push_back(GameCreate<MixFileClass>(pair.second.c_str()));
-		Debug::Log(" %s ", pair.second.c_str());
+		CustomMixes.push_back(GameCreate<MixFileClass>(mixName.c_str()));
+		Debug::Log("%s ", mixName.c_str());
 	}
 
 	// Any 'mode' mixes should be loaded after user custom mixes to prevent overload it.
 	if (Ra2Mode::IsEnabled())
-		CustomMixes.push_back(GameCreate<MixFileClass>(Ra2Mode::MixFileName));
+		CustomMixes.push_back(GameCreate<MixFileClass>("ra2mode.mix"));
 
 	return 0;
 }
 
-DEFINE_HOOK_AGAIN(0x5302E4, InitBootstrapMixfiles_CustomMixes_Postload, 0x9)
-DEFINE_HOOK(0x53044A, InitBootstrapMixfiles_CustomMixes_Postload, 0x9)
+DEFINE_HOOK(0x53044A, InitBootstrapMixfiles_CustomMixes_Postload, 0x10)
 {
-	auto	config	= Spawner::GetConfig();
-	for (auto& pair : config->PostloadMixes)
+	auto config = Spawner::GetConfig();
+	for (auto& mixName : config->PostloadMixes)
 	{
-		CustomMixes.push_back(GameCreate<MixFileClass>(pair.second.c_str()));
-		Debug::Log(" %s ", pair.second.c_str());
+		CustomMixes.push_back(GameCreate<MixFileClass>(mixName.c_str()));
+		Debug::Log("%s ", mixName.c_str());
 	}
 
 	return 0;

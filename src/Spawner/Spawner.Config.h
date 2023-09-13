@@ -23,6 +23,8 @@
 
 class CCINIClass;
 
+constexpr const char* NONE_STR = "<none>";
+
 class SpawnerConfig
 {
 
@@ -139,8 +141,10 @@ public:
 	// bool RunAutoSS;
 
 	// Custom mixes
-	std::list<std::pair<int, std::string>> PreloadMixes;
-	std::list<std::pair<int, std::string>> PostloadMixes;
+	// Note: std::list and std::string will be realised followed to RAII concept. It is pretty save instead of const char*.
+
+	std::list<std::string> PreloadMixes;
+	std::list<std::string> PostloadMixes;
 
 	SpawnerConfig() // default values
 		// Game Mode Options
