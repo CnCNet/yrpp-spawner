@@ -11,7 +11,7 @@ This section it is just a sorted list of filenames.
 
 Example:
 
-> [mixes_preload] \
+> [PreloadMixes] \
 1=HTNK.mix \
 0=HTK.mix
 
