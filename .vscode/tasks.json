@@ -37,6 +37,16 @@
       "problemMatcher": []
     },
     {
+      "label": "Check editorconfig",
+      "type": "process",
+      "command": [],
+      "windows": {
+        "command": "scripts/editorconfig-checker.bat"
+      },
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
       "label": "Setup VSCode C++ extension initial configuration",
       "type": "process",
       "command": [],
