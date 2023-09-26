@@ -10,11 +10,10 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: npm install -g editorconfig-checker@4.0.2
-      - run: editorconfig-checker
+      - name: editorconfig-checker
+        run: |
+          echo "::add-matcher::.github/workflows/editorconfig-checker.matcher.json"
+          scripts/editorconfig-checker.bat
