@@ -17,8 +17,8 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Main.h>
-#include <Helpers/Macro.h>
+#include <Main.h>   
+   #include <Helpers/Macro.h>
 
 bool __stdcall DllMain(HANDLE hInstance, DWORD dwReason, LPVOID v)
 {
