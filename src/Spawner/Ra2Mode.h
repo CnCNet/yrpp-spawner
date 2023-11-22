@@ -28,5 +28,6 @@ public:
 	};
 
 	static void Apply();
-	static bool Ra2Mode::CheckSaveGameID(const char* saveGameName);
+	static bool IsNeedToApply();
+	static bool CheckSaveGameID(const char* saveGameName);
 };

@@ -112,6 +112,16 @@ void Ra2Mode::Apply()
 	}
 }
 
+bool Ra2Mode::IsNeedToApply()
+{
+	auto const pConfig = Spawner::GetConfig();
+
+	return (pConfig->Ra2Mode
+		|| (pConfig->LoadSaveGame && Ra2Mode::CheckSaveGameID(pConfig->SaveGameName))
+		|| (pConfig->IsCampaign && strstr(pConfig->ScenarioName, "RA2->"))
+	);
+}
+
 bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
 {
 	if (saveGameName[0])

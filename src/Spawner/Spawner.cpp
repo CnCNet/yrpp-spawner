@@ -75,11 +75,17 @@ bool Spawner::StartGame()
 	Spawner::Active = true;
 	Game::IsActive = true;
 
-	if (Config->IsCampaign && strstr(Config->ScenarioName, "PlayIntro->"))
+	char* pScenarioName = Config->ScenarioName;
+	if (Config->IsCampaign && strstr(pScenarioName, "RA2->"))
+	{
+		pScenarioName = pScenarioName - 1 + sizeof("RA2->");
+	}
+
+	if (Config->IsCampaign && strstr(pScenarioName, "PlayIntro->"))
 	{
 		PlayMovie_FromID("EA_WWLOGO");
-		char* introMoveName = Config->ScenarioName - 1 + sizeof("PlayIntro->");
-		PlayMovie_FromID(introMoveName);
+		pScenarioName = pScenarioName - 1 + sizeof("PlayIntro->");
+		PlayMovie_FromID(pScenarioName);
 		return false;
 	}
 
@@ -88,7 +94,7 @@ bool Spawner::StartGame()
 
 	bool result = Config->LoadSaveGame
 		? LoadSavedGame(Config->SaveGameName)
-		: StartNewScenario(Config->ScenarioName);
+		: StartNewScenario(pScenarioName);
 
 	Spawner::PrepareScreen();
 
@@ -165,22 +171,22 @@ void Spawner::AssignHouses()
 	}
 }
 
-bool Spawner::StartNewScenario(const char* scenarioName)
+bool Spawner::StartNewScenario(const char* pScenarioName)
 {
-	if (scenarioName[0] == 0)
+	if (pScenarioName[0] == 0)
 	{
 		MessageBox::Show(
 			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
 			StringTable::LoadString(GameStrings::TXT_OK),
 			0);
-		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", scenarioName);
+		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
 		return false;
 	}
 
 	const auto pSession = &SessionClass::Instance;
 	const auto pGameModeOptions = &GameModeOptionsClass::Instance;
 
-	strcpy_s(&Game::ScenarioName, 0x200, scenarioName);
+	strcpy_s(&Game::ScenarioName, 0x200, pScenarioName);
 	pSession->ReadScenarioDescriptions();
 
 	{ // Set MPGameMode
@@ -292,16 +298,16 @@ bool Spawner::StartNewScenario(const char* scenarioName)
 	if (SessionClass::IsCampaign())
 	{
 		pGameModeOptions->Crates = true;
-		return ScenarioClass::StartScenario(scenarioName, 1, 0);
+		return ScenarioClass::StartScenario(pScenarioName, 1, 0);
 	}
 	else if (SessionClass::IsSkirmish())
 	{
-		return ScenarioClass::StartScenario(scenarioName, 0, -1);
+		return ScenarioClass::StartScenario(pScenarioName, 0, -1);
 	}
 	else
 	{
 		Spawner::InitNetwork();
-		if (!ScenarioClass::StartScenario(scenarioName, 0, -1))
+		if (!ScenarioClass::StartScenario(pScenarioName, 0, -1))
 			return false;
 
 		pSession->GameMode = GameMode::LAN;
