@@ -129,8 +129,9 @@ namespace MPlayerDefeated
 
 DEFINE_HOOK(0x4FC0B6, HouseClass__MPlayerDefeated_SaveArgument, 0x5)
 {
-	if (Spawner::Enabled || !SessionClass::IsCampaign())
-		MPlayerDefeated::pThis = R->ECX<HouseClass*>();
+	MPlayerDefeated::pThis = (Spawner::Enabled && !SessionClass::IsCampaign())
+		? R->ECX<HouseClass*>()
+		: nullptr;
 
 	return 0;
 }
