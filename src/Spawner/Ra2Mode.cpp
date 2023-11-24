@@ -153,3 +153,47 @@ DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)
 		? 0x70059D
 		: 0x7005E6;
 }
+
+// Allow to repair the BlackHawk Transport on service depot
+#pragma region AllowRepairFlyMZone
+
+// The idea is to skip the check at 0x740193.
+// HOWEVER, Phobos overrides it, so we must set the MovementZone to Normal before the hook, and after change it back to Fly.
+// https://github.com/Phobos-developers/Phobos/blob/cc30457162a5f3b9f089356aad75cba017c0d39b/src/Ext/Techno/Hooks.Grinding.cpp#L120
+namespace RepairFlyMZone
+{
+	UnitTypeClass* pUnitType = nullptr;
+}
+
+DEFINE_HOOK_AGAIN(0x740006, UnitClass_WhatAction__AllowRepairFlyMZone_Prefix, 0x5)
+DEFINE_HOOK(0x74012A, UnitClass_WhatAction__AllowRepairFlyMZone_Prefix, 0x6)
+{
+	const DWORD returnAddress = (R->Origin() == 0x74012A)
+		? 0
+		: 0x740130;
+
+	if (!Ra2Mode::IsEnabled())
+		return returnAddress;
+
+	GET(UnitClass*, pThis, ESI);
+	if (pThis->Type->MovementZone == MovementZone::Fly)
+	{
+		RepairFlyMZone::pUnitType = pThis->Type;
+		RepairFlyMZone::pUnitType->MovementZone = MovementZone::Normal;
+	}
+
+	return returnAddress;
+}
+
+DEFINE_HOOK(0x7401C1, UnitClass_WhatAction__AllowRepairFlyMZone_Suffix, 0x6)
+{
+	if (RepairFlyMZone::pUnitType)
+	{
+		RepairFlyMZone::pUnitType->MovementZone = MovementZone::Fly;
+		RepairFlyMZone::pUnitType = nullptr;
+	}
+
+	return 0;
+}
+
+#pragma endregion AllowRepairFlyMZone
