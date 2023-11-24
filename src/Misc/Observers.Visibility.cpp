@@ -178,7 +178,7 @@ DEFINE_HOOK(0x4DEDC3, FootClass_GetImageData_Desguise, 0x6)
 }
 
 // Show real name of spy for observer
-DEFINE_HOOK(0x4DEDC3, InfantryClass_FullName_Desguise, 0x6)
+DEFINE_HOOK(0x51F2F3, InfantryClass_FullName_Desguise, 0x6)
 {
 	return HouseClass::IsCurrentPlayerObserver()
 		? 0x51F31A
