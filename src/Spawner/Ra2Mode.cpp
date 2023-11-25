@@ -197,3 +197,15 @@ DEFINE_HOOK(0x7401C1, UnitClass_WhatAction__AllowRepairFlyMZone_Suffix, 0x6)
 }
 
 #pragma endregion AllowRepairFlyMZone
+
+// Ore Purifier should work on low power in YR, but not in RA2
+DEFINE_HOOK(0x73E3DB, UnitClass_MissionUnload__CheckPowerBeforeOrePurifier, 0x6)
+{
+	if (!Ra2Mode::IsEnabled())
+		return 0;
+
+	GET(HouseClass*, pHouse, EBX);
+	R->EAX(pHouse->HasFullPower() ? pHouse->NumOrePurifiers : 0);
+
+	return 0x73E3DB + 0x6;
+}
