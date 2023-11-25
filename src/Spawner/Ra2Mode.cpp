@@ -22,6 +22,7 @@
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <BuildingClass.h>
+#include <CellClass.h>
 #include <HouseClass.h>
 #include <LoadOptionsClass.h>
 
@@ -55,6 +56,11 @@ void Ra2Mode::Apply()
 
 	// Don't show minimap on Load screen
 	Patch::Apply_LJMP(0x553686, 0x553686 + 6);
+
+	{ // Allows to detect disguise units with Psychic Sensor
+		Patch::Apply_CALL(0x45591E, GET_OFFSET(DetectDisguiseHack::Sensors_AddOfHouse));
+		Patch::Apply_CALL(0x4557B7, GET_OFFSET(DetectDisguiseHack::Sensors_RemOfHouse));
+	}
 
 	{ // Use classic border style for UI items
 		// GroupBoxCtrl
@@ -136,6 +142,24 @@ bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
 
 	return false;
 }
+
+// Allows to detect disguise units with Psychic Sensor
+#pragma region DetectDisguiseHack
+
+// This is a very dirty hack that changes the behavior of the SensorArray logic re-implemented in Ares
+// The SensorArray logic works with the SensorsOfHouses array, and here we additionally process the DisguiseSensorsOfHouses array
+void __fastcall Ra2Mode::DetectDisguiseHack::Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx)
+{
+	pThis->Sensors_AddOfHouse(idx);
+	pThis->DisguiseSensors_AddOfHouse(idx);
+}
+
+void __fastcall Ra2Mode::DetectDisguiseHack::Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx)
+{
+	pThis->Sensors_RemOfHouse(idx);
+	pThis->DisguiseSensors_RemOfHouse(idx);
+}
+#pragma endregion DetectDisguiseHack
 
 // Allow allies to repair on service depot
 DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)

@@ -18,6 +18,8 @@
 */
 
 #pragma once
+class CellClass;
+
 class Ra2Mode
 {
 	static bool Enabled;
@@ -30,4 +32,10 @@ public:
 	static void Apply();
 	static bool IsNeedToApply();
 	static bool CheckSaveGameID(const char* saveGameName);
+
+	struct DetectDisguiseHack
+	{
+		static void __fastcall Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx);
+		static void __fastcall Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx);
+	};
 };
