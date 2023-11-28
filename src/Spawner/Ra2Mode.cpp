@@ -60,6 +60,9 @@ void Ra2Mode::Apply()
 	{ // Allows to detect disguise units with Psychic Sensor
 		Patch::Apply_CALL(0x45591E, GET_OFFSET(DetectDisguiseHack::Sensors_AddOfHouse));
 		Patch::Apply_CALL(0x4557B7, GET_OFFSET(DetectDisguiseHack::Sensors_RemOfHouse));
+
+		Patch::Apply_RAW(0x455980, { 0xC2, 0x04, 0x00  /* retn 4 */ }); // BuildingClass_DisguiseDetectorDeactivate
+		Patch::Apply_RAW(0x455A80, { 0xC2, 0x04, 0x00  /* retn 4 */ }); // BuildingClass_DisguiseDetectorActivate
 	}
 
 	{ // Use classic border style for UI items
