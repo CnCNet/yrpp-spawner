@@ -16,31 +16,56 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
+#include "Spawner.h"
 #include "Ra2Mode.h"
 
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
+
 #include <MixFileClass.h>
 
-MixFileClass *Ra2ModeMIX = nullptr;
+#include <list>
+
+static std::list<MixFileClass*> CustomMixes = {  };
+
+inline void FreeMixes(std::list<MixFileClass*>& mixes)
+{
+	for (auto pMix : CustomMixes)
+		GameDelete(pMix);
+	CustomMixes.clear();
+}
 
 DEFINE_HOOK(0x6BE9BD, ProgEnd_CustomMixes, 0x6)
 {
-	if (Ra2ModeMIX)
+	FreeMixes(CustomMixes);
+	return 0;
+}
+
+DEFINE_HOOK(0x5301AC, InitBootstrapMixfiles_CustomMixes_Preload, 0x5)
+{
+	FreeMixes(CustomMixes);
+
+	auto config = Spawner::GetConfig();
+	for (auto& mixName : config->PreloadMixes)
 	{
-		GameDelete(Ra2ModeMIX);
-		Ra2ModeMIX = nullptr;
+		CustomMixes.push_back(GameCreate<MixFileClass>(mixName.c_str()));
+		Debug::Log("%s ", mixName.c_str());
 	}
+
+	// Any 'mode' mixes should be loaded after user custom mixes to prevent overload it.
+	if (Ra2Mode::IsEnabled())
+		CustomMixes.push_back(GameCreate<MixFileClass>("ra2mode.mix"));
 
 	return 0;
 }
 
-DEFINE_HOOK(0x5301AC, InitBootstrapMixfiles_CustomMixes, 0x5)
+DEFINE_HOOK(0x53044A, InitBootstrapMixfiles_CustomMixes_Postload, 0x10)
 {
-	ProgEnd_CustomMixes(R);
-
-	if (Ra2Mode::IsEnabled())
+	auto config = Spawner::GetConfig();
+	for (auto& mixName : config->PostloadMixes)
 	{
-		Ra2ModeMIX = GameCreate<MixFileClass>("ra2mode.mix");
+		CustomMixes.push_back(GameCreate<MixFileClass>(mixName.c_str()));
+		Debug::Log("%s ", mixName.c_str());
 	}
 
 	return 0;

@@ -21,6 +21,24 @@
 #include "Spawner.Config.h"
 
 #include <CCINIClass.h>
+#include <MixFileClass.h>
+
+inline void ReadListFromSection(CCINIClass* pINI, const char* pSection, std::list<std::string>& strings)
+{
+	if (!pINI->GetSection(pSection))
+		return;
+
+	const int itemsCount = pINI->GetKeyCount(pSection);
+	for (int i = 0; i < itemsCount; ++i)
+	{
+		auto pKey = pINI->GetKeyName(pSection, i);
+		std::string& str = strings.emplace_back(); str.resize(0x80);
+		pINI->ReadString(pSection, pKey, NONE_STR, (char*) str.c_str(), str.size()); str.resize(strlen(str.c_str()));
+
+		if (str == NONE_STR)
+			strings.remove(str);
+	}
+}
 
 void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 {
@@ -108,6 +126,10 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// TODO:
 	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
+
+	// Custom Mixes
+	ReadListFromSection(pINI, "PreloadMixes", PreloadMixes);
+	ReadListFromSection(pINI, "PostloadMixes", PostloadMixes);
 }
 
 constexpr char* PlayerSectionArray[8] = {
