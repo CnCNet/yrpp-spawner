@@ -99,15 +99,13 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 
 	// Extended Options
 	Ra2Mode                  = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode);
+	QuickMatch               = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 	SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
 	WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
 	AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
 	ContinueWithoutHumans    = pINI->ReadBool(pSettingsSection, "ContinueWithoutHumans", ContinueWithoutHumans);
 	DefeatedBecomesObserver  = pINI->ReadBool(pSettingsSection, "DefeatedBecomesObserver", DefeatedBecomesObserver);
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
-	// TODO:
-	// QuickMatch       = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
-	// RunAutoSS        = pINI->ReadBool(pSettingsSection, "RunAutoSS", RunAutoSS);
 }
 
 constexpr char* PlayerSectionArray[8] = {

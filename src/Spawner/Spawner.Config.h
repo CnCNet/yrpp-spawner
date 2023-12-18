@@ -127,15 +127,13 @@ public:
 
 	// Extended Options
 	bool Ra2Mode;
+	bool QuickMatch;
 	bool SkipScoreScreen;
 	bool WriteStatistics;
 	bool AINamesByDifficulty;
 	bool ContinueWithoutHumans;
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
-	// TODO:
-	// bool QuickMatch;
-	// bool RunAutoSS;
 
 	SpawnerConfig() // default values
 		// Game Mode Options
@@ -215,15 +213,13 @@ public:
 
 		// Extended Options
 		, Ra2Mode { false }
+		, QuickMatch { false }
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
 		, WriteStatistics { false }
 		, AINamesByDifficulty { false }
 		, ContinueWithoutHumans { false }
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
-		// TODO:
-		// , QuickMatch { false }
-		// , RunAutoSS { false }
 	{ }
 
 	void LoadFromINIFile(CCINIClass* pINI);

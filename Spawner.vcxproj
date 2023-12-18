@@ -46,6 +46,7 @@
     <ClCompile Include="src\Spawner\ProtocolZero.cpp" />
     <ClCompile Include="src\Spawner\ProtocolZero.Hook.cpp" />
     <ClCompile Include="src\Spawner\ProtocolZero.LatencyLevel.cpp" />
+    <ClCompile Include="src\Spawner\QuickMatch.cpp" />
     <ClCompile Include="src\Spawner\Ra2Mode.cpp" />
     <ClCompile Include="src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="src\Spawner\RandomMap.cpp" />
