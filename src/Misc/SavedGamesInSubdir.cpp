@@ -132,7 +132,7 @@ DEFINE_HOOK(0x559C98, LoadOptionsClass_HasSaves_SGInSubdir, 0xB)
 	R->EAX(pFileName);
 	R->EDX(pFindFileData);
 
-	return 0x559CA3; // this is 0x559C98 + 0xB
+	return 0x559C98 + 0xB;
 }
 
 // Fill a list of files
@@ -150,7 +150,7 @@ DEFINE_HOOK(0x559886, LoadOptionsClass_FillList_SGInSubdir, 0x8)
 	HANDLE result = FindFirstFileA(pFileName, pFind);
 	R->EAX(result);
 
-	return 0x55988E; // this is 0x559886 + 0x8
+	return 0x559886 + 0x8;
 }
 
 DEFINE_HOOK(0x67FD26, LoadOptionsClass_ReadSaveInfo_SGInSubdir, 0x5)
