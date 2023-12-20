@@ -166,7 +166,7 @@ public:
 		, IsCampaign { false }
 		, Tournament { 0 }
 		, WOLGameID { 0xDEADBEEF }
-		, ScenarioName { "" }
+		, ScenarioName { "spawnmap.ini" }
 		, MapHash { "" }
 		, UIMapName { L"" }
 
