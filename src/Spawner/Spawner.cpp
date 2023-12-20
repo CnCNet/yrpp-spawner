@@ -21,6 +21,7 @@
 #include "Spawner.h"
 #include "Nethack.h"
 #include "ProtocolZero.h"
+#include "ProtocolZero.LatencyLevel.h"
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
 
@@ -361,7 +362,11 @@ void Spawner::InitNetwork()
 	if (Spawner::Config->Protocol == 0)
 	{
 		ProtocolZero::Enable = true;
-		ProtocolZero::MaxLatencyLevel = Spawner::Config->MaxLatencyLevel;
+		ProtocolZero::MaxLatencyLevel = std::clamp(
+			Spawner::Config->MaxLatencyLevel,
+			(byte)LatencyLevelEnum::LATENCY_LEVEL_1,
+			(byte)LatencyLevelEnum::LATENCY_LEVEL_MAX
+		);
 		Game::Network::FrameSendRate = 2;
 		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
 	}
