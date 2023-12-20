@@ -108,15 +108,23 @@ void Spawner::AssignHouses()
 {
 	ScenarioClass::AssignHouses();
 
-	int count = std::min(HouseClass::Array->Count, 8);
+	const int count = std::min(HouseClass::Array->Count, 8);
 	for (int indexOfHouseArray = 0; indexOfHouseArray < count; indexOfHouseArray++)
 	{
 		const auto pHouse = HouseClass::Array->GetItem(indexOfHouseArray);
-		const auto pHousesConfig = &Spawner::Config->Houses[indexOfHouseArray];
 
 		if (pHouse->Type->MultiplayPassive)
 			continue;
 
+		const auto pHousesConfig = &Spawner::Config->Houses[indexOfHouseArray];
+		const int nSpawnLocations = pHousesConfig->SpawnLocations;
+		const bool isObserver = pHouse->IsHumanPlayer && (
+			pHousesConfig->IsObserver
+			|| nSpawnLocations == -1
+			|| nSpawnLocations == 90
+		);
+
+		// Set Alliances
 		for (int i = 0; i < 8; i++)
 		{
 			const int alliesIndex = pHousesConfig->Alliances[i];
@@ -145,15 +153,14 @@ void Spawner::AssignHouses()
 			}
 		}
 
-		if (!pHouse->IsHumanPlayer || !(pHousesConfig->IsObserver || pHousesConfig->SpawnLocations == 90))
+		// Set SpawnLocations
+		if (!isObserver)
 		{
-			int nSpawnLocations = pHousesConfig->SpawnLocations;
-			if (nSpawnLocations != -2)
-				nSpawnLocations = std::clamp(nSpawnLocations, 0, 7);
-
-			pHouse->StartingPoint = nSpawnLocations;
+			pHouse->StartingPoint = (nSpawnLocations != -2)
+				? std::clamp(nSpawnLocations, 0, 7)
+				: nSpawnLocations;
 		}
-		else // if IsObserver
+		else
 		{
 			if (pHouse->MakeObserver())
 				TabClass::Instance->ThumbActive = false;
@@ -235,7 +242,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 			pAISlots->Difficulties[slotIndex] = pPlayerConfig->Difficulty;
 			pAISlots->Countries[slotIndex]    = pPlayerConfig->Country;
 			pAISlots->Colors[slotIndex]       = pPlayerConfig->Color;
-			pAISlots->Allies[slotIndex] = -1;
+			pAISlots->Allies[slotIndex]       = -1;
 		}
 	}
 
