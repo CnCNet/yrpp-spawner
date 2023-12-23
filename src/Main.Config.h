@@ -30,6 +30,7 @@ public:
 	bool QuickExit;
 	bool SkipScoreScreen;
 	bool DDrawHandlesClose;
+	bool SpeedControl;
 
 	bool WindowedMode;
 	bool NoWindowFrame;
@@ -47,6 +48,7 @@ public:
 		, QuickExit { false }
 		, SkipScoreScreen { false }
 		, DDrawHandlesClose { false }
+		, SpeedControl { false }
 
 		, WindowedMode { false }
 		, NoWindowFrame { false }

@@ -39,6 +39,7 @@ void MainConfig::LoadFromINIFile()
 		this->QuickExit            = pINI->ReadBool(pOptionsSection, "QuickExit", this->QuickExit);
 		this->SkipScoreScreen      = pINI->ReadBool(pOptionsSection, "SkipScoreScreen", this->SkipScoreScreen);
 		this->DDrawHandlesClose    = pINI->ReadBool(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
+		this->SpeedControl         = pINI->ReadBool(pOptionsSection, "SpeedControl", this->SpeedControl);
 	}
 
 	const char* pVideoSection = "Video";
@@ -86,6 +87,12 @@ void MainConfig::ApplyStaticOptions()
 			{
 				0x68, 0x00, 0x00, 0x0A, 0x86 // push    0x860A0000; vs 0x02CA0000
 			});
+	}
+
+	if (this->SpeedControl)
+	{
+		auto& speedControl = *reinterpret_cast<bool*>(0xA8EDDCu);
+		speedControl = true;
 	}
 
 	// Set 3rd party ddraw.dll options
