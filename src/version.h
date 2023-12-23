@@ -1,13 +1,18 @@
 #ifndef VERSION_H
 #define VERSION_H
 
+#ifdef IS_ANTICHEAT_VER
+	#define PRODUCT_NAME "YR-Spawner (AntiCheat)"
+#else
+	#define PRODUCT_NAME "YR-Spawner"
+#endif
+
+#define FILE_DESCRIPTION "CnCNet5: Spawner"
+
 #define _WSTR(x) _WSTR_(x)
 #define _WSTR_(x) L ## #x
 #define _STR(x) _STR_(x)
 #define _STR_(x) #x
-
-#define PRODUCT_NAME "YR-Spawner"
-#define FILE_DESCRIPTION "CnCNet5: Spawner"
 
 #pragma region Release build version numbering
 

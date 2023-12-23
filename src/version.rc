@@ -21,7 +21,7 @@ BEGIN
   BLOCK "040904b0"
   BEGIN
    VALUE "CompanyName", "https://cncnet.org/"
-   VALUE "ProductName", FILE_DESCRIPTION "\0"
+   VALUE "ProductName", PRODUCT_NAME "\0"
    VALUE "FileDescription", FILE_DESCRIPTION "\0"
    VALUE "FileVersion", FILE_VERSION_STR "\0"
    VALUE "ProductVersion", PRODUCT_VERSION "\0"

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32929.386
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{4A3F0CD1-23BA-4A2A-A6A2-72D7B87E0468}") = "YRpp-Spawner", "Spawner.vcxproj", "{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}"
+Project("{4A3F0CD1-23BA-4A2A-A6A2-72D7B87E0468}") = "YR-Spawner", "Spawner.vcxproj", "{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
