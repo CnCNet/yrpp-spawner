@@ -59,10 +59,9 @@ LONG __fastcall TopLevelExceptionFilter(int exception_id, _EXCEPTION_POINTERS* E
 			// A common crash that seems to happen when yuri prime mind controls a building and then dies while the user is pressing hotkeys
 			*eip = 0x55E018;
 			ExceptionInfo->ContextRecord->Esp += 8;
-			return  EXCEPTION_CONTINUE_EXECUTION;
+			return EXCEPTION_CONTINUE_EXECUTION;
 		}
 		return PrintException(exception_id, ExceptionInfo);
-		break;
 	default:
 		return PrintException(exception_id, ExceptionInfo);
 	}
