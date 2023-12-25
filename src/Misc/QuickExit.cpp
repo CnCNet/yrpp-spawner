@@ -25,20 +25,26 @@ bool RageQuit = false;
 
 DEFINE_HOOK(0x77786B, MainWindowProc_HandleRageQuit, 0x5)
 {
-	if (Main::GetConfig()->QuickExit && HouseClass::CurrentPlayer)
+	if (Main::GetConfig()->QuickExit)
 	{
-		RageQuit = true;
-		return 0x48CBAE;
+		constexpr reference<bool, 0xB0FBB8u> const ScoreStuffLoad {};
+		if (Game::IsActive && HouseClass::CurrentPlayer && !ScoreStuffLoad)
+		{
+			RageQuit = true;
+			CALL(0x6471A0);
+		}
+		else
+		{
+			ExitProcess(0);
+		}
 	}
 
 	return 0;
 }
 
-DEFINE_HOOK(0x48CC23, SpecialDialog_HandleRageQuit, 0x7)
+DEFINE_HOOK(0x623125, OwnerDrawLoop_HandleRageQuit, 0x5)
 {
-	if (!RageQuit)
-		return 0;
-
-	RageQuit = false;
-	return 0x777897;
+	return RageQuit
+		? 0x623157
+		: 0;
 }
