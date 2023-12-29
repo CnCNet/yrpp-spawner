@@ -30,6 +30,7 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CommonCrashes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.SpawnManager.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\NoCD.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
