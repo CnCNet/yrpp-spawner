@@ -23,13 +23,13 @@ public:
 	uint32_t Frame;
 	union
 	{
+		char DataBuffer[104];
+
 		struct ResponseTime2
 		{
 			char MaxAhead;
 			uint8_t LatencyLevel;
 		} ResponseTime2;
-
-		char DataBuffer[104];
 	};
 
 	bool AddEvent();

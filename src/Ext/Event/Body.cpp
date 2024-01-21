@@ -11,14 +11,11 @@ bool EventExt::AddEvent()
 
 void EventExt::RespondEvent()
 {
-	if (EventExt::IsValidType(this->Type))
+	switch (this->Type)
 	{
-		switch (this->Type)
-		{
-		case EventTypeExt::ResponseTime2:
-			ProtocolZero::HandleResponseTime2(this);
-			break;
-		}
+	case EventTypeExt::ResponseTime2:
+		ProtocolZero::HandleResponseTime2(this);
+		break;
 	}
 }
 
@@ -43,7 +40,10 @@ bool EventExt::IsValidType(EventTypeExt type)
 DEFINE_HOOK(0x4C6CC8, Networking_RespondToEvent, 0x5)
 {
 	GET(EventExt*, pEvent, ESI);
-	pEvent->RespondEvent();
+	if (EventExt::IsValidType(pEvent->Type))
+	{
+		pEvent->RespondEvent();
+	}
 
 	return 0;
 }
