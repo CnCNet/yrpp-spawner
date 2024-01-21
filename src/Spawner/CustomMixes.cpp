@@ -16,12 +16,14 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include "Ra2Mode.h"
 
 #include <Utilities/Macro.h>
 #include <MixFileClass.h>
 
-MixFileClass *Ra2ModeMIX = nullptr;
+MixFileClass* Ra2ModeMIX = nullptr;
+MixFileClass* CnCnetMIX = nullptr;
 
 DEFINE_HOOK(0x6BE9BD, ProgEnd_CustomMixes, 0x6)
 {
@@ -31,17 +33,23 @@ DEFINE_HOOK(0x6BE9BD, ProgEnd_CustomMixes, 0x6)
 		Ra2ModeMIX = nullptr;
 	}
 
+	if (CnCnetMIX)
+	{
+		GameDelete(CnCnetMIX);
+		CnCnetMIX = nullptr;
+	}
+
 	return 0;
 }
 
-DEFINE_HOOK(0x5301AC, InitBootstrapMixfiles_CustomMixes, 0x5)
+DEFINE_HOOK(0x6BD7DC, InitBootstrapMixfiles_CustomMixes, 0x5)
 {
 	ProgEnd_CustomMixes(R);
 
 	if (Ra2Mode::IsEnabled())
-	{
 		Ra2ModeMIX = GameCreate<MixFileClass>("ra2mode.mix");
-	}
+
+	CnCnetMIX = GameCreate<MixFileClass>("cncnet.mix");
 
 	return 0;
 }
