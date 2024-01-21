@@ -76,14 +76,24 @@ struct __declspec(novtable) Patch
 		Apply_CALL6(offset, reinterpret_cast<DWORD>(pointer));
 	};
 
-	static inline void Apply_OFFSET(DWORD offset, DWORD pointer)
+	static inline void Apply_VTABLE(DWORD offset, DWORD pointer)
 	{
 		Patch::Apply_TYPED<DWORD>(offset, { pointer });
 	};
 
-	static inline void Apply_OFFSET(DWORD offset, void* pointer)
+	static inline void Apply_VTABLE(DWORD offset, void* pointer)
 	{
 		Apply_OFFSET(offset, reinterpret_cast<DWORD>(pointer));
+	};
+
+	static inline void Apply_OFFSET(DWORD offset, DWORD pointer)
+	{
+		Apply_VTABLE(offset, pointer);
+	};
+
+	static inline void Apply_OFFSET(DWORD offset, void* pointer)
+	{
+		Apply_VTABLE(offset, pointer);
 	};
 };
 #pragma warning(pop)

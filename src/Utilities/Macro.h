@@ -90,16 +90,19 @@ struct _CALL6
 	{ };
 };
 
-typedef JumpType OFFSET;
-struct _OFFSET
+typedef JumpType VTABLE;
+struct _VTABLE
 {
 	DWORD pointer;
 
 	constexpr
-		_OFFSET(DWORD offset, DWORD pointer) :
+		_VTABLE(DWORD offset, DWORD pointer) :
 		pointer(pointer)
 	{ };
 };
+
+typedef JumpType OFFSET;
+typedef _VTABLE _OFFSET;
 
 #pragma warning(pop)
 #pragma pack(pop)
@@ -151,12 +154,12 @@ struct _OFFSET
 #define DEFINE_DYNAMIC_PATCH_TYPED(type, name, offset, ...)       \
 	namespace DYNAMIC_PATCH_##name                                \
 	{                                                             \
-		const byte type[] = {__VA_ARGS__};                        \
+		const type data[] = {__VA_ARGS__};                        \
 	}                                                             \
 	_ALLOCATE_DYNAMIC_PATCH(name, offset, sizeof(data), data);
 
-#define DEFINE_DYNAMIC_PATCH(type, name, offset, ...)             \
-	DEFINE_DYNAMIC_PATCH_TYPED(byte, name, offset, __VA_ARGS__
+#define DEFINE_DYNAMIC_PATCH(name, offset, ...)                   \
+	DEFINE_DYNAMIC_PATCH_TYPED(byte, name, offset, __VA_ARGS__)
 
 #define DEFINE_DYNAMIC_JUMP(jumpType, name, offset, pointer)      \
 	namespace DYNAMIC_PATCH_##name                                \
