@@ -28,7 +28,6 @@ DEFINE_HOOK(0x703A09, TechnoClass_VisualCharacter_CloakVisibility, 0x7)
 		? UseShadowyVisual
 		: CheckMutualAlliance;
 }
-DEFINE_JUMP(LJMP, 0x703A32, 0x703A46) // Replace check mutual allies by detached
 
 DEFINE_HOOK(0x45455B, BuildingClass_VisualCharacter_CloakVisibility, 0x5)
 {
@@ -38,7 +37,6 @@ DEFINE_HOOK(0x45455B, BuildingClass_VisualCharacter_CloakVisibility, 0x5)
 		? UseShadowyVisual
 		: CheckMutualAlliance;
 }
-DEFINE_JUMP(LJMP, 0x454578, 0x454588) // Replace check mutual allies by detached
 
 // Allow observers and detached allies coordthing cloaked Technos
 DEFINE_HOOK(0x692540, ScrollClass_Coordthing_TechnoClass_Cloak, 0x5)
