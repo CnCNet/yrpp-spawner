@@ -168,7 +168,7 @@ DEFINE_HOOK(0x4AE62B, DisplayClass_HelpText_Cloak, 0x5)
 // Show disguised units (Spy and Mirage) for observer
 #pragma region
 // Show spy for observer
-DEFINE_HOOK(0x4DEDC3, FootClass_GetImageData_Desguise, 0x6)
+DEFINE_HOOK(0x4DEDC3, FootClass_GetImageData_Disguise, 0x6)
 {
 	return HouseClass::IsCurrentPlayerObserver()
 		? 0x4DEE15
@@ -176,7 +176,7 @@ DEFINE_HOOK(0x4DEDC3, FootClass_GetImageData_Desguise, 0x6)
 }
 
 // Show real name of spy for observer
-DEFINE_HOOK(0x51F2F3, InfantryClass_FullName_Desguise, 0x6)
+DEFINE_HOOK(0x51F2F3, InfantryClass_FullName_Disguise, 0x6)
 {
 	return HouseClass::IsCurrentPlayerObserver()
 		? 0x51F31A
@@ -192,7 +192,7 @@ DEFINE_HOOK(0x70EE6A, TechnoClass_DisguiseBeenSeen, 0x6)
 }
 
 // Allow observers selected disguise
-DEFINE_HOOK(0x7467CA, UnitClass_CantTargetDesguise, 0x5)
+DEFINE_HOOK(0x7467CA, UnitClass_CantTargetDisguise, 0x5)
 {
 	GET(HouseClass*, pHouse, EDI);
 	return pHouse->IsObserver()

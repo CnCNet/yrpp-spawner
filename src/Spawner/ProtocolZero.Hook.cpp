@@ -10,7 +10,7 @@
 
 DEFINE_HOOK(0x55DDA0, MainLoop_AfterRender__ProtocolZero, 0x5)
 {
-	if (ProtocolZero::Enable && Spawner::Active)
+	if (ProtocolZero::Enable)
 		ProtocolZero::SendResponseTime2();
 
 	return 0;

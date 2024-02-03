@@ -19,41 +19,24 @@
 
 #include <Main.h>
 #include "Spawner.h"
-#include "Nethack.h"
+#include "NetHack.h"
 #include "ProtocolZero.h"
 #include "ProtocolZero.LatencyLevel.h"
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
 
-#include <CCINIClass.h>
 #include <GameOptionsClass.h>
 #include <GameStrings.h>
-#include <GScreenClass.h>
 #include <HouseClass.h>
 #include <IPXManagerClass.h>
 #include <LoadOptionsClass.h>
 #include <MessageBox.h>
-#include <MouseClass.h>
 #include <MPGameModeClass.h>
-#include <RulesClass.h>
 #include <ScenarioClass.h>
-#include <Surface.h>
 #include <time.h>
 #include <UDPInterfaceClass.h>
 #include <Unsorted.h>
 #include <WWMouseClass.h>
-
-void __fastcall PlayMovie_FromID(
-		const char* movieName,
-		int queue_theme = -1,
-		char use_hidden_surface1 = -1,
-		char stretch_movie = -1,
-		char use_hidden_surface2 = -1,
-		char set_state_1 = -1
-)
-{
-	JMP_STD(0x5BED40);
-}
 
 bool Spawner::Enabled = false;
 bool Spawner::Active = false;
@@ -76,31 +59,32 @@ bool Spawner::StartGame()
 	Spawner::Active = true;
 	Game::IsActive = true;
 
+	Game::InitUIStuff();
+
 	char* pScenarioName = Config->ScenarioName;
 	if (Config->IsCampaign && strstr(pScenarioName, "RA2->"))
 	{
-		pScenarioName = pScenarioName - 1 + sizeof("RA2->");
+		pScenarioName += sizeof("RA2->") - 1;
 	}
 
 	if (Config->IsCampaign && strstr(pScenarioName, "PlayIntro->"))
 	{
-		PlayMovie_FromID("EA_WWLOGO");
-		pScenarioName = pScenarioName - 1 + sizeof("PlayIntro->");
-		PlayMovie_FromID(pScenarioName);
+		Game::PlayMovie("EA_WWLOGO");
+		pScenarioName += sizeof("PlayIntro->") - 1;
+		Game::PlayMovie(pScenarioName);
 		return false;
 	}
 
-	Game::InitUIStuff();
 	Spawner::LoadSidesStuff();
 
 	bool result = Config->LoadSaveGame
 		? LoadSavedGame(Config->SaveGameName)
 		: StartNewScenario(pScenarioName);
 
-	Spawner::PrepareScreen();
-
 	if (Main::GetConfig()->DumpTypes)
 		DumperTypes::Dump();
+
+	WWMouseClass::PrepareScreen();
 
 	return result;
 }
@@ -109,7 +93,7 @@ void Spawner::AssignHouses()
 {
 	ScenarioClass::AssignHouses();
 
-	const int count = std::min(HouseClass::Array->Count, 8);
+	const int count = std::min(HouseClass::Array->Count, (int)std::size(Spawner::Config->Houses));
 	for (int indexOfHouseArray = 0; indexOfHouseArray < count; indexOfHouseArray++)
 	{
 		const auto pHouse = HouseClass::Array->GetItem(indexOfHouseArray);
@@ -126,7 +110,7 @@ void Spawner::AssignHouses()
 		);
 
 		// Set Alliances
-		for (int i = 0; i < 8; i++)
+		for (char i = 0; i < (char)std::size(pHousesConfig->Alliances); ++i)
 		{
 			const int alliesIndex = pHousesConfig->Alliances[i];
 			if (alliesIndex != -1)
@@ -167,12 +151,13 @@ void Spawner::AssignHouses()
 				TabClass::Instance->ThumbActive = false;
 
 			{ // Remove SpawnLocations for Observer
-				const auto pHouseIndices = ScenarioClass::Instance->HouseIndices;
-				for (int i = 0; i < 16; i++)
+				ScenarioClass* pScenarioClass = ScenarioClass::Instance;
+				for (char i = 0; i < (char)std::size(pScenarioClass->HouseIndices); ++i)
 				{
-					if (pHouse->ArrayIndex == pHouseIndices[i])
-						pHouseIndices[i] = -1;
+					if (pHouse->ArrayIndex == pScenarioClass->HouseIndices[i])
+						pScenarioClass->HouseIndices[i] = -1;
 				}
+
 				pHouse->StartingPoint = -1;
 			}
 		}
@@ -183,11 +168,13 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 {
 	if (pScenarioName[0] == 0)
 	{
+		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
+
 		MessageBox::Show(
 			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
 			StringTable::LoadString(GameStrings::TXT_OK),
 			0);
-		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
+
 		return false;
 	}
 
@@ -234,7 +221,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 
 	{ // Added AI Players
 		const auto pAISlots = &pGameModeOptions->AISlots;
-		for (char slotIndex = 0; slotIndex < 8; slotIndex++)
+		for (char slotIndex = 0; slotIndex < (char)std::size(pAISlots->Allies); ++slotIndex)
 		{
 			const auto pPlayerConfig = &Spawner::Config->Players[slotIndex];
 			if (pPlayerConfig->IsHuman)
@@ -248,8 +235,8 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	}
 
 	{ // Added Human Players
-		Nethack::PortHack = true;
-		const int maxPlayers = Spawner::Config->IsCampaign ? 1 : 8;
+		NetHack::PortHack = true;
+		const char maxPlayers = Spawner::Config->IsCampaign ? 1 : (char)std::size(Spawner::Config->Players);
 		for (char playerIndex = 0; playerIndex < maxPlayers; playerIndex++)
 		{
 			const auto pPlayer = &Spawner::Config->Players[playerIndex];
@@ -284,7 +271,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 				ListAddress::Array[playerIndex - 1].Ip = Ip;
 				ListAddress::Array[playerIndex - 1].Port = Port;
 				if (Port != (u_short)Spawner::Config->ListenPort)
-					Nethack::PortHack = false;
+					NetHack::PortHack = false;
 			}
 		}
 
@@ -328,11 +315,13 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 {
 	if (!saveGameName[0] || !LoadOptionsClass::LoadMission(saveGameName))
 	{
+		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
+
 		MessageBox::Show(
 			StringTable::LoadString(GameStrings::TXT_ERROR_LOADING_GAME),
 			StringTable::LoadString(GameStrings::TXT_OK),
 			0);
-		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
+
 		return false;
 	}
 
@@ -359,20 +348,19 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
-	if (Spawner::Config->Protocol == 0)
+	ProtocolZero::Enable = (Spawner::Config->Protocol == 0);
+	if (ProtocolZero::Enable)
 	{
-		ProtocolZero::Enable = true;
+		Game::Network::FrameSendRate = 2;
+		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
 		ProtocolZero::MaxLatencyLevel = std::clamp(
 			Spawner::Config->MaxLatencyLevel,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_1,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_MAX
 		);
-		Game::Network::FrameSendRate = 2;
-		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
 	}
-	else /* if (Spawner::Config->Protocol == 2) */
+	else
 	{
-		ProtocolZero::Enable = false;
 		Game::Network::FrameSendRate = Spawner::Config->FrameSendRate;
 	}
 
@@ -401,21 +389,4 @@ void Spawner::LoadSidesStuff()
 
 	for (auto const& pItem : *HouseTypeClass::Array)
 		pItem->LoadFromINI(pINI);
-}
-
-void Spawner::PrepareScreen()
-{
-	WWMouseClass::Instance->HideCursor();
-
-	DSurface::Hidden->Fill(0);
-	GScreenClass::DoBlit(true, DSurface::Hidden);
-	DSurface::Temp = DSurface::Hidden;
-
-	WWMouseClass::Instance->ShowCursor();
-
-	MouseClass::Instance->SetCursor(MouseCursorType::NoMove, false);
-	MouseClass::Instance->RestoreCursor();
-
-	TabClass::Instance->Activate();
-	MouseClass::Instance->RedrawSidebar(0);
 }

@@ -18,7 +18,7 @@
 */
 
 #include "Spawner.h"
-#include "Nethack.h"
+#include "NetHack.h"
 #include "Ra2Mode.h"
 
 #include <HouseClass.h>
@@ -49,14 +49,14 @@ DEFINE_HOOK(0x6BD7CB, WinMain_SpawnerInit, 0x5)
 			Patch::Apply_LJMP(0x686A9E, 0x686AC6); // RemoveAIPlayers
 		}
 
-		{ // Nethack
-			Patch::Apply_CALL(0x7B3D75, Nethack::SendTo);   // UDPInterfaceClass::Message_Handler
-			Patch::Apply_CALL(0x7B3EEC, Nethack::RecvFrom); // UDPInterfaceClass::Message_Handler
+		{ // NetHack
+			Patch::Apply_CALL(0x7B3D75, NetHack::SendTo);   // UDPInterfaceClass::Message_Handler
+			Patch::Apply_CALL(0x7B3EEC, NetHack::RecvFrom); // UDPInterfaceClass::Message_Handler
 		}
 
-		{ // Skip Intro, EA_WWLOGO and Loadscreen
+		{ // Skip Intro, EA_WWLOGO and LoadScreen
 			Patch::Apply_LJMP(0x52CB50, 0x52CB6E); // InitIntro_Skip
-			Patch::Apply_LJMP(0x52C5E0, 0x52C5F8); // InitGame_SkipLogoAndLoadscreen
+			Patch::Apply_LJMP(0x52C5E0, 0x52C5F8); // InitGame_SkipLogoAndLoadScreen
 		}
 
 		{ // Cooperative

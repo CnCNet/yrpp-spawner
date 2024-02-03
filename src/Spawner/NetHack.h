@@ -24,7 +24,7 @@ struct ListAddress
 	u_long  Ip;
 };
 
-class Nethack
+class NetHack
 {
 public:
 	static bool PortHack;

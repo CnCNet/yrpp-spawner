@@ -14,7 +14,7 @@
 * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#include "Nethack.h"
+#include "NetHack.h"
 #include "Spawner.h"
 
 #include <windows.h>
@@ -24,14 +24,14 @@
 
 ListAddress ListAddress::Array[8] = {};
 
-bool Nethack::PortHack = true;
+bool NetHack::PortHack = true;
 
 u_short Tunnel::Id = 0;
 u_long  Tunnel::Ip = 0;
 u_short Tunnel::Port = 0;
 
 
-int WINAPI Nethack::SendTo(
+int WINAPI NetHack::SendTo(
 	int sockfd,
 	char* buf,
 	size_t len,
@@ -55,7 +55,7 @@ int WINAPI Nethack::SendTo(
 	return Tunnel::SendTo(sockfd, buf, len, flags, &tempDest, addrlen);
 }
 
-int WINAPI Nethack::RecvFrom(
+int WINAPI NetHack::RecvFrom(
 	int sockfd,
 	char* buf,
 	size_t len,
@@ -72,7 +72,7 @@ int WINAPI Nethack::RecvFrom(
 		return ret;
 
 	// now, we need to map src_addr ip/port to index by reversing the search!
-	for (int i = 0; i < 8; i++)
+	for (char i = 0; i < (char)std::size(ListAddress::Array); ++i)
 	{
 		const auto player = ListAddress::Array[i];
 		// compare ip
@@ -80,7 +80,7 @@ int WINAPI Nethack::RecvFrom(
 			continue;
 
 		// compare port
-		if (!Nethack::PortHack && src_addr->sin_port != player.Port)
+		if (!NetHack::PortHack && src_addr->sin_port != player.Port)
 			continue;
 
 		// found it, set this index to source addr

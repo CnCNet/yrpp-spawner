@@ -50,7 +50,7 @@ void Ra2Mode::Apply()
 	// https://github.com/CnCNet/yr-patches/issues/15
 	Patch::Apply_LJMP(0x51D77A, 0x51D793);
 
-	// game expects there to be 3 baseunits
+	// game expects there to be 3 base units
 	Patch::Apply_LJMP(0x4F8EEE, 0x4F8EFE);
 	Patch::Apply_LJMP(0x4F8CEC, 0x4F8DB1);
 

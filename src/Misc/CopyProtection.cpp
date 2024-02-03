@@ -21,7 +21,7 @@
 
 // Based on https://github.com/Ares-Developers/Ares/blob/4f1d929920aca31924c6cd4d3dfa849daa65252a/src/Misc/CopyProtection.cpp
 
-// This douchebag blows your base up when it thinks you're cheating
+// This blows your base up when it thinks you're cheating
 DEFINE_JUMP(LJMP, 0x55CFDF, 0x55D059); // AuxLoop
 
 // Allows run game without the launcher

@@ -44,7 +44,7 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Config.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Spawner\Nethack.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.cpp" />
@@ -70,7 +70,7 @@
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
-    <ClInclude Include="$(ThisDir)\src\Spawner\Nethack.h" />
+    <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Ra2Mode.h" />

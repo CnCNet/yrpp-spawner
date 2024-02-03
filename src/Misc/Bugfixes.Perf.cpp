@@ -60,7 +60,7 @@ bool __forceinline DetailsCurrentlyEnabled()
 	return current >= wanted || current >= Detail::GetMinFrameRate();
 }
 
-DEFINE_HOOK(0x48A634, FlashbangWarheadAt_Details, 0x5)
+DEFINE_HOOK(0x48A634, FlashBangWarheadAt_Details, 0x5)
 {
 	return DetailsCurrentlyEnabled()
 		? 0x48A64A

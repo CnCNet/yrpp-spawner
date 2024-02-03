@@ -59,7 +59,7 @@ void MainConfig::ApplyStaticOptions()
 		Game::DrawMPDebugStats  = true;
 		Game::EnableMPSyncDebug = true;
 
-		// Fixes text maket in the MPDebug panel
+		// Fixes text layout in the MPDebug panel
 		Patch::Apply_TYPED<DWORD>(0x542A19, { 312 });
 		Patch::Apply_TYPED<DWORD>(0x542AA6, { 322 });
 		Patch::Apply_TYPED<DWORD>(0x542B08, { 332 });

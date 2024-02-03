@@ -133,11 +133,11 @@ DEFINE_HOOK(0x6C7989, SendStatisticsPacket_AddField_ALY, 0x6)
 		GET(HouseClass*, pHouse, ESI);
 		const char id = *reinterpret_cast<char*>(0x841F43);
 
-		char fieldALY[5] = "ALYx";
+		char fieldALY[] = "ALY*";
 		fieldALY[3] = id;
 		pPacket->AddField<DWORD>(fieldALY, pHouse->Allies.data);
 
-		char fieldBSP[5] = "BSPx";
+		char fieldBSP[] = "BSP*";
 		fieldALY[3] = id;
 		pPacket->AddField<DWORD>(fieldBSP, pHouse->GetSpawnPosition());
 	}

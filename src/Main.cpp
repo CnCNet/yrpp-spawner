@@ -62,7 +62,7 @@ void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 	Debug::Log("Initialized " PRODUCT_NAME " " PRODUCT_VERSION "\n");
 
 	// > 1 because the exe path itself counts as an argument, too!
-	for (int i = 1; i < nNumArgs; i++)
+	for (int i = 1; i < nNumArgs; ++i)
 	{
 		const char* pArg = ppArgs[i];
 

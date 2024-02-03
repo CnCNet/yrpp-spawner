@@ -134,7 +134,7 @@ DEFINE_HOOK(0x642BC3, ProgressScreenClass__GetPlayerColorSchemes, 0x5)
 		: NotAllowObserver;
 }
 
-// Enable observer sidebar bar in skirmish
+// Enable observer sidebar in skirmish
 DEFINE_HOOK(0x6A557A, SidebarClass__InitIO, 0x5)
 {
 	enum { AllowObserver = 0x6A558D, NotAllowObserver = 0x6A5830 };

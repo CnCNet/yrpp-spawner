@@ -65,7 +65,7 @@ DEFINE_HOOK(0x688564, ScenStruct_ScenStruct_RandomMap, 0x6)
 	return 0;
 }
 
-// Hack rmp to read the sceanrio for unit mods and stuff
+// Hack rmp to read the scenario for unit mods and stuff
 DEFINE_HOOK(0x5997AB, MapGeneratorClass_Init_RandomMap, 0x9)
 {
 	if (Spawner::Enabled)

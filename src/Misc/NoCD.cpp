@@ -22,6 +22,7 @@
 
 #include <Utilities/Macro.h>
 #include <Utilities/Debug.h>
+#include <xutility>
 
 // Based on https://github.com/Ares-Developers/Ares/blob/4f1d929920aca31924c6cd4d3dfa849daa65252a/src/Misc/CopyProtection.cpp
 //      and https://github.com/Ares-Developers/Ares/blob/4f1d929920aca31924c6cd4d3dfa849daa65252a/src/Ares.cpp#L155
@@ -70,15 +71,16 @@ void NoCD::Apply()
 
 	// CD switch behavior changed to support true No-CD mode with no need to still have a drive
 	// Also, this should improve performance considerably when no disc is inserted into any CD drive
-	memset(GetCDClass::Instance->Drives, -1, 26);
+	char numOfDrives = (char)std::size(GetCDClass::Instance->Drives);
+	memset(GetCDClass::Instance->Drives, -1, numOfDrives);
 
 	char drv[] = "a:\\";
-	for (int i = 0; i < 26; ++i)
+	for (char i = 0; i < numOfDrives; ++i)
 	{
-		drv[0] = 'a' + (i + 2) % 26;
+		drv[0] = 'a' + (i + 2) % numOfDrives;
 		if (GetDriveTypeA(drv) == DRIVE_FIXED)
 		{
-			GetCDClass::Instance->Drives[0] = (i + 2) % 26;
+			GetCDClass::Instance->Drives[0] = (i + 2) % numOfDrives;
 			GetCDClass::Instance->Count = 1;
 			break;
 		}

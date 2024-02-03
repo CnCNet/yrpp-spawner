@@ -79,7 +79,7 @@ DEFINE_HOOK(0x60C43B, EnumChildProc_60C0C0, 0x5)
 // allow hires modes
 DEFINE_JUMP(LJMP, 0x56017A, 0x560183) // OptionsDlg_WndProc_RemoveResLimit
 
-// skip the allowhires check entirely - all supported 16bit modes are accepted, should make net resolution limit stfu
+// skip the allowhires check entirely - all supported 16bit modes are accepted
 DEFINE_JUMP(LJMP, 0x5601E3, 0x5601FC) // OptionsDlg_WndProc_RemoveHiResCheck
 
 // Fixes the layout for some screen resolutions, for example 1152x648

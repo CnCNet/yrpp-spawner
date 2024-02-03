@@ -46,5 +46,4 @@ private:
 
 	static void InitNetwork();
 	static void LoadSidesStuff();
-	static void PrepareScreen();
 };

@@ -101,7 +101,7 @@ public:
 	int  Tournament;
 	DWORD WOLGameID;
 	char ScenarioName[60];
-	char MapHash[255];
+	char MapHash[0xff];
 	wchar_t UIMapName[45];
 
 	// Network Options

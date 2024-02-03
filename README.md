@@ -5,13 +5,13 @@ Downloads
 Building manually
 -----------------
 
-1. Install **Visual Studio** (2019 is recommended, 2017 is minimum) with the dependencies listed in `.vsconfig` (it will prompt you to install missing dependences when you open the project, or you can run VS installer and import the config). If you prefer to use **Visual Studio Code** you may install **VS Build Tools** with the dependencies from `.vsconfig` instead. Not using a code editor or IDE and building via **command line scripts** included with the project is also an option.
+1. Install **Visual Studio** (2019 is recommended, 2017 is minimum) with the dependencies listed in `.vsconfig` (it will prompt you to install missing dependencies when you open the project, or you can run VS installer and import the config). If you prefer to use **Visual Studio Code** you may install **VS Build Tools** with the dependencies from `.vsconfig` instead. Not using a code editor or IDE and building via **command line scripts** included with the project is also an option.
 2. Clone this repo recursively via your favorite git client (that will also clone YRpp).
 3. To build the extension:
    - in Visual Studio: open the solution file in VS and build it (`Debug` build config is recommended);
    - in VSCode: open the project folder and hit `Run Build Task...` (`Ctrl + Shift + B`);
    - barebones: run `scripts/build_debug.bat`.
-4. Upon build completion the resulting `cncnet5.dll` and `cncnet5.pdb` would be placed in the subfolder identical to the name of the buildconfig executed.
+4. Upon build completion the resulting `cncnet5.dll` and `cncnet5.pdb` would be placed in the subfolder identical to the name of the build config executed.
 
 Credits
 -------

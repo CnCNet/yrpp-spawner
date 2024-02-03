@@ -73,7 +73,7 @@ void ProtocolZero::HandleResponseTime2(EventExt* event)
 	uint8_t setLatencyMode = 0;
 	int maxMaxAheads = 0;
 
-	for (char i = 0; i < 8; ++i)
+	for (char i = 0; i < (char)std::size(PlayerMaxAheads); ++i)
 	{
 		if (Unsorted::CurrentFrame >= (PlayerLastTimingFrame[i] + (SendResponseTimeInterval * 4)))
 		{

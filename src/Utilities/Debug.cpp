@@ -76,7 +76,7 @@ void Debug::FatalErrorAndExit(ExitCode nExitCode, const char* pFormat, ...)
 	FatalExit(static_cast<int>(nExitCode));
 }
 
-DEFINE_PATCH( // Add new line after "Init Secondary Mixfiles....."
+DEFINE_PATCH( // Add new line after "Init Secondary MixFiles....."
 	/* Offset */ 0x825F9B,
 	/*   Data */ '\n'
 );

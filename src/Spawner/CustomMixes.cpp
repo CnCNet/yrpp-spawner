@@ -42,7 +42,7 @@ DEFINE_HOOK(0x6BE9BD, ProgEnd_CustomMixes, 0x6)
 	return 0;
 }
 
-DEFINE_HOOK(0x6BD7DC, InitBootstrapMixfiles_CustomMixes, 0x5)
+DEFINE_HOOK(0x6BD7DC, InitBootstrapMixFiles_CustomMixes, 0x5)
 {
 	ProgEnd_CustomMixes(R);
 
