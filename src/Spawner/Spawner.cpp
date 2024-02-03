@@ -62,17 +62,22 @@ bool Spawner::StartGame()
 	Game::InitUIStuff();
 
 	char* pScenarioName = Config->ScenarioName;
-	if (Config->IsCampaign && strstr(pScenarioName, "RA2->"))
-	{
-		pScenarioName += sizeof("RA2->") - 1;
-	}
 
-	if (Config->IsCampaign && strstr(pScenarioName, "PlayIntro->"))
+	if (Config->IsCampaign)
 	{
-		Game::PlayMovie("EA_WWLOGO");
-		pScenarioName += sizeof("PlayIntro->") - 1;
-		Game::PlayMovie(pScenarioName);
-		return false;
+		if (strstr(pScenarioName, "RA2->"))
+			pScenarioName += sizeof("RA2->") - 1;
+
+		if (strstr(pScenarioName, "PlayMovies->"))
+		{
+			pScenarioName += sizeof("PlayMovies->") - 1;
+			char* context = nullptr;
+			char* movieName = strtok_s(pScenarioName, Main::readDelims, &context);
+			for (; movieName; movieName = strtok_s(nullptr, Main::readDelims, &context))
+				Game::PlayMovie(movieName);
+
+			return false;
+		}
 	}
 
 	Spawner::LoadSidesStuff();

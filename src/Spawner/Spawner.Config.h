@@ -100,7 +100,7 @@ public:
 	bool IsCampaign;
 	int  Tournament;
 	DWORD WOLGameID;
-	char ScenarioName[60];
+	char ScenarioName[260];
 	char MapHash[0xff];
 	wchar_t UIMapName[45];
 
