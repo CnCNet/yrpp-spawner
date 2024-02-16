@@ -40,6 +40,7 @@ void MainConfig::LoadFromINIFile()
 		this->SkipScoreScreen      = pINI->ReadBool(pOptionsSection, "SkipScoreScreen", this->SkipScoreScreen);
 		this->DDrawHandlesClose    = pINI->ReadBool(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
 		this->SpeedControl         = pINI->ReadBool(pOptionsSection, "SpeedControl", this->SpeedControl);
+		this->AllowTaunts          = pINI->ReadBool(pOptionsSection, "AllowTaunts", this->AllowTaunts);
 	}
 
 	const char* pVideoSection = "Video";
@@ -94,6 +95,9 @@ void MainConfig::ApplyStaticOptions()
 		auto& speedControl = *reinterpret_cast<bool*>(0xA8EDDCu);
 		speedControl = true;
 	}
+
+	auto& LANTaunts = *reinterpret_cast<bool*>(0xA8D110u);
+	LANTaunts = this->AllowTaunts;
 
 	// Set 3rd party ddraw.dll options
 	if (HMODULE hDDraw = LoadLibraryA("ddraw.dll"))

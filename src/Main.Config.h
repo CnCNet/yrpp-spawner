@@ -36,6 +36,8 @@ public:
 	bool NoWindowFrame;
 	int  DDrawTargetFPS;
 
+	bool AllowTaunts;
+
 	void LoadFromINIFile();
 	void ApplyStaticOptions();
 
@@ -53,5 +55,7 @@ public:
 		, WindowedMode { false }
 		, NoWindowFrame { false }
 		, DDrawTargetFPS { -1 }
+
+		, AllowTaunts { true }
 	{ }
 };
