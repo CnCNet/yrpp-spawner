@@ -20,6 +20,7 @@
 #include <Main.h>
 #include <Helpers/Macro.h>
 #include <HouseClass.h>
+#include <EventClass.h>
 
 bool RageQuit = false;
 
@@ -31,7 +32,8 @@ DEFINE_HOOK(0x77786B, MainWindowProc_HandleRageQuit, 0x5)
 		if (Game::IsActive && HouseClass::CurrentPlayer && !ScoreStuffLoad)
 		{
 			RageQuit = true;
-			CALL(0x6471A0);
+			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::DESTRUCT));
+			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::EXIT));
 		}
 		else
 		{
