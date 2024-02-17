@@ -54,30 +54,26 @@ void Spawner::Init()
 bool Spawner::StartGame()
 {
 	if (Spawner::Active)
-		return 0;
+		return false;
 
 	Spawner::Active = true;
 	Game::IsActive = true;
-
 	Game::InitUIStuff();
 
 	char* pScenarioName = Config->ScenarioName;
 
-	if (Config->IsCampaign)
+	if (strstr(pScenarioName, "RA2->"))
+		pScenarioName += sizeof("RA2->") - 1;
+
+	if (strstr(pScenarioName, "PlayMovies->"))
 	{
-		if (strstr(pScenarioName, "RA2->"))
-			pScenarioName += sizeof("RA2->") - 1;
+		pScenarioName += sizeof("PlayMovies->") - 1;
+		char* context = nullptr;
+		char* movieName = strtok_s(pScenarioName, Main::readDelims, &context);
+		for (; movieName; movieName = strtok_s(nullptr, Main::readDelims, &context))
+			Game::PlayMovie(movieName);
 
-		if (strstr(pScenarioName, "PlayMovies->"))
-		{
-			pScenarioName += sizeof("PlayMovies->") - 1;
-			char* context = nullptr;
-			char* movieName = strtok_s(pScenarioName, Main::readDelims, &context);
-			for (; movieName; movieName = strtok_s(nullptr, Main::readDelims, &context))
-				Game::PlayMovie(movieName);
-
-			return false;
-		}
+		return false;
 	}
 
 	Spawner::LoadSidesStuff();
