@@ -26,15 +26,12 @@
 
 namespace SavedGames
 {
-	constexpr auto DirName = "Saved Games"; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
-	constexpr auto FileNamePrefixFormat = "%s\\%s";
-
 	inline bool CreateSubdir()
 	{
-		if (!std::filesystem::exists(SavedGames::DirName))
+		if (!std::filesystem::exists(Spawner::GetConfig()->SavedGameDir))
 		{
 			Debug::Log("\n[Spawner] Folder Saved Games does not exist, creating...\n");
-			if (!std::filesystem::create_directories(SavedGames::DirName))
+			if (!std::filesystem::create_directories(Spawner::GetConfig()->SavedGameDir))
 			{
 				Debug::Log("\tCannot create folder Saved Games!\n");
 				return false;
@@ -46,7 +43,7 @@ namespace SavedGames
 
 	inline void FormatPath(char* buffer, const char* pFileName)
 	{
-		sprintf(buffer, SavedGames::FileNamePrefixFormat, SavedGames::DirName, pFileName);
+		sprintf(buffer, "%s\\%s", Spawner::GetConfig()->SavedGameDir, pFileName);
 	}
 }
 

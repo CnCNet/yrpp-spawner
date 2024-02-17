@@ -92,6 +92,7 @@ public:
 
 	// SaveGame Options
 	bool LoadSaveGame;
+	char SavedGameDir[MAX_PATH]; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
 	char SaveGameName[60];
 
 	// Scenario Options
@@ -158,6 +159,7 @@ public:
 
 		// SaveGame
 		, LoadSaveGame { false }
+		, SavedGameDir { "Saved Games" }
 		, SaveGameName { "" }
 
 		// Scenario Options
