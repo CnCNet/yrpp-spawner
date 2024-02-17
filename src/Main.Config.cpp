@@ -41,6 +41,7 @@ void MainConfig::LoadFromINIFile()
 		this->DDrawHandlesClose    = pINI->ReadBool(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
 		this->SpeedControl         = pINI->ReadBool(pOptionsSection, "SpeedControl", this->SpeedControl);
 		this->AllowTaunts          = pINI->ReadBool(pOptionsSection, "AllowTaunts", this->AllowTaunts);
+		this->AllowChat            = pINI->ReadBool(pOptionsSection, "AllowChat", this->AllowChat);
 	}
 
 	const char* pVideoSection = "Video";

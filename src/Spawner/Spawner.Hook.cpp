@@ -67,11 +67,6 @@ DEFINE_HOOK(0x6BD7CB, WinMain_SpawnerInit, 0x5)
 		// Set ConnTimeout
 		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); //  Scenario_Load_Wait
 
-		{ // Add support unicode player name in ingame chat
-			Patch::Apply_RAW(0x48D930, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
-			Patch::Apply_RAW(0x55F0AD, { 0x8B, 0xC1, 0x90, 0x90, 0x90 }); // mov eax, ecx
-		}
-
 		// Show GameMode in DiplomacyDialog in Skirmish
 		Patch::Apply_LJMP(0x658117, 0x658126); // RadarClass_DiplomacyDialog
 
@@ -80,16 +75,6 @@ DEFINE_HOOK(0x6BD7CB, WinMain_SpawnerInit, 0x5)
 	}
 
 	return 0;
-}
-
-// Add support unicode player name in ingame chat
-DEFINE_HOOK(0x55EDD2, MessageInput_UnicodePlayerName, 0x5)
-{
-	if (!Spawner::Enabled)
-		return 0;
-
-	wcscpy(reinterpret_cast<wchar_t*>(0xA8D63C), NodeNameType::Array->GetItem(0)->Name);
-	return 0x55EE00;
 }
 
 // Display UIGameMode if is set

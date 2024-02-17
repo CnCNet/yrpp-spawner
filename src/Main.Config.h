@@ -37,6 +37,7 @@ public:
 	int  DDrawTargetFPS;
 
 	bool AllowTaunts;
+	bool AllowChat;
 
 	void LoadFromINIFile();
 	void ApplyStaticOptions();
@@ -57,5 +58,6 @@ public:
 		, DDrawTargetFPS { -1 }
 
 		, AllowTaunts { true }
+		, AllowChat { true }
 	{ }
 };

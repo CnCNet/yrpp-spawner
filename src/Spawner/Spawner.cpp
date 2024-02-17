@@ -300,7 +300,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	{
 		return ScenarioClass::StartScenario(pScenarioName, 0, -1);
 	}
-	else
+	else /* if (SessionClass::IsMultiplayer()) */
 	{
 		Spawner::InitNetwork();
 		if (!ScenarioClass::StartScenario(pScenarioName, 0, -1))
@@ -308,6 +308,19 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 
 		pSession->GameMode = GameMode::LAN;
 		pSession->CreateConnections();
+
+		if (Main::GetConfig()->AllowChat)
+		{
+			Game::ChatMask[0] = false;
+			Game::ChatMask[1] = false;
+			Game::ChatMask[2] = false;
+			Game::ChatMask[3] = false;
+			Game::ChatMask[4] = false;
+			Game::ChatMask[5] = false;
+			Game::ChatMask[6] = false;
+			Game::ChatMask[7] = false;
+		}
+
 		return true;
 	}
 }
