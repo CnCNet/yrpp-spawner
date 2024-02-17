@@ -331,12 +331,14 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 
 void Spawner::InitNetwork()
 {
-	Tunnel::Id = htons((u_short)Spawner::Config->TunnelId);
-	Tunnel::Ip = inet_addr(Spawner::Config->TunnelIp);
-	Tunnel::Port = htons((u_short)Spawner::Config->TunnelPort);
+	const auto pSpawnerConfig = Spawner::GetConfig();
+
+	Tunnel::Id = htons((u_short)pSpawnerConfig->TunnelId);
+	Tunnel::Ip = inet_addr(pSpawnerConfig->TunnelIp);
+	Tunnel::Port = htons((u_short)pSpawnerConfig->TunnelPort);
 
 	auto& ListenPort = *reinterpret_cast<u_short*>(0x841F30u);
-	ListenPort = Tunnel::Port ? 0 : (u_short)Spawner::Config->ListenPort;
+	ListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
 
 	UDPInterfaceClass::Instance = GameCreate<UDPInterfaceClass>();
 	UDPInterfaceClass::Instance->Init();
@@ -349,33 +351,33 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
-	ProtocolZero::Enable = (Spawner::Config->Protocol == 0);
+	ProtocolZero::Enable = (pSpawnerConfig->Protocol == 0);
 	if (ProtocolZero::Enable)
 	{
 		Game::Network::FrameSendRate = 2;
-		Game::Network::PreCalcMaxAhead = Spawner::Config->PreCalcMaxAhead;
+		Game::Network::PreCalcMaxAhead = pSpawnerConfig->PreCalcMaxAhead;
 		ProtocolZero::MaxLatencyLevel = std::clamp(
-			Spawner::Config->MaxLatencyLevel,
+			pSpawnerConfig->MaxLatencyLevel,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_1,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_MAX
 		);
 	}
 	else
 	{
-		Game::Network::FrameSendRate = Spawner::Config->FrameSendRate;
+		Game::Network::FrameSendRate = pSpawnerConfig->FrameSendRate;
 	}
 
-	Game::Network::MaxAhead = Spawner::Config->MaxAhead == -1
+	Game::Network::MaxAhead = pSpawnerConfig->MaxAhead == -1
 		? Game::Network::FrameSendRate * 6
-		: Spawner::Config->MaxAhead;
+		: pSpawnerConfig->MaxAhead;
 
 	Game::Network::MaxMaxAhead      = 0;
 	Game::Network::ProtocolVersion  = 2;
 	Game::Network::LatencyFudge     = 0;
 	Game::Network::RequestedFPS     = 60;
-	Game::Network::Tournament       = Spawner::Config->Tournament;
-	Game::Network::WOLGameID        = Spawner::Config->WOLGameID;
-	Game::Network::ReconnectTimeout = Spawner::Config->ReconnectTimeout;
+	Game::Network::Tournament       = pSpawnerConfig->Tournament;
+	Game::Network::WOLGameID        = pSpawnerConfig->WOLGameID;
+	Game::Network::ReconnectTimeout = pSpawnerConfig->ReconnectTimeout;
 
 	Game::Network::Init();
 }
