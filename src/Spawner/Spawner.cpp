@@ -379,6 +379,13 @@ void Spawner::InitNetwork()
 	Game::Network::WOLGameID        = pSpawnerConfig->WOLGameID;
 	Game::Network::ReconnectTimeout = pSpawnerConfig->ReconnectTimeout;
 
+	if (pSpawnerConfig->QuickMatch)
+	{
+		Game::EnableMPDebug     = false;
+		Game::DrawMPDebugStats  = false;
+		Game::EnableMPSyncDebug = false;
+	}
+
 	Game::Network::Init();
 }
 
