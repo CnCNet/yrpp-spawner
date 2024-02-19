@@ -56,7 +56,8 @@ LONG __fastcall TopLevelExceptionFilter(int exception_id, _EXCEPTION_POINTERS* E
 	case 0x000000:
 		if (ExceptionInfo->ContextRecord->Esp && *(DWORD*)ExceptionInfo->ContextRecord->Esp == 0x55E018)
 		{
-			// A common crash that seems to happen when yuri prime mind controls a building and then dies while the user is pressing hotkeys
+			// A common crash that seems to happen when yuri prime mind controls a building
+			// and then dies while the user is pressing hotkeys
 			*eip = 0x55E018;
 			ExceptionInfo->ContextRecord->Esp += 8;
 			return EXCEPTION_CONTINUE_EXECUTION;
