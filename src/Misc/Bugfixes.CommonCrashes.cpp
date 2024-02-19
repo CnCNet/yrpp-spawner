@@ -18,7 +18,7 @@
 */
 
 #include <Utilities/Macro.h>
-#include <FootClass.h>
+#include <UnitClass.h>
 #include <EBolt.h>
 
 // Fix crash at 6F9DB6
@@ -78,13 +78,13 @@ DEFINE_HOOK(0x65DC17, DoReinforcements_FixCrash, 0x6)
 }
 
 // Fix crash at 4C2C19
-void __fastcall EBolt_SetOwnerAndWeapon_FixCrash(EBolt* pThis, void*, TechnoClass* pTechno, int pWeapon)
+void __fastcall EBolt_SetOwnerAndWeapon_FixCrash(EBolt* pThis, void*, UnitClass* pOwner, int idxWeapon)
 {
 	// vanilla code
-	if (pTechno && pTechno->WhatAmI() == AbstractType::Unit && pTechno->IsAlive && !pTechno->InLimbo)
+	if (pOwner && pOwner->WhatAmI() == AbstractType::Unit && pOwner->IsAlive && !pOwner->InLimbo)
 	{
-		pThis->Owner = pTechno;
-		pThis->WeaponSlot = pWeapon;
+		pThis->Owner = pOwner;
+		pThis->WeaponSlot = idxWeapon;
 	}
 	// correction code
 	else
