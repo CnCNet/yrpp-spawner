@@ -65,6 +65,14 @@ void Ra2Mode::Apply()
 		Patch::Apply_RAW(0x455A80, { 0xC2, 0x04, 0x00  /* retn 4 */ }); // BuildingClass_DisguiseDetectorActivate
 	}
 
+	// Force MaxControlNodes to 1
+	Patch::Apply_RAW(0x4717DC, // CaptureManagerClass_CTOR
+	{
+		0x33, 0xD2, // xor edx,edx
+		0x42,       // inc edx
+		NOP_OPCODE
+	});
+
 	{ // Use classic border style for UI items
 		// GroupBoxCtrl
 		Patch::Apply_LJMP(0x61EC64, 0x61EC75);
@@ -78,7 +86,7 @@ void Ra2Mode::Apply()
 		Patch::Apply_RAW(0x620A29,
 		{
 			0xB9, 0x01, 0x00, 0x00, 0x00, // mov ecx, 1
-			0x90, 0x90                    // nops
+			NOP_OPCODE, NOP_OPCODE
 		});
 	}
 
