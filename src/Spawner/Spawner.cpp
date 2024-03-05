@@ -309,7 +309,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 		pSession->GameMode = GameMode::LAN;
 		pSession->CreateConnections();
 
-		if (Main::GetConfig()->AllowChat)
+		if (Main::GetConfig()->AllowChat == false)
 		{
 			Game::ChatMask[0] = false;
 			Game::ChatMask[1] = false;
