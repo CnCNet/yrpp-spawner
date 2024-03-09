@@ -1,4 +1,4 @@
-name: EditorConfig
+name: "Editor Config Checker"
 
 on:
   pull_request:
@@ -12,6 +12,6 @@ jobs:
   lint:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: editorconfig-checker
         run: scripts/editorconfig-checker.bat

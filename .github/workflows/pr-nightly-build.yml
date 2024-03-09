@@ -1,0 +1,23 @@
+name: "Pull Request Nightly Build"
+
+on:
+  pull_request:
+
+env:
+  SOLUTION_PATH: .
+  BUILD_CONFIGURATION: DevBuild
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          sln-path: ${{ env.SOLUTION_PATH }}
+          build-config: ${{ env.BUILD_CONFIGURATION }}
