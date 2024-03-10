@@ -297,7 +297,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 		pGameModeOptions->Crates = true;
 
 		// Rename MISSIONMD.INI to this
-		// because Ares has LoadScreenText.Color and Phobos has Starkku's PR #1145 
+		// because Ares has LoadScreenText.Color and Phobos has Starkku's PR #1145
 		if (Spawner::Config->CustomMissionID) // before parsing
 			Patch::Apply_RAW(0x839724, "Spawn.ini");
 
