@@ -26,12 +26,12 @@
 #define VERSION_REVISION 0
 
 // Indicates YR-Spawner-related bugfixes only
-#define VERSION_PATCH 0
+#define VERSION_PATCH 2
 
 #pragma endregion
 
 // Build number. Incremented on each released build.
-#define BUILD_NUMBER 0
+#define BUILD_NUMBER 2
 
 // Nightly defines GIT_COMMIT and GIT_BRANCH in GH Actions
 
