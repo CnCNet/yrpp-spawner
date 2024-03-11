@@ -1,6 +1,6 @@
 @if not defined _echo echo off
 
-rem Builds YR-Spawner DevBuild.
+rem Builds YRpp-Spawner DevBuild.
 
 rem Ensure we're in correct directory.
 cd /D "%~dp0"

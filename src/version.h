@@ -2,9 +2,9 @@
 #define VERSION_H
 
 #ifdef IS_ANTICHEAT_VER
-	#define PRODUCT_NAME "YR-Spawner (AntiCheat)"
+	#define PRODUCT_NAME "YRpp-Spawner (AntiCheat)"
 #else
-	#define PRODUCT_NAME "YR-Spawner"
+	#define PRODUCT_NAME "YRpp-Spawner"
 #endif
 
 #define FILE_DESCRIPTION "CnCNet5: Spawner"
@@ -25,7 +25,7 @@
 // Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
 #define VERSION_REVISION 0
 
-// Indicates YR-Spawner-related bugfixes only
+// Indicates YRpp-Spawner-related bugfixes only
 #define VERSION_PATCH 2
 
 #pragma endregion
