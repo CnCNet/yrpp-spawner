@@ -171,7 +171,7 @@ DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAllies, 0x5)
 	GET(TechnoClass*, pThis, ESI);
 	GET(ObjectClass*, pObject, EDI);
 
-	return pObject->GetOwningHouse()->IsAlliedWith(pThis->Owner) ? 0x70059D : 0x7005E6;
+	return pThis->Owner->IsAlliedWith(pObject) ? 0x70059D : 0x7005E6;
 }
 
 // Show disguised units (Spy and Mirage) for observer
