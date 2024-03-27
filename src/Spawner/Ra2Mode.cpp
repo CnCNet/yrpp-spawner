@@ -24,6 +24,7 @@
 #include <BuildingClass.h>
 #include <CellClass.h>
 #include <HouseClass.h>
+#include <InfantryClass.h>
 #include <LoadOptionsClass.h>
 
 bool Ra2Mode::Enabled = false;
@@ -243,4 +244,33 @@ DEFINE_HOOK(0x73E3DB, UnitClass_MissionUnload__CheckPowerBeforeOrePurifier, 0x6)
 	R->EAX(pHouse->HasFullPower() ? pHouse->NumOrePurifiers : 0);
 
 	return 0x73E3DB + 0x6;
+}
+
+// Additionally check alive infantry in the allied transport
+// and also check ActiveAircraftTypes
+// https://github.com/CnCNet/cncnet-yr-client-package/issues/349
+DEFINE_HOOK(0x71F1A2, TEventClass_Execute_AllDestroyed, 0x6)
+{
+	if (!Ra2Mode::IsEnabled())
+		return 0;
+
+	if (!SessionClass::IsCampaign())
+		return 0;
+
+	enum { AllDestroyed = 0x71F1B1, HasAlive = 0x71F163 };
+	GET(HouseClass*, pHouse, ESI);
+
+	if (pHouse->ActiveAircraftTypes.GetTotal() > 0)
+		return HasAlive;
+
+	if (pHouse->ActiveInfantryTypes.GetTotal() > 0)
+		return HasAlive;
+
+	for (auto pItem : *InfantryClass::Array)
+	{
+		if (pItem->InLimbo && pHouse == pItem->GetOwningHouse() && pHouse->IsAlliedWith(pItem->Transporter))
+			return HasAlive;
+	}
+
+	return AllDestroyed;
 }
