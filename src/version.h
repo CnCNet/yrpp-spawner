@@ -7,7 +7,7 @@
 #define _STR_(x) #x
 
 // Build number. Incremented on each released build
-#define BUILD_NUMBER 2
+#define BUILD_NUMBER 3
 
 // Indicates project maturity and completeness
 #define VERSION_MAJOR 0
@@ -16,7 +16,7 @@
 // Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
 #define VERSION_REVISION 0
 // Indicates YRpp-Spawner-related bugfixes only
-#define VERSION_PATCH 2
+#define VERSION_PATCH 3
 
 #if defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
 	#define PRODUCT_TYPE "(HardEnd + AntiCheat)"
