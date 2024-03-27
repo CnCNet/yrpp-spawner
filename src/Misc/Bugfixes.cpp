@@ -18,6 +18,7 @@
 */
 
 #include <Utilities/Macro.h>
+#include <SessionClass.h>
 #include <Unsorted.h>
 
 // skip error "А mouse is required for playing Yurts Revenge" - remove the GetSystemMetrics check
@@ -39,5 +40,14 @@ DEFINE_JUMP(LJMP, 0x732CED, 0x732CF9); // End_Type_Select_Command
 DEFINE_HOOK(0x649851, WaitForPlayers_OnlineOptimizations, 0x5)
 {
 	Sleep(3); // Sleep yields the remaining CPU cycle time to any other processes
+
 	return 0x6488B0;
+}
+
+// Open campaign briefing when pressing Tab
+DEFINE_HOOK(0x55E08F, KeyboardProcess_PressTab, 0x5)
+{
+	Game::SpecialDialog = SessionClass::IsCampaign() ? 9 : 8;
+
+	return 0x55E099;
 }
