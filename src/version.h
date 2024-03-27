@@ -1,37 +1,35 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#ifdef IS_ANTICHEAT_VER
-	#define PRODUCT_NAME "YRpp-Spawner (AntiCheat)"
-#else
-	#define PRODUCT_NAME "YRpp-Spawner"
-#endif
-
-#define FILE_DESCRIPTION "CnCNet5: Spawner"
-
 #define _WSTR(x) _WSTR_(x)
 #define _WSTR_(x) L ## #x
 #define _STR(x) _STR_(x)
 #define _STR_(x) #x
 
-#pragma region Release build version numbering
+// Build number. Incremented on each released build
+#define BUILD_NUMBER 2
 
 // Indicates project maturity and completeness
 #define VERSION_MAJOR 0
-
 // Indicates major changes and significant additions, like new logics
 #define VERSION_MINOR 0
-
 // Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
 #define VERSION_REVISION 0
-
 // Indicates YRpp-Spawner-related bugfixes only
 #define VERSION_PATCH 2
 
-#pragma endregion
+#if defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
+	#define PRODUCT_TYPE "(HardEnd + AntiCheat)"
+#elif !defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
+	#define PRODUCT_TYPE "(HardEnd)"
+#elif defined(IS_ANTICHEAT_VER) && !defined(IS_HARDEND_VER)
+	#define PRODUCT_TYPE "(AntiCheat)"
+#else
+	#define PRODUCT_TYPE "(Regular)"
+#endif
 
-// Build number. Incremented on each released build.
-#define BUILD_NUMBER 2
+#define PRODUCT_NAME "YRpp-Spawner " PRODUCT_TYPE
+#define FILE_DESCRIPTION "CnCNet5: Spawner " PRODUCT_TYPE
 
 // Nightly defines GIT_COMMIT and GIT_BRANCH in GH Actions
 

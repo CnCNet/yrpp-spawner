@@ -18,24 +18,29 @@
 */
 
 #pragma once
-class CellClass;
 
+#ifdef IS_HARDEND_VER
 class Ra2Mode
 {
 	static bool Enabled;
-public:
-	static bool IsEnabled()
-	{
-		return Ra2Mode::Enabled;
-	};
 
+public:
 	static void Apply();
 	static bool IsNeedToApply();
 	static bool CheckSaveGameID(const char* saveGameName);
 
-	struct DetectDisguiseHack
+	static bool IsEnabled()
 	{
-		static void __fastcall Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx);
-		static void __fastcall Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx);
+		return Ra2Mode::Enabled;
 	};
 };
+#else
+class Ra2Mode
+{
+public:
+	static bool IsEnabled()
+	{
+		return false;
+	};
+};
+#endif

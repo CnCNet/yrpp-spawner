@@ -23,6 +23,7 @@ class MainConfig
 public:
 	bool MPDebug;
 	bool DumpTypes;
+	bool NoCD;
 	int RA2ModeSaveID;
 
 	bool SingleProcAffinity;
@@ -45,6 +46,8 @@ public:
 	MainConfig()
 		: MPDebug { false }
 		, DumpTypes { false }
+		, NoCD { false }
+		, RA2ModeSaveID { 0 }
 
 		, SingleProcAffinity { true }
 		, DisableEdgeScrolling { false }

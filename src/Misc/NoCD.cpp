@@ -17,11 +17,11 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "NoCD.h"
-#include <GetCDClass.h>
-
-#include <Utilities/Macro.h>
+#include <Main.h>
+#include <Spawner/Spawner.h>
 #include <Utilities/Debug.h>
+#include <Utilities/Macro.h>
+#include <GetCDClass.h>
 #include <xutility>
 
 // Based on https://github.com/Ares-Developers/Ares/blob/4f1d929920aca31924c6cd4d3dfa849daa65252a/src/Misc/CopyProtection.cpp
@@ -29,13 +29,8 @@
 //      and https://github.com/Ares-Developers/Ares/blob/4f1d929920aca31924c6cd4d3dfa849daa65252a/src/Ares.cpp#L323
 //      and https://github.com/CnCNet/yr-patches/blob/1f2a00de8226823952763fa411aa5e75dbb4012a/src/no-cd.asm
 
-bool NoCD::Enabled = false;
-
-void NoCD::Apply()
+void ApplyNoCDPatches()
 {
-	if (NoCD::Enabled)
-		return;
-
 	Patch::Apply_RAW(0x4A80D0, // GetCDIndex
 	{
 		0xB8, 0x02, 0x00, 0x00, 0x00, // mov    eax, 2
@@ -85,15 +80,19 @@ void NoCD::Apply()
 			break;
 		}
 	}
-
-	NoCD::Enabled = true;
 };
 
-void NoCD::InitNoCDMode()
+DEFINE_HOOK(0x6BD7CB, WinMain_NoCDPatches, 0x5)
 {
-	if (!GetCDClass::Instance->Count)
+	if (Spawner::Enabled || Main::GetConfig()->NoCD)
+	{
+		ApplyNoCDPatches();
+	}
+	else if (!GetCDClass::Instance->Count)
 	{
 		Debug::Log("[Spawner] No CD drives detected. Switching to NoCD mode.\n");
-		NoCD::Apply();
+		ApplyNoCDPatches();
 	}
+
+	return 0;
 }

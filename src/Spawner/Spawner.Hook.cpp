@@ -19,23 +19,18 @@
 
 #include "Spawner.h"
 #include "NetHack.h"
-#include "Ra2Mode.h"
 
 #include <HouseClass.h>
 #include <SessionClass.h>
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
-DEFINE_HOOK(0x6BD7CB, WinMain_SpawnerInit, 0x5)
+DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 {
 	if (Spawner::Enabled)
 	{
 		Spawner::Init();
 
-		if (Ra2Mode::IsNeedToApply())
-		{
-			Ra2Mode::Apply();
-		}
 
 		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame); // Main_Game
 		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame); // Main_Game

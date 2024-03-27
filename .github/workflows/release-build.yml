@@ -26,14 +26,28 @@ jobs:
         with:
           sln-path: ${{ env.SOLUTION_PATH }}
           build-config: ${{ env.BUILD_CONFIGURATION }}
+          artifact-name: compiled-dll-regular-${{ github.sha }}
+
+      - name: Build HardEnd
+        uses: ./.github/actions/build
+        with:
+          sln-path: ${{ env.SOLUTION_PATH }}
+          build-config: ${{ env.BUILD_CONFIGURATION }}-HardEnd
+          artifact-name: compiled-dll-hardend-${{ github.sha }}
 
       - name: Create Archive For Release
         run: |
           mkdir ./artifact
-          copy ./LICENSE.md ./artifact/LICENSE.md
-          copy ./README.md ./artifact/README.md
-          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.pdb ./artifact/cncnet5.pdb
-          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.dll ./artifact/cncnet5.dll
+          mkdir ./artifact/Regular
+          copy ./LICENSE.md ./artifact/Regular/LICENSE.md
+          copy ./README.md ./artifact/Regular/README.md
+          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.pdb ./artifact/Regular/cncnet5.pdb
+          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.dll ./artifact/Regular/cncnet5.dll
+          mkdir ./artifact/HardEnd
+          copy ./LICENSE.md ./artifact/HardEnd/LICENSE.md
+          copy ./README.md ./artifact/HardEnd/README.md
+          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/cncnet5.pdb" ./artifact/HardEnd/cncnet5.pdb
+          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/cncnet5.dll" ./artifact/HardEnd/cncnet5.dll
           7z a ${{ env.ARTIFACT_NAME }} ./artifact/*
 
       - name: Upload New Release

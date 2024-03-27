@@ -33,14 +33,13 @@ private:
 
 public:
 	static void ExeRun();
-	static void CmdLineParse(char**, int);
+	static void CmdLineParse(char** ppArgs, int nNumArgs);
 
 	static MainConfig* GetConfig()
 	{
 		return Config.get();
 	}
 
-	// variables
 	static HANDLE hInstance;
 
 	static const size_t readLength = 2048;
@@ -49,6 +48,7 @@ public:
 	static const char readDelims[4];
 
 #ifdef DEBUG
-	static bool DetachFromDebugger();
+	static void DetachFromDebugger();
+	static bool TryDetachFromDebugger();
 #endif
 };

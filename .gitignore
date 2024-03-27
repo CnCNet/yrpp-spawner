@@ -2,6 +2,9 @@ yrpp-spawner-private/
 Release/**
 DevBuild/**
 Debug/**
+Release-HardEnd/**
+DevBuild-HardEnd/**
+Debug-HardEnd/**
 
 .vs/**
 .vscode/**

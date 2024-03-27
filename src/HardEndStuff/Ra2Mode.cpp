@@ -17,8 +17,8 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef IS_HARDEND_VER
 #include "Ra2Mode.h"
-
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <BuildingClass.h>
@@ -29,11 +29,16 @@
 
 bool Ra2Mode::Enabled = false;
 
+DEFINE_HOOK(0x6BD7CB, WinMain_Ra2ModePatches, 0x5)
+{
+	if (Ra2Mode::IsNeedToApply())
+		Ra2Mode::Apply();
+
+	return 0;
+}
+
 void Ra2Mode::Apply()
 {
-	if (Ra2Mode::Enabled)
-		return;
-
 	Ra2Mode::Enabled = true;
 
 	// Window title
@@ -59,6 +64,24 @@ void Ra2Mode::Apply()
 	Patch::Apply_LJMP(0x553686, 0x553686 + 6);
 
 	{ // Allows to detect disguise units with Psychic Sensor
+
+		// This is a very dirty hack that changes the behavior of the SensorArray logic re-implemented in Ares
+		// The SensorArray logic works with the SensorsOfHouses array, and here we additionally process the DisguiseSensorsOfHouses array
+		struct DetectDisguiseHack
+		{
+			static void __fastcall Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx)
+			{
+				pThis->Sensors_AddOfHouse(idx);
+				pThis->DisguiseSensors_AddOfHouse(idx);
+			}
+
+			static void __fastcall Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx)
+			{
+				pThis->Sensors_RemOfHouse(idx);
+				pThis->DisguiseSensors_RemOfHouse(idx);
+			}
+		};
+
 		Patch::Apply_CALL(0x45591E, GET_OFFSET(DetectDisguiseHack::Sensors_AddOfHouse));
 		Patch::Apply_CALL(0x4557B7, GET_OFFSET(DetectDisguiseHack::Sensors_RemOfHouse));
 
@@ -134,7 +157,7 @@ bool Ra2Mode::IsNeedToApply()
 {
 	auto const pConfig = Spawner::GetConfig();
 
-	return (pConfig->Ra2Mode
+	return Spawner::Enabled && (pConfig->Ra2Mode
 		|| (pConfig->LoadSaveGame && Ra2Mode::CheckSaveGameID(pConfig->SaveGameName))
 		|| (pConfig->IsCampaign && strstr(pConfig->ScenarioName, "RA2->"))
 	);
@@ -154,24 +177,6 @@ bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
 
 	return false;
 }
-
-// Allows to detect disguise units with Psychic Sensor
-#pragma region DetectDisguiseHack
-
-// This is a very dirty hack that changes the behavior of the SensorArray logic re-implemented in Ares
-// The SensorArray logic works with the SensorsOfHouses array, and here we additionally process the DisguiseSensorsOfHouses array
-void __fastcall Ra2Mode::DetectDisguiseHack::Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx)
-{
-	pThis->Sensors_AddOfHouse(idx);
-	pThis->DisguiseSensors_AddOfHouse(idx);
-}
-
-void __fastcall Ra2Mode::DetectDisguiseHack::Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx)
-{
-	pThis->Sensors_RemOfHouse(idx);
-	pThis->DisguiseSensors_RemOfHouse(idx);
-}
-#pragma endregion DetectDisguiseHack
 
 // Allow allies to repair on service depot
 DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)
@@ -199,6 +204,24 @@ DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)
 namespace RepairFlyMZone
 {
 	UnitTypeClass* pUnitType = nullptr;
+
+	void Prefix(UnitClass* pThis)
+	{
+		if (pThis->Type->MovementZone == MovementZone::Fly)
+		{
+			pUnitType = pThis->Type;
+			pUnitType->MovementZone = MovementZone::Normal;
+		}
+	}
+
+	void Suffix()
+	{
+		if (pUnitType)
+		{
+			pUnitType->MovementZone = MovementZone::Fly;
+			pUnitType = nullptr;
+		}
+	}
 }
 
 DEFINE_HOOK_AGAIN(0x740006, UnitClass_WhatAction__AllowRepairFlyMZone_Prefix, 0x5)
@@ -208,14 +231,10 @@ DEFINE_HOOK(0x74012A, UnitClass_WhatAction__AllowRepairFlyMZone_Prefix, 0x6)
 		? 0
 		: 0x740130;
 
-	if (!Ra2Mode::IsEnabled())
-		return returnAddress;
-
-	GET(UnitClass*, pThis, ESI);
-	if (pThis->Type->MovementZone == MovementZone::Fly)
+	if (Ra2Mode::IsEnabled())
 	{
-		RepairFlyMZone::pUnitType = pThis->Type;
-		RepairFlyMZone::pUnitType->MovementZone = MovementZone::Normal;
+		GET(UnitClass*, pThis, ESI);
+		RepairFlyMZone::Prefix(pThis);
 	}
 
 	return returnAddress;
@@ -223,11 +242,7 @@ DEFINE_HOOK(0x74012A, UnitClass_WhatAction__AllowRepairFlyMZone_Prefix, 0x6)
 
 DEFINE_HOOK(0x7401C1, UnitClass_WhatAction__AllowRepairFlyMZone_Suffix, 0x6)
 {
-	if (RepairFlyMZone::pUnitType)
-	{
-		RepairFlyMZone::pUnitType->MovementZone = MovementZone::Fly;
-		RepairFlyMZone::pUnitType = nullptr;
-	}
+	RepairFlyMZone::Suffix();
 
 	return 0;
 }
@@ -274,3 +289,5 @@ DEFINE_HOOK(0x71F1A2, TEventClass_Execute_AllDestroyed, 0x6)
 
 	return AllDestroyed;
 }
+
+#endif

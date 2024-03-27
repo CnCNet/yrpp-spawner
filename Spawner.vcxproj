@@ -18,41 +18,44 @@
     <!-- Root -->
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Ext.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Hook.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
     <!-- Ext -->
     <ClCompile Include="$(ThisDir)\src\Ext\Event\Body.cpp" />
+    <!-- HardEndStuff -->
+    <ClCompile Include="$(ThisDir)\src\HardEndStuff\AppIcon.cpp" />
+    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Misc.cpp" />
+    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Perf.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CommonCrashes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Perf.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.SpawnManager.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\NoCD.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\QuickExit.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
     <!-- Spawner -->
-    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Config.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\QuickMatch.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Spawner\Ra2Mode.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\RandomMap.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Config.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
@@ -61,24 +64,24 @@
   <!-- Header files -->
   <ItemGroup>
     <!-- Root -->
-    <ClInclude Include="$(ThisDir)\src\Main.h" />
     <ClInclude Include="$(ThisDir)\src\version.h" />
+    <ClInclude Include="$(ThisDir)\src\Main.h" />
     <ClInclude Include="$(ThisDir)\src\Main.Config.h" />
     <!-- Ext -->
     <ClInclude Include="$(ThisDir)\src\Ext\Event\Body.h" />
+    <!-- HardEndStuff -->
+    <ClInclude Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.h" />
     <!-- Misc -->
-    <ClInclude Include="$(ThisDir)\src\Misc\NoCD.h" />
     <!-- Spawner -->
-    <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
-    <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
-    <ClInclude Include="$(ThisDir)\src\Spawner\Ra2Mode.h" />
+    <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
+    <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
     <!-- Utilities -->
     <ClInclude Include="$(ThisDir)\src\Utilities\Debug.h" />
-    <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Macro.h" />
+    <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
   </ItemGroup>
 </Project>

@@ -3,21 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32929.386
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{4A3F0CD1-23BA-4A2A-A6A2-72D7B87E0468}") = "YRpp-Spawner", "Spawner.vcxproj", "{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "YRpp-Spawner", "Spawner.vcxproj", "{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
+		Debug-HardEnd|x86 = Debug-HardEnd|x86
 		DevBuild|x86 = DevBuild|x86
+		DevBuild-HardEnd|x86 = DevBuild-HardEnd|x86
 		Release|x86 = Release|x86
+		Release-HardEnd|x86 = Release-HardEnd|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Debug|x86.ActiveCfg = Debug|Win32
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Debug|x86.Build.0 = Debug|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Debug-HardEnd|x86.ActiveCfg = Debug-HardEnd|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Debug-HardEnd|x86.Build.0 = Debug-HardEnd|Win32
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.DevBuild|x86.ActiveCfg = DevBuild|Win32
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.DevBuild|x86.Build.0 = DevBuild|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.DevBuild-HardEnd|x86.ActiveCfg = DevBuild-HardEnd|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.DevBuild-HardEnd|x86.Build.0 = DevBuild-HardEnd|Win32
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Release|x86.ActiveCfg = Release|Win32
 		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Release|x86.Build.0 = Release|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Release-HardEnd|x86.ActiveCfg = Release-HardEnd|Win32
+		{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}.Release-HardEnd|x86.Build.0 = Release-HardEnd|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

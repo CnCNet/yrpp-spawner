@@ -30,6 +30,8 @@
       ],
       "defines": [
         "SYR_VER=2",
+        "IS_RELEASE_VER",
+        "IS_HARDEND_VER",
         "HAS_EXCEPTIONS=0",
         "NOMINMAX",
         "_CRT_SECURE_NO_WARNINGS",

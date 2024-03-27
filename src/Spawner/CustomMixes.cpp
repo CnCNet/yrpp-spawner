@@ -17,7 +17,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Ra2Mode.h"
+#include <HardEndStuff/Ra2Mode.h>
 
 #include <Utilities/Macro.h>
 #include <MixFileClass.h>
