@@ -165,6 +165,17 @@ DEFINE_HOOK(0x4AE62B, DisplayClass_HelpText_Cloak, 0x5)
 	return CheckSensedByHouses;
 }
 
+#ifndef IS_HARDEND_VER
+// Allow showing the select cursor on the object
+DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAllies, 0x5)
+{
+	GET(TechnoClass*, pThis, ESI);
+	GET(ObjectClass*, pObject, EDI);
+
+	return pThis->Owner->IsAlliedWith(pObject) ? 0x70059D : 0x7005E6;
+}
+#endif
+
 // Show disguised units (Spy and Mirage) for observer
 #pragma region
 // Show spy for observer
