@@ -60,6 +60,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		AutoSaveCount      = pINI->ReadInteger(pSettingsSection, "AutoSaveCount", AutoSaveCount);
 		AutoSaveInterval   = pINI->ReadInteger(pSettingsSection, "AutoSaveInterval", AutoSaveInterval);
 		NextAutoSaveNumber = pINI->ReadInteger(pSettingsSection, "NextAutoSaveNumber", NextAutoSaveNumber);
+		CustomMissionID  = pINI->ReadInteger(pSettingsSection, "CustomMissionID", 0);
 	}
 
 	{ // Scenario Options

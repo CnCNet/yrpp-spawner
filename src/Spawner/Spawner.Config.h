@@ -102,11 +102,12 @@ public:
 	int AutoSaveCount;
 	int AutoSaveInterval;
 	int NextAutoSaveNumber;
+	int CustomMissionID;
 
 	// Scenario Options
 	int  Seed;
 	int  TechLevel;
-	bool IsCampaign;
+	bool IsCampaign;int CustomMissionID;
 	int  Tournament;
 	DWORD WOLGameID;
 	char ScenarioName[260];
@@ -175,6 +176,7 @@ public:
 		, AutoSaveCount { 5 }
 		, AutoSaveInterval { 7200 }
 		, NextAutoSaveNumber { 0 }
+		, CustomMissionID { 0 }
 
 		// Scenario Options
 		, Seed { 0 }
