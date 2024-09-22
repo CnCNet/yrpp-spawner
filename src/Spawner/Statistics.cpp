@@ -138,7 +138,7 @@ DEFINE_HOOK(0x6C7989, SendStatisticsPacket_AddField_ALY, 0x6)
 		pPacket->AddField<DWORD>(fieldALY, pHouse->Allies.data);
 
 		char fieldBSP[] = "BSP*";
-		fieldALY[3] = id;
+		fieldBSP[3] = id;
 		pPacket->AddField<DWORD>(fieldBSP, pHouse->GetSpawnPosition());
 	}
 
