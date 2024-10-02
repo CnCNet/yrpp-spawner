@@ -7,7 +7,7 @@ on:
 
 env:
   RELEASE_NAME: ${{ github.ref_name }}
-  ARTIFACT_NAME: cncnet5_${{ github.ref_name }}.zip
+  ARTIFACT_NAME: CnCNet-Spawner_${{ github.ref_name }}
 
   SOLUTION_PATH: .
   BUILD_CONFIGURATION: Release
@@ -41,14 +41,15 @@ jobs:
           mkdir ./artifact/Regular
           copy ./LICENSE.md ./artifact/Regular/LICENSE.md
           copy ./README.md ./artifact/Regular/README.md
-          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.pdb ./artifact/Regular/cncnet5.pdb
-          copy ./${{ env.BUILD_CONFIGURATION }}/cncnet5.dll ./artifact/Regular/cncnet5.dll
+          copy ./${{ env.BUILD_CONFIGURATION }}/CnCNet-Spawner.pdb ./artifact/Regular/CnCNet-Spawner.pdb
+          copy ./${{ env.BUILD_CONFIGURATION }}/CnCNet-Spawner.dll ./artifact/Regular/CnCNet-Spawner.dll
+          7z a ${{ env.ARTIFACT_NAME }}.zip ./artifact/Regular/*
           mkdir ./artifact/HardEnd
           copy ./LICENSE.md ./artifact/HardEnd/LICENSE.md
           copy ./README.md ./artifact/HardEnd/README.md
-          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/cncnet5.pdb" ./artifact/HardEnd/cncnet5.pdb
-          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/cncnet5.dll" ./artifact/HardEnd/cncnet5.dll
-          7z a ${{ env.ARTIFACT_NAME }} ./artifact/*
+          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/CnCNet-Spawner.pdb" ./artifact/HardEnd/CnCNet-Spawner.pdb
+          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/CnCNet-Spawner.dll" ./artifact/HardEnd/CnCNet-Spawner.dll
+          7z a ${{ env.ARTIFACT_NAME }}-HardEnd.zip ./artifact/HardEnd/*
 
       - name: Upload New Release
         uses: softprops/action-gh-release@v2
@@ -59,7 +60,8 @@ jobs:
           append_body: true
           draft: true
           files: |
-            ${{ env.ARTIFACT_NAME }}
+            ${{ env.ARTIFACT_NAME }}.zip
+            ${{ env.ARTIFACT_NAME }}-HardEnd.zip
 
   request-anti-cheat-build:
     needs: [build]

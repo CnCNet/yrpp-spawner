@@ -11,7 +11,7 @@ Building manually
    - in Visual Studio: open the solution file in VS and build it (`Debug` build config is recommended);
    - in VSCode: open the project folder and hit `Run Build Task...` (`Ctrl + Shift + B`);
    - barebones: run `scripts/build_debug.bat`.
-4. Upon build completion the resulting `cncnet5.dll` and `cncnet5.pdb` would be placed in the subfolder identical to the name of the build config executed.
+4. Upon build completion the resulting `CnCNet-Spawner.dll` and `CnCNet-Spawner.pdb` would be placed in the subfolder identical to the name of the build config executed.
 
 Credits
 -------

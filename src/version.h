@@ -29,7 +29,7 @@
 #endif
 
 #define PRODUCT_NAME "YRpp-Spawner " PRODUCT_TYPE
-#define FILE_DESCRIPTION "CnCNet5: Spawner " PRODUCT_TYPE
+#define FILE_DESCRIPTION "CnCNet-Spawner: " PRODUCT_TYPE
 
 // Nightly defines GIT_COMMIT and GIT_BRANCH in GH Actions
 

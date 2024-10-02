@@ -6,7 +6,7 @@ on:
 env:
   SOLUTION_PATH: .
   BUILD_CONFIGURATION: DevBuild
-  ARTIFACT_NAME: cncnet5_${{ github.ref_name }}.zip
+  ARTIFACT_NAME: CnCNet-Spawner_${{ github.ref_name }}.zip
 
 jobs:
   build:

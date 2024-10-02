@@ -26,7 +26,7 @@ BEGIN
    VALUE "FileVersion", FILE_VERSION_STR "\0"
    VALUE "ProductVersion", PRODUCT_VERSION "\0"
    VALUE "InternalName", PRODUCT_NAME "\0"
-   VALUE "OriginalFilename", "cncnet5.dll\0"
+   VALUE "OriginalFilename", "CnCNet-Spawner.dll\0"
    VALUE "LegalTrademarks", "Command & Conquer is a trademark of Westwood Studios\0"
 
 #ifndef IS_RELEASE_VER
