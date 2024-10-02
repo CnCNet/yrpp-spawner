@@ -197,7 +197,7 @@ void SpawnerConfig::HouseConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 
 	if (pINI->GetSection(pAlliancesSection))
 	{
-		for(int i = 0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 			this->Alliances[i] = pINI->ReadInteger(pAlliancesSection, AlliancesTagArray[i], this->Alliances[i]);
 	}
 }

@@ -60,25 +60,26 @@ void Main::DetachFromDebugger()
 
 bool Main::TryDetachFromDebugger()
 {
-	auto GetDebuggerProcessId = [](DWORD dwSelfProcessId) -> DWORD
-	{
-		DWORD dwParentProcessId = -1;
-		HANDLE hSnapshot = CreateToolhelp32Snapshot(2, 0);
-		PROCESSENTRY32 pe32;
-		pe32.dwSize = sizeof(PROCESSENTRY32);
-		Process32First(hSnapshot, &pe32);
-		do
+	auto GetDebuggerProcessId =
+		[](DWORD dwSelfProcessId) -> DWORD
 		{
-			if (pe32.th32ProcessID == dwSelfProcessId)
+			DWORD dwParentProcessId = -1;
+			HANDLE hSnapshot = CreateToolhelp32Snapshot(2, 0);
+			PROCESSENTRY32 pe32;
+			pe32.dwSize = sizeof(PROCESSENTRY32);
+			Process32First(hSnapshot, &pe32);
+			do
 			{
-				dwParentProcessId = pe32.th32ParentProcessID;
-				break;
+				if (pe32.th32ProcessID == dwSelfProcessId)
+				{
+					dwParentProcessId = pe32.th32ParentProcessID;
+					break;
+				}
 			}
-		}
-		while (Process32Next(hSnapshot, &pe32));
-		CloseHandle(hSnapshot);
-		return dwParentProcessId;
-	};
+			while (Process32Next(hSnapshot, &pe32));
+			CloseHandle(hSnapshot);
+			return dwParentProcessId;
+		};
 
 	HMODULE hModule = LoadLibrary("ntdll.dll");
 	if (hModule != NULL)
