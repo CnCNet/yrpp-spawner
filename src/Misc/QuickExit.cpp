@@ -29,9 +29,10 @@ DEFINE_HOOK(0x77786B, MainWindowProc_HandleRageQuit, 0x5)
 	if (Main::GetConfig()->QuickExit)
 	{
 		constexpr reference<bool, 0xB0FBB8u> const ScoreStuffLoad {};
-		if (Game::IsActive && HouseClass::CurrentPlayer && !ScoreStuffLoad)
+		if (Game::IsActive && HouseClass::CurrentPlayer && SessionClass::IsMultiplayer() && !ScoreStuffLoad)
 		{
 			RageQuit = true;
+
 			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::DESTRUCT));
 			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::EXIT));
 		}
