@@ -17,10 +17,11 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Utilities/Macro.h>
-#include <GameOptionsClass.h>
-#include <BasicStructures.h>
 #include <Spawner/Spawner.h>
+#include <Utilities/Macro.h>
+
+#include <GameOptionsClass.h>
+#include <HouseClass.h>
 
 DEFINE_HOOK(0x6BD7CB, WinMain_VideoModePatches, 0x5)
 {
@@ -33,11 +34,11 @@ DEFINE_HOOK(0x6BD7CB, WinMain_VideoModePatches, 0x5)
 		Patch::Apply_LJMP(0x5601E3, 0x5601FC); // OptionsDlg_WndProc_RemoveHiResCheck
 
 		// Fixes the layout for some screen resolutions, for example 1152x648
-		Patch::Apply_TYPED<WORD>(0x72ECA6, { 600 /* original = 768 */ });
+		Patch::Apply_TYPED<WORD>(0x72ECA6, {600 /* original = 768 */});
 
 		// This will force the game to always use ddraw's blit function rather than WW blit
 		// We're avoiding ww blit functions because they are not thread safe
-		Patch::Apply_RAW(0x4BB1FE, { 0 }); // DSurface::Blit_Clip
+		Patch::Apply_RAW(0x4BB1FE, {0}); // DSurface::Blit_Clip
 
 		// Disables drawing the menu bg which pops up on loading
 		Patch::Apply_LJMP(0x7782B7, 0x7782C4); // Load_Title_Screen
@@ -110,4 +111,16 @@ DEFINE_HOOK(0x6A518E, SidebarClass_InitGUI, 0x5)
 		R->EAX(1376);
 
 	return 0;
+}
+
+// Disable buttons animation on score screen and game load menu
+DEFINE_HOOK(0x6076A4, ScoreScreen_Draw__SkipAnim, 0x7)
+{
+	if (!Spawner::Active)
+		return 0;
+
+	if (SessionClass::IsCampaign() && !HouseClass::CurrentPlayer->IsLoser)
+		return 0;
+
+	return 0x607F2F;
 }
