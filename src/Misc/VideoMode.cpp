@@ -103,16 +103,6 @@ DEFINE_HOOK(0x60C43B, EnumChildProc_60C0C0, 0x5)
 	return 0x60C443;
 }
 
-// Cap the sidebar height to 1376 pixels
-DEFINE_HOOK(0x6A518E, SidebarClass_InitGUI, 0x5)
-{
-	GET(int, heightOfSidebar, EAX);
-	if (heightOfSidebar > 1376)
-		R->EAX(1376);
-
-	return 0;
-}
-
 // Disable buttons animation on score screen and game load menu
 DEFINE_HOOK(0x6076A4, ScoreScreen_Draw__SkipAnim, 0x7)
 {
