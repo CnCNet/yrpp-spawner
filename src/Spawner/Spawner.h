@@ -45,5 +45,6 @@ private:
 	static bool LoadSavedGame(const char* scenarioName);
 
 	static void InitNetwork();
+	static bool Reconcile_Players();
 	static void LoadSidesStuff();
 };
