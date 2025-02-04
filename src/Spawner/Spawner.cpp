@@ -303,17 +303,10 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	else /* if (SessionClass::IsMultiplayer()) */
 	{
 		Spawner::InitNetwork();
+		if (!ScenarioClass::StartScenario(pScenarioName, 0, -1))
+			return false;
 
 		pSession->GameMode = GameMode::LAN;
-
-		bool result = Spawner::Config->LoadSaveGame ?
-			LoadSavedGame(Spawner::Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 0, -1);
-
-		if (!result)
-			return false;
-
-		if (Spawner::Config->LoadSaveGame && !Reconcile_Players())
-			return false;
 
 		pSession->CreateConnections();
 
