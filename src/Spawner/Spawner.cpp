@@ -78,9 +78,7 @@ bool Spawner::StartGame()
 
 	Spawner::LoadSidesStuff();
 
-	bool result = Config->LoadSaveGame
-		? LoadSavedGame(Config->SaveGameName)
-		: StartNewScenario(pScenarioName);
+	bool result = StartScenario(pScenarioName);
 
 	if (Main::GetConfig()->DumpTypes)
 		DumperTypes::Dump();
@@ -165,9 +163,9 @@ void Spawner::AssignHouses()
 	}
 }
 
-bool Spawner::StartNewScenario(const char* pScenarioName)
+bool Spawner::StartScenario(const char* pScenarioName)
 {
-	if (pScenarioName[0] == 0)
+	if (pScenarioName[0] == 0 && !Config->LoadSaveGame)
 	{
 		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
 
@@ -294,21 +292,27 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	if (SessionClass::IsCampaign())
 	{
 		pGameModeOptions->Crates = true;
-		return ScenarioClass::StartScenario(pScenarioName, 1, 0);
+		return Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 1, 0);
 	}
 	else if (SessionClass::IsSkirmish())
 	{
-		return ScenarioClass::StartScenario(pScenarioName, 0, -1);
+		return Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 0, -1);
 	}
 	else /* if (SessionClass::IsMultiplayer()) */
 	{
 		Spawner::InitNetwork();
-		if (!ScenarioClass::StartScenario(pScenarioName, 0, -1))
+		bool result = Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 0, -1);
+
+		if (!result)
 			return false;
 
 		pSession->GameMode = GameMode::LAN;
 
-		pSession->CreateConnections();
+		if (Config->LoadSaveGame && !Spawner::Reconcile_Players())
+			return false;
+
+		if (!pSession->CreateConnections())
+			return false;
 
 		if (Main::GetConfig()->AllowChat == false)
 		{

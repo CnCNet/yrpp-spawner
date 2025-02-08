@@ -41,7 +41,7 @@ public:
 	static void AssignHouses();
 
 private:
-	static bool StartNewScenario(const char* scenarioName);
+	static bool StartScenario(const char* scenarioName);
 	static bool LoadSavedGame(const char* scenarioName);
 
 	static void InitNetwork();
