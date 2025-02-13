@@ -538,14 +538,7 @@ bool Spawner::Reconcile_Players()
 	 *  If all went well, our Session.NumPlayers value should now equal the value
 	 *  from the saved game, minus any players we removed.
 	 */
-	if (SessionClass::Instance->MPlayerCount == Players.Count)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return SessionClass::Instance->MPlayerCount == Players.Count;
 }
 
 void Spawner::LoadSidesStuff()
