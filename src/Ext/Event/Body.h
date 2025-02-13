@@ -27,9 +27,10 @@ enum class EventTypeExt : uint8_t
 	// Ares used Events 0x60 and 0x61
 
 	ResponseTime2 = 0x30,
+	SaveGame = 0x31,
 
 	FIRST = ResponseTime2,
-	LAST = ResponseTime2
+	LAST = SaveGame
 };
 
 #pragma pack(push, 1)
@@ -49,6 +50,9 @@ public:
 			char MaxAhead;
 			uint8_t LatencyLevel;
 		} ResponseTime2;
+
+		struct SaveGame
+		{};
 	};
 
 	bool AddEvent();

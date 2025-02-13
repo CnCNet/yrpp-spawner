@@ -41,6 +41,9 @@
 bool Spawner::Enabled = false;
 bool Spawner::Active = false;
 std::unique_ptr<SpawnerConfig> Spawner::Config = nullptr;
+bool Spawner::DoSave = false;
+int Spawner::NextAutoSaveFrame = -1;
+int Spawner::NextAutoSaveNumber = 0;
 
 void Spawner::Init()
 {
@@ -216,6 +219,8 @@ bool Spawner::StartScenario(const char* pScenarioName)
 		Game::TechLevel = Spawner::Config->TechLevel;
 		Game::PlayerColor = Spawner::Config->Players[0].Color;
 		GameOptionsClass::Instance->GameSpeed = Spawner::Config->GameSpeed;
+
+		Spawner::NextAutoSaveNumber = Spawner::Config->NextAutoSaveNumber;
 	}
 
 	{ // Added AI Players
@@ -553,4 +558,130 @@ void Spawner::LoadSidesStuff()
 
 	for (auto const& pItem : *HouseTypeClass::Array)
 		pItem->LoadFromINI(pINI);
+}
+
+void Spawner::RespondToSaveGame(EventExt* event)
+{
+	/**
+	 *  Mark that we'd like to save the game.
+	 */
+	Spawner::DoSave = true;
+}
+
+/**
+ *  Prints a message that there's an autosave happening.
+ *
+ *  Original author: Vinifera Project
+ *  Migration: TaranDahl
+ */
+void Print_Saving_Game_Message()
+{
+	/**
+	 *  Calculate the message delay.
+	 */
+	const int message_delay = RulesClass::Instance->MessageDelay * 900;
+
+	/**
+	 *  Send the message.
+	 */
+	MessageListClass::Instance->AddMessage(nullptr, 0, L"Saving game...", 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
+
+	/**
+	 *  Force a redraw so that our message gets printed.
+	 */
+	MapClass::Instance->MarkNeedsRedraw(2);
+	MapClass::Instance->Render();
+}
+
+/**
+ *  We do it by ourselves here instead of letting original Westwood code save when
+ *  the event is executed, because saving mid-frame before Remove_All_Inactive()
+ *  has been called can lead to save corruption
+ *  In other words, by doing it here we fix a Westwood bug/oversight
+ * 
+ *  Original author: Vinifera Project
+ *  Migration: TaranDahl
+ */
+void Spawner::After_Main_Loop()
+{
+	auto pConfig = Spawner::GetConfig();
+
+	const bool do_campaign_autosaves = SessionClass::Instance->GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
+	const bool do_mp_autosaves = Spawner::Active && SessionClass::Instance->GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
+
+	/**
+	 *  Schedule to make a save if it's time to autosave.
+	 */
+	if (do_campaign_autosaves || do_mp_autosaves)
+	{
+		if (Unsorted::CurrentFrame == Spawner::NextAutoSaveFrame)
+		{
+			Spawner::DoSave = true;
+		}
+	}
+
+	if (Spawner::DoSave)
+	{
+
+		// Print_Saving_Game_Message();
+
+		/**
+		 *  Campaign autosave.
+		 */
+		if (SessionClass::Instance->GameMode == GameMode::Campaign)
+		{
+
+			static char save_filename[32];
+			static wchar_t save_description[32];
+
+			/**
+			 *  Prepare the save name and description.
+			 */
+			std::sprintf(save_filename, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
+			std::swprintf(save_description, L"Mission Auto-Save (Slot %d)", Spawner::NextAutoSaveNumber + 1);
+
+			/**
+			 *  Pause the mission timer.
+			 */
+			// Pause_Game();
+			reinterpret_cast<void(__fastcall*)()>(0x683EB0)();
+			Game::CallBack();
+
+			/**
+			 *  Save!
+			 */
+			ScenarioClass::Instance->SaveGame(save_filename, save_description);
+
+			/**
+			 *  Unpause the mission timer.
+			 */
+			// Resume_Game();
+			reinterpret_cast<void(__fastcall*)()>(0x683FB0)();
+
+			/**
+			 *  Increment the autosave number.
+			 */
+			Spawner::NextAutoSaveNumber = (Spawner::NextAutoSaveNumber + 1) % pConfig->AutoSaveCount;
+
+			/**
+			 *  Schedule the next autosave.
+			 */
+			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
+		}
+		else if (SessionClass::Instance->GameMode == GameMode::LAN)
+		{
+
+			 /**
+			  *  Save!
+			  */
+			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", L"Multiplayer Game");
+
+			/**
+			 *  Schedule the next autosave.
+			 */
+			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
+		}
+
+		Spawner::DoSave = false;
+	}
 }

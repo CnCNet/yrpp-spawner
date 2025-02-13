@@ -19,6 +19,7 @@
 
 #pragma once
 #include "Spawner.Config.h"
+#include <Ext/Event/Body.h>
 #include <memory>
 
 class Spawner
@@ -26,6 +27,9 @@ class Spawner
 public:
 	static bool Enabled;
 	static bool Active;
+	static bool DoSave;
+	static int NextAutoSaveFrame;
+	static int NextAutoSaveNumber;
 
 private:
 	static std::unique_ptr<SpawnerConfig> Config;
@@ -39,6 +43,8 @@ public:
 	static void Init();
 	static bool StartGame();
 	static void AssignHouses();
+	static void After_Main_Loop();
+	static void RespondToSaveGame(EventExt* event);
 
 private:
 	static bool StartScenario(const char* scenarioName);

@@ -179,3 +179,44 @@ DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
 }
 
 #pragma endregion MPlayerDefeated
+
+#pragma region Save&Load
+
+DEFINE_HOOK_AGAIN(0x624271, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x623D72, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x62314E, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x60D407, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x608206, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK(0x48CE8A, SomeFunc_InterceptMainLoop, 0x5)
+{
+	/**
+	 *  Main loop.
+	 */
+	reinterpret_cast<void(__fastcall*)()>(0x55D360)();
+
+	/**
+	 *  After loop.
+	 */
+	Spawner::After_Main_Loop();
+	return R->Origin() + 0x5;
+}
+
+DEFINE_HOOK(0x52DAED, Game_Start_ResetGlobal, 0x7)
+{
+	Spawner::DoSave = false;
+	Spawner::NextAutoSaveFrame = -1;
+	Spawner::NextAutoSaveNumber = 0;
+	return 0;
+}
+
+DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
+{
+	/**
+	 *  Schedule the next autosave.
+	 */
+	Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame;
+	Spawner::NextAutoSaveFrame += Spawner::GetConfig()->AutoSaveInterval;
+	return 0;
+}
+
+#pragma endregion
