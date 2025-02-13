@@ -52,7 +52,7 @@ public:
 		} ResponseTime2;
 
 		struct SaveGame
-		{};
+		{} SaveGame;
 	};
 
 	bool AddEvent();

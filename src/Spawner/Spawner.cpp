@@ -579,7 +579,7 @@ void Print_Saving_Game_Message()
 	/**
 	 *  Calculate the message delay.
 	 */
-	const int message_delay = RulesClass::Instance->MessageDelay * 900;
+	const int message_delay = (int)(RulesClass::Instance->MessageDelay * 900);
 
 	/**
 	 *  Send the message.
