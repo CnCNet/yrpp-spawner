@@ -628,8 +628,7 @@ void Spawner::After_Main_Loop()
 			/**
 			 *  Pause the mission timer.
 			 */
-			// Pause_Game();
-			reinterpret_cast<void(__fastcall*)()>(0x683EB0)();
+			ScenarioClass::PauseGame();
 			Game::CallBack();
 
 			/**
@@ -640,8 +639,7 @@ void Spawner::After_Main_Loop()
 			/**
 			 *  Unpause the mission timer.
 			 */
-			// Resume_Game();
-			reinterpret_cast<void(__fastcall*)()>(0x683FB0)();
+			ScenarioClass::ResumeGame();
 
 			/**
 			 *  Increment the autosave number.

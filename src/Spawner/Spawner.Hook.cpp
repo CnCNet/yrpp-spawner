@@ -24,6 +24,7 @@
 #include <SessionClass.h>
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
+#include <Unsorted.h>
 
 DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 {
@@ -192,7 +193,7 @@ DEFINE_HOOK(0x48CE8A, SomeFunc_InterceptMainLoop, 0x5)
 	/**
 	 *  Main loop.
 	 */
-	reinterpret_cast<void(__fastcall*)()>(0x55D360)();
+	Game::MainLoop();
 
 	/**
 	 *  After loop.
