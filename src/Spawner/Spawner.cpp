@@ -584,7 +584,7 @@ void Print_Saving_Game_Message()
  *  the event is executed, because saving mid-frame before Remove_All_Inactive()
  *  has been called can lead to save corruption
  *  In other words, by doing it here we fix a Westwood bug/oversight
- * 
+ *
  *  Original author: Vinifera Project
  *  Migration: TaranDahl
  */
@@ -654,9 +654,9 @@ void Spawner::After_Main_Loop()
 		else if (SessionClass::Instance->GameMode == GameMode::LAN)
 		{
 
-			 /**
-			  *  Save!
-			  */
+			/**
+			 *  Save!
+			 */
 			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", L"Multiplayer Game");
 
 			/**
