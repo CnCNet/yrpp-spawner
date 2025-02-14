@@ -429,50 +429,47 @@ bool Spawner::Reconcile_Players()
 	int i;
 	bool found;
 	int house;
-	HouseClass* housep;
+	HouseClass* pHouse;
 
 	// Just use this as Playernodes.
-	auto Players = SessionClass::Instance->StartSpots;
+	auto players = SessionClass::Instance->StartSpots;
 
 	/**
 	 *  If there are no players, there's nothing to do.
 	 */
-	if (Players.Count == 0)
+	if (players.Count == 0)
 		return true;
 
 	/**
 	 *  Make sure every name we're connected to can be found in a House.
 	 */
-	for (i = 0; i < Players.Count; i++)
+	for (i = 0; i < players.Count; i++)
 	{
 		found = false;
-		for (house = 0; house < Players.Count; house++)
+
+		for (house = 0; house < players.Count; house++)
 		{
-			housep = HouseClass::Array->Items[house];
-			if (!housep)
-			{
+			pHouse = HouseClass::Array->Items[house];
+			if (!pHouse)
 				continue;
-			}
 
-			//
-			for (wchar_t c : Players.Items[i]->Name)
-			{
+			for (wchar_t c : players.Items[i]->Name)
 				Debug::LogAndMessage("%c", (char)c);
-			}
-			Debug::LogAndMessage("\n");
-			for (wchar_t c : housep->UIName)
-			{
-				Debug::LogAndMessage("%c", (char)c);
-			}
-			Debug::LogAndMessage("\n");
-			//
 
-			if (!wcscmp(Players.Items[i]->Name, housep->UIName))
+			Debug::LogAndMessage("\n");
+
+			for (wchar_t c : pHouse->UIName)
+				Debug::LogAndMessage("%c", (char)c);
+
+			Debug::LogAndMessage("\n");
+
+			if (!wcscmp(players.Items[i]->Name, pHouse->UIName))
 			{
 				found = true;
 				break;
 			}
 		}
+
 		if (!found)
 			return false;
 	}
@@ -481,33 +478,30 @@ bool Spawner::Reconcile_Players()
 	 *  Loop through all Houses; if we find a human-owned house that we're
 	 *  not connected to, turn it over to the computer.
 	 */
-	for (house = 0; house < Players.Count; house++)
+	for (house = 0; house < players.Count; house++)
 	{
-		housep = HouseClass::Array->Items[house];
-		if (!housep)
-		{
+		pHouse = HouseClass::Array->Items[house];
+
+		if (!pHouse)
 			continue;
-		}
 
 		/**
 		 *  Skip this house if it wasn't human to start with.
 		 */
-		if (!housep->IsHumanPlayer)
-		{
+		if (!pHouse->IsHumanPlayer)
 			continue;
-		}
 
 		/**
 		 *  Try to find this name in the Players vector; if it's found, set
 		 *  its ID to this house.
 		 */
 		found = false;
-		for (i = 0; i < Players.Count; i++)
+		for (i = 0; i < players.Count; i++)
 		{
-			if (!wcscmp(Players.Items[i]->Name, housep->UIName))
+			if (!wcscmp(players.Items[i]->Name, pHouse->UIName))
 			{
 				found = true;
-				Players.Items[i]->HouseIndex = house;
+				players.Items[i]->HouseIndex = house;
 				break;
 			}
 		}
@@ -517,18 +511,17 @@ bool Spawner::Reconcile_Players()
 		 */
 		if (!found)
 		{
-
 			/**
 			 *  Turn the player's house over to the computer's AI
 			 */
-			housep->IsHumanPlayer = false;
-			housep->Production = true;
-			housep->IQLevel = RulesClass::Instance->MaxIQLevels;
+			pHouse->IsHumanPlayer = false;
+			pHouse->Production = true;
+			pHouse->IQLevel = RulesClass::Instance->MaxIQLevels;
 
 			static wchar_t buffer[21];
-			std::swprintf(buffer, sizeof(buffer), L"%s (AI)", housep->UIName);
-			std::wcscpy(housep->UIName, buffer);
-			//strcpy(housep->IniName, Fetch_String(TXT_COMPUTER));
+			std::swprintf(buffer, sizeof(buffer), L"%s (AI)", pHouse->UIName);
+			std::wcscpy(pHouse->UIName, buffer);
+			//strcpy(pHouse->IniName, Fetch_String(TXT_COMPUTER));
 
 			SessionClass::Instance->MPlayerCount--;
 		}
@@ -538,7 +531,7 @@ bool Spawner::Reconcile_Players()
 	 *  If all went well, our Session.NumPlayers value should now equal the value
 	 *  from the saved game, minus any players we removed.
 	 */
-	return SessionClass::Instance->MPlayerCount == Players.Count;
+	return SessionClass::Instance->MPlayerCount == players.Count;
 }
 
 void Spawner::LoadSidesStuff()
@@ -599,13 +592,13 @@ void Spawner::After_Main_Loop()
 {
 	auto pConfig = Spawner::GetConfig();
 
-	const bool do_campaign_autosaves = SessionClass::Instance->GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
-	const bool do_mp_autosaves = Spawner::Active && SessionClass::Instance->GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
+	const bool doSaveCampaign = SessionClass::Instance->GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
+	const bool doSaveMP = Spawner::Active && SessionClass::Instance->GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
 
 	/**
 	 *  Schedule to make a save if it's time to autosave.
 	 */
-	if (do_campaign_autosaves || do_mp_autosaves)
+	if (doSaveCampaign || doSaveMP)
 	{
 		if (Unsorted::CurrentFrame == Spawner::NextAutoSaveFrame)
 		{
@@ -616,22 +609,21 @@ void Spawner::After_Main_Loop()
 	if (Spawner::DoSave)
 	{
 
-		// Print_Saving_Game_Message();
+		Print_Saving_Game_Message();
 
 		/**
 		 *  Campaign autosave.
 		 */
 		if (SessionClass::Instance->GameMode == GameMode::Campaign)
 		{
-
-			static char save_filename[32];
-			static wchar_t save_description[32];
+			static char saveFileName[32];
+			static wchar_t saveDescription[32];
 
 			/**
 			 *  Prepare the save name and description.
 			 */
-			std::sprintf(save_filename, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
-			std::swprintf(save_description, L"Mission Auto-Save (Slot %d)", Spawner::NextAutoSaveNumber + 1);
+			std::sprintf(saveFileName, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
+			std::swprintf(saveDescription, L"Mission Auto-Save (Slot %d)", Spawner::NextAutoSaveNumber + 1);
 
 			/**
 			 *  Pause the mission timer.
@@ -643,7 +635,7 @@ void Spawner::After_Main_Loop()
 			/**
 			 *  Save!
 			 */
-			ScenarioClass::Instance->SaveGame(save_filename, save_description);
+			ScenarioClass::Instance->SaveGame(saveFileName, saveDescription);
 
 			/**
 			 *  Unpause the mission timer.

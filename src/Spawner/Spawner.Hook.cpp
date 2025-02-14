@@ -219,4 +219,10 @@ DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 	return 0;
 }
 
+DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
+{
+	Spawner::DoSave = true;
+	return 0x4C7B42;
+}
+
 #pragma endregion

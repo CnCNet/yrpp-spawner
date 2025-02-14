@@ -36,9 +36,6 @@ void EventExt::RespondEvent()
 	case EventTypeExt::ResponseTime2:
 		ProtocolZero::HandleResponseTime2(this);
 		break;
-	case EventTypeExt::SaveGame:
-		Spawner::RespondToSaveGame(this);
-		break;
 	}
 }
 
@@ -48,8 +45,6 @@ size_t EventExt::GetDataSize(EventTypeExt type)
 	{
 	case EventTypeExt::ResponseTime2:
 		return sizeof(EventExt::ResponseTime2);
-	case EventTypeExt::SaveGame:
-		return sizeof(EventExt::SaveGame);
 	}
 
 	return 0;
