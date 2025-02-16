@@ -585,7 +585,7 @@ void Print_Saving_Game_Message()
  *  has been called can lead to save corruption
  *  In other words, by doing it here we fix a Westwood bug/oversight
  *
- *  Original author: Vinifera Project
+ *  Original author: Rampastring, ZivDero
  *  Migration: TaranDahl
  */
 void Spawner::After_Main_Loop()
