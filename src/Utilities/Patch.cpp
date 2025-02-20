@@ -62,6 +62,8 @@ void Patch::Apply()
 	VirtualProtect(pAddress, this->size, PAGE_EXECUTE_READWRITE, &protect_flag);
 	memcpy(pAddress, this->pData, this->size);
 	VirtualProtect(pAddress, this->size, protect_flag, &protect_flag);
+	// NOTE: Instruction cache flush isn't required on x86. This is just to conform with Win32 API docs.
+	FlushInstructionCache(GetCurrentProcess(), pAddress, this->size);
 }
 
 void Patch::Apply_LJMP(DWORD offset, DWORD pointer)
