@@ -226,4 +226,13 @@ DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 	return 0x4C7B42;
 }
 
+// test
+DEFINE_HOOK_AGAIN(0x4F1130, SomeFunc_CustomDialog, 0x5);
+DEFINE_HOOK_AGAIN(0x4F1122, SomeFunc_CustomDialog, 0x5);
+DEFINE_HOOK(0x4F110D, SomeFunc_CustomDialog, 0x5)
+{
+	R->ECX(6001);
+	return R->Origin() + 0x5;
+}
+
 #pragma endregion
