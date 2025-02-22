@@ -22,7 +22,11 @@
 #include <Utilities/Macro.h>
 #include <Spawner/Spawner.h>
 
+#include <HouseClass.h>
+#include <LoadOptionsClass.h>
+
 #include <filesystem>
+#include <optional>
 
 namespace SavedGames
 {
@@ -158,6 +162,189 @@ DEFINE_HOOK(0x67FD26, LoadOptionsClass_ReadSaveInfo_SGInSubdir, 0x5)
 		SavedGames::FormatPath(Main::readBuffer, pFileName);
 		R->ECX(Main::readBuffer);
 	}
+
+	return 0;
+}
+
+
+//issue #18 : Save game filter for 3rd party campaigns
+namespace SavedGames
+{
+	struct CustomMissionID
+	{
+		static constexpr wchar_t* SaveName = L"CustomMissionID";
+
+		int Number;
+
+		CustomMissionID() : Number { Spawner::GetConfig()->CustomMissionID } { }
+
+		CustomMissionID(int num) : Number { num } { }
+
+		operator int() const { return Number; }
+	};
+
+	// More fun
+
+	struct ExtraTestInfo
+	{
+		static constexpr wchar_t* SaveName = L"Spawner test info";
+
+		int CurrentFrame;
+		int TechnoCount;
+
+		explicit ExtraTestInfo()
+			:CurrentFrame { Unsorted::CurrentFrame }
+			, TechnoCount { TechnoClass::Array->Count }
+		{
+		}
+	};
+
+	template<typename T>
+	bool AppendToStorage(IStorage* pStorage)
+	{
+		IStream* pStream = nullptr;
+		bool ret = false;
+		HRESULT hr = pStorage->CreateStream(
+			T::SaveName,
+			STGM_WRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
+			0,
+			0,
+			&pStream
+		);
+
+		if (SUCCEEDED(hr) && pStream != nullptr)
+		{
+			T info {};
+			ULONG written = 0;
+			hr = pStream->Write(&info, sizeof(info), &written);
+			ret = SUCCEEDED(hr) && written == sizeof(info);
+			pStream->Release();
+		}
+
+		return ret;
+	}
+
+
+	template<typename T>
+	std::optional<T> ReadFromStorage(IStorage* pStorage)
+	{
+		IStream* pStream = nullptr;
+		bool hasValue = false;
+		HRESULT hr = pStorage->OpenStream(
+			T::SaveName,
+			NULL,
+			STGM_READ | STGM_SHARE_EXCLUSIVE,
+			0,
+			&pStream
+		);
+
+		T info;
+
+		if (SUCCEEDED(hr) && pStream != nullptr)
+		{
+			ULONG read = 0;
+			hr = pStream->Read(&info, sizeof(info), &read);
+			hasValue = SUCCEEDED(hr) && read == sizeof(info);
+
+			pStream->Release();
+		}
+
+		return hasValue ? std::make_optional(info) : std::nullopt;
+	}
+
+}
+
+DEFINE_HOOK(0x559921, LoadOptionsClass_FillList_FilterFiles, 0x6)
+{
+	GET(FileEntryClass*, pEntry, EBP);
+	enum { NullThisEntry = 0x559959 };
+	/*
+	// there was a qsort later and filters out these but we could have just removed them right here
+	if (pEntry->IsWrongVersion || !pEntry->IsValid)
+	{
+		GameDelete(pEntry);
+		return NullThisEntry;
+	};
+	*/
+	OLECHAR wNameBuffer[0x100] {};
+	SavedGames::FormatPath(Main::readBuffer, pEntry->Filename.data());
+	MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, -1, wNameBuffer, std::size(wNameBuffer));
+	IStorage* pStorage = nullptr;
+	bool shouldDelete = false;
+	if (SUCCEEDED(StgOpenStorage(wNameBuffer, NULL,
+		STGM_READWRITE | STGM_SHARE_EXCLUSIVE,
+		0, 0, &pStorage)
+	))
+	{
+		auto id = SavedGames::ReadFromStorage<SavedGames::CustomMissionID>(pStorage);
+
+		if (Spawner::GetConfig()->CustomMissionID != id.value_or(0))
+			shouldDelete = true;
+	}
+
+	if (pStorage)
+		pStorage->Release();
+
+	if (shouldDelete)
+	{
+		GameDelete(pEntry);
+		return NullThisEntry;
+	}
+
+	return 0;
+}
+
+// Write : A la fin
+DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
+{
+	GET_STACK(IStorage*, pStorage, STACK_OFFSET(0x4A0, -0x490));
+	using namespace SavedGames;
+
+	if (pStorage)
+	{
+		if (SessionClass::IsCampaign() && Spawner::GetConfig()->CustomMissionID)
+			AppendToStorage<CustomMissionID>(pStorage);
+		if (AppendToStorage<ExtraTestInfo>(pStorage))
+			Debug::Log("[Spawner] Extra meta info appended on sav file\n");
+	}
+
+	return 0;
+}
+
+// Read : Au debut
+DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
+{
+	LEA_STACK(const wchar_t*, filename, STACK_OFFSET(0x518, -0x4F4));
+	IStorage* pStorage = nullptr;
+	using namespace SavedGames;
+
+	if (SUCCEEDED(StgOpenStorage(filename, NULL,
+		STGM_READWRITE | STGM_SHARE_EXCLUSIVE,
+		0, 0, &pStorage)
+	))
+	{
+		if (auto id = ReadFromStorage<CustomMissionID>(pStorage))
+		{
+			int num = id->Number;
+			Debug::Log("[Spawner] sav file CustomMissionID = %d\n", num);
+			Spawner::GetConfig()->CustomMissionID = num;
+			ScenarioClass::Instance->EndOfGame = true;
+		}
+		else
+		{
+			Spawner::GetConfig()->CustomMissionID = 0;
+		}
+
+		if (auto info = ReadFromStorage<ExtraTestInfo>(pStorage))
+		{
+			Debug::Log("[Spawner] CurrentFrame = %d, TechnoCount = %d\n"
+				, info->CurrentFrame
+				, info->TechnoCount
+			);
+		}
+	}
+	if (pStorage)
+		pStorage->Release();
 
 	return 0;
 }
