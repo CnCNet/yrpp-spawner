@@ -109,7 +109,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 }
 
-constexpr const char* PlayerSectionArray[8] = {
+const char* PlayerSectionArray[8] = {
 	"Settings",
 	"Other1",
 	"Other2",
@@ -120,7 +120,7 @@ constexpr const char* PlayerSectionArray[8] = {
 	"Other7"
 };
 
-constexpr const char* MultiTagArray[8] = {
+const char* MultiTagArray[8] = {
 	"Multi1",
 	"Multi2",
 	"Multi3",
@@ -131,7 +131,7 @@ constexpr const char* MultiTagArray[8] = {
 	"Multi8"
 };
 
-constexpr const char* AlliancesSectionArray[8] = {
+const char* AlliancesSectionArray[8] = {
 	"Multi1_Alliances",
 	"Multi2_Alliances",
 	"Multi3_Alliances",
@@ -142,7 +142,7 @@ constexpr const char* AlliancesSectionArray[8] = {
 	"Multi8_Alliances"
 };
 
-constexpr const char* AlliancesTagArray[8] = {
+const char* AlliancesTagArray[8] = {
 	"HouseAllyOne",
 	"HouseAllyTwo",
 	"HouseAllyThree",
