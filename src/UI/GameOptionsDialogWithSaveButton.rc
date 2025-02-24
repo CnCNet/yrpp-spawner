@@ -1,5 +1,4 @@
 #include <windows.h>
-#include "Dialogs.h"
 
 6001 DIALOG 0, 0, 533, 369
 STYLE DS_SETFONT | WS_CHILD
