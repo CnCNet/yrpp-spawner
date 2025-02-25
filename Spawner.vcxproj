@@ -17,6 +17,7 @@
   <ItemGroup>
     <!-- Root -->
     <ClCompile Include="src\UI\Dialogs.cpp" />
+    <ClCompile Include="src\UI\Hooks.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
