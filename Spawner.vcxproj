@@ -63,7 +63,8 @@
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
-    <ResourceCompile Include="src\UI\GameOptionsDialogWithSaveButton.rc" />
+    <!-- Dialogs -->
+    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
@@ -76,6 +77,7 @@
     <!-- HardEndStuff -->
     <ClInclude Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.h" />
     <!-- Misc -->
+    <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
@@ -87,6 +89,5 @@
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Macro.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
-    <ClInclude Include="src\UI\Dialogs.h" />
   </ItemGroup>
 </Project>

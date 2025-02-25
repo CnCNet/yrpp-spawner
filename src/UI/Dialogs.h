@@ -2,12 +2,13 @@
 
 #include <UI.h>
 
+// For now this can only contain copies of the original dialogs with same IDs
 enum SpawnerCustomDialogs : uint16_t
 {
-	GameOptionsDialogWithSaveButton = 6001,
+	MultiplayerGameOptionsDialog = 3002, // added a save button
 
-	First = 6001,
-	Last = 6001
+	First = 3002,
+	Last = 3002
 };
 
 class Dialogs {
