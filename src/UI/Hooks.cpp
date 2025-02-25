@@ -13,3 +13,9 @@ DEFINE_HOOK(0x4F110D, SomeFunc_CustomDialog, 0x5)
 	return R->Origin() + 0x5;
 }
 */
+// test
+DEFINE_HOOK(0x4F1130, SomeFunc_CustomDialog, 0x5)
+{
+	R->ECX(SpawnerCustomDialogs::MultiplayerGameOptionsDialog);
+	return R->Origin() + 0x5;
+}
