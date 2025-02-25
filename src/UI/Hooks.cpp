@@ -4,18 +4,10 @@
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
-/*
-// Show a different dialog with S&L button in the menu
-DEFINE_HOOK_AGAIN(0x4F1122, SomeFunc_CustomDialog, 0x5);
-DEFINE_HOOK(0x4F110D, SomeFunc_CustomDialog, 0x5)
+DEFINE_HOOK(0x609299, SomeClass_SomeFunc_MPSaveButton, 0x5)
 {
-	R->ECX(SpawnerCustomDialogs::MultiplayerGameOptionsDialog);
-	return R->Origin() + 0x5;
-}
-*/
-// test
-DEFINE_HOOK(0x4F1130, SomeFunc_CustomDialog, 0x5)
-{
-	R->ECX(SpawnerCustomDialogs::MultiplayerGameOptionsDialog);
-	return R->Origin() + 0x5;
+	enum { RetFalse = 0x609664, RetTrue = 0x609693 };
+
+	GET(int, dlgCtrlID, EAX);
+	return (dlgCtrlID == 1314 || dlgCtrlID == 1313 || dlgCtrlID == 1311) ? RetTrue : RetFalse;
 }
