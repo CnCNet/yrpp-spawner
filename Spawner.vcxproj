@@ -5,7 +5,7 @@
     <RootNamespace>YRpp-Spawner</RootNamespace>
     <ProjectGuid>{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}</ProjectGuid>
     <VCProjectVersion>15.0</VCProjectVersion>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ShowAllFiles>true</ShowAllFiles>
     <ThisDir>$(MSBuildThisFileDirectory)</ThisDir>
     <YRppDir>$(ThisDir)YRpp</YRppDir>

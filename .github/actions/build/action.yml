@@ -18,11 +18,8 @@ runs:
   steps:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
-
-    - name: Restore NuGet packages
-      working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: nuget restore ${{ inputs.sln-path }}
-      shell: cmd
+      with:
+        vs-version: '[16.0, )'
 
     - uses: ammaraskar/msvc-problem-matcher@master
 
