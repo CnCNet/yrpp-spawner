@@ -30,7 +30,7 @@
 #include <HouseClass.h>
 #include <IPXManagerClass.h>
 #include <LoadOptionsClass.h>
-#include <MessageBox.h>
+#include <WWMessageBox.h>
 #include <MPGameModeClass.h>
 #include <ScenarioClass.h>
 #include <time.h>
@@ -94,10 +94,10 @@ void Spawner::AssignHouses()
 {
 	ScenarioClass::AssignHouses();
 
-	const int count = std::min(HouseClass::Array->Count, (int)std::size(Spawner::Config->Houses));
+	const int count = std::min(HouseClass::Array.Count, (int)std::size(Spawner::Config->Houses));
 	for (int indexOfHouseArray = 0; indexOfHouseArray < count; indexOfHouseArray++)
 	{
-		const auto pHouse = HouseClass::Array->GetItem(indexOfHouseArray);
+		const auto pHouse = HouseClass::Array.GetItem(indexOfHouseArray);
 
 		if (pHouse->Type->MultiplayPassive)
 			continue;
@@ -149,7 +149,7 @@ void Spawner::AssignHouses()
 		else
 		{
 			if (pHouse->MakeObserver())
-				TabClass::Instance->ThumbActive = false;
+				TabClass::Instance.ThumbActive = false;
 
 			{ // Remove SpawnLocations for Observer
 				ScenarioClass* pScenarioClass = ScenarioClass::Instance;
@@ -171,7 +171,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	{
 		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
 
-		MessageBox::Show(
+		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
 			StringTable::LoadString(GameStrings::TXT_OK),
 			0);
@@ -182,7 +182,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 	const auto pSession = &SessionClass::Instance;
 	const auto pGameModeOptions = &GameModeOptionsClass::Instance;
 
-	strcpy_s(&Game::ScenarioName, 0x200, pScenarioName);
+	strcpy_s(Game::ScenarioName, 0x200, pScenarioName);
 	pSession->ReadScenarioDescriptions();
 
 	{ // Set MPGameMode
@@ -217,7 +217,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 		Game::Seed = Spawner::Config->Seed;
 		Game::TechLevel = Spawner::Config->TechLevel;
 		Game::PlayerColor = Spawner::Config->Players[0].Color;
-		GameOptionsClass::Instance->GameSpeed = Spawner::Config->GameSpeed;
+		GameOptionsClass::Instance.GameSpeed = Spawner::Config->GameSpeed;
 	}
 
 	{ // Added AI Players
@@ -245,7 +245,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 				continue;
 
 			const auto pNode = GameCreate<NodeNameType>();
-			NodeNameType::Array->AddItem(pNode);
+			NodeNameType::Array.AddItem(pNode);
 
 			wcscpy_s(pNode->Name, pPlayer->Name);
 			pNode->Country = pPlayer->Country;
@@ -276,7 +276,7 @@ bool Spawner::StartNewScenario(const char* pScenarioName)
 			}
 		}
 
-		Game::PlayerCount = NodeNameType::Array->Count;
+		Game::PlayerCount = NodeNameType::Array.Count;
 	}
 
 	{ // Set SessionType
@@ -331,7 +331,7 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 	{
 		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
 
-		MessageBox::Show(
+		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_ERROR_LOADING_GAME),
 			StringTable::LoadString(GameStrings::TXT_OK),
 			0);
@@ -359,7 +359,7 @@ void Spawner::InitNetwork()
 	UDPInterfaceClass::Instance->StartListening();
 	UDPInterfaceClass::Instance->DiscardInBuffers();
 	UDPInterfaceClass::Instance->DiscardOutBuffers();
-	IPXManagerClass::Instance->SetTiming(60, -1, 600, 1);
+	IPXManagerClass::Instance.SetTiming(60, -1, 600, 1);
 
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
@@ -410,6 +410,6 @@ void Spawner::LoadSidesStuff()
 	pRules->Read_Countries(pINI);
 	pRules->Read_Sides(pINI);
 
-	for (auto const& pItem : *HouseTypeClass::Array)
+	for (auto const& pItem : HouseTypeClass::Array)
 		pItem->LoadFromINI(pINI);
 }

@@ -72,7 +72,7 @@ DEFINE_HOOK(0x5997AB, MapGeneratorClass_Init_RandomMap, 0x9)
 	{
 		LEA_STACK(CCINIClass*, pINI, STACK_OFFSET(0xB0, -0x64));
 
-		CCFileClass* pIncludeFile = GameCreate<CCFileClass>(&Game::ScenarioName);
+		CCFileClass* pIncludeFile = GameCreate<CCFileClass>(Game::ScenarioName);
 		if (pIncludeFile->Exists())
 			pINI->ReadCCFile(pIncludeFile);
 

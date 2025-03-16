@@ -23,6 +23,7 @@
     <ClCompile Include="$(ThisDir)\src\Main.Hook.cpp" />
     <!-- Ext -->
     <ClCompile Include="$(ThisDir)\src\Ext\Event\Body.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Ext\INIClass\Body.cpp" />
     <!-- HardEndStuff -->
     <ClCompile Include="$(ThisDir)\src\HardEndStuff\AppIcon.cpp" />
     <ClCompile Include="$(ThisDir)\src\HardEndStuff\Misc.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="$(ThisDir)\src\Main.Config.h" />
     <!-- Ext -->
     <ClInclude Include="$(ThisDir)\src\Ext\Event\Body.h" />
+    <ClInclude Include="$(ThisDir)\src\Ext\INIClass\Body.h" />
     <!-- HardEndStuff -->
     <ClInclude Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.h" />
     <!-- Misc -->

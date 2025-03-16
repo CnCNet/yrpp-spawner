@@ -29,7 +29,7 @@ DEFINE_HOOK(0x6B75AC, SpawnManagerClass_AI_SetDestinationForMissiles, 0x5)
 	GET(TechnoClass*, pSpawnTechno, EDI);
 
 	CoordStruct coord = pSpawnManager->Target->GetCenterCoords();
-	CellClass* pCellDestination = MapClass::Instance->TryGetCellAt(coord);
+	CellClass* pCellDestination = MapClass::Instance.TryGetCellAt(coord);
 
 	pSpawnTechno->SetDestination(pCellDestination, true);
 
