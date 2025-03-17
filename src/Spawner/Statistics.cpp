@@ -96,8 +96,8 @@ DEFINE_HOOK(0x6C735E, SendStatisticsPacket_AddField_HASH, 0x5)
 	if (IsStatisticsEnabled())
 	{
 		LEA_STACK(PacketClass*, pPacket, STACK_OFFSET(0x83A4, -0x8394));
-		pPacket->AddField<wchar_t*>("SCEN", Spawner::GetConfig()->UIMapName, sizeof(Spawner::GetConfig()->UIMapName));
-		pPacket->AddField<char*>("HASH", Spawner::GetConfig()->MapHash);
+		pPacket->AddField<wchar_t*>((char*)"SCEN", Spawner::GetConfig()->UIMapName, sizeof(Spawner::GetConfig()->UIMapName));
+		pPacket->AddField<char*>((char*)"HASH", Spawner::GetConfig()->MapHash);
 		return 0x6C737D;
 	}
 
@@ -115,9 +115,9 @@ DEFINE_HOOK(0x6C7921, SendStatisticsPacket_AddField_MyId, 0x6)
 
 		if (pHouse == HouseClass::CurrentPlayer)
 		{
-			pPacket->AddField<LONG>("MYID", id - '0');
-			pPacket->AddField<DWORD>("NKEY", 0);
-			pPacket->AddField<DWORD>("SKEY", 0);
+			pPacket->AddField<LONG>((char*)"MYID", id - '0');
+			pPacket->AddField<DWORD>((char*)"NKEY", 0);
+			pPacket->AddField<DWORD>((char*)"SKEY", 0);
 		}
 	}
 

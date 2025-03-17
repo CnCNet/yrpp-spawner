@@ -23,7 +23,7 @@
 
 HANDLE __fastcall UI_ApplyAppIcon()
 {
-	char* iconPath = Ra2Mode::IsEnabled()
+	const char* iconPath = Ra2Mode::IsEnabled()
 		? "./Resources/ra2.ico"
 		: "./Resources/clienticon.ico";
 
