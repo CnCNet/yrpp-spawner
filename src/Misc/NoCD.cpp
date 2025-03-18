@@ -66,8 +66,8 @@ void ApplyNoCDPatches()
 
 	// CD switch behavior changed to support true No-CD mode with no need to still have a drive
 	// Also, this should improve performance considerably when no disc is inserted into any CD drive
-	char numOfDrives = (char)std::size(GetCDClass::Instance->Drives);
-	memset(GetCDClass::Instance->Drives, -1, numOfDrives);
+	char numOfDrives = (char)std::size(GetCDClass::Instance.Drives);
+	memset(GetCDClass::Instance.Drives, -1, numOfDrives);
 
 	char drv[] = "a:\\";
 	for (char i = 0; i < numOfDrives; ++i)
@@ -75,8 +75,8 @@ void ApplyNoCDPatches()
 		drv[0] = 'a' + (i + 2) % numOfDrives;
 		if (GetDriveTypeA(drv) == DRIVE_FIXED)
 		{
-			GetCDClass::Instance->Drives[0] = (i + 2) % numOfDrives;
-			GetCDClass::Instance->Count = 1;
+			GetCDClass::Instance.Drives[0] = (i + 2) % numOfDrives;
+			GetCDClass::Instance.Count = 1;
 			break;
 		}
 	}
@@ -88,7 +88,7 @@ DEFINE_HOOK(0x6BD7CB, WinMain_NoCDPatches, 0x5)
 	{
 		ApplyNoCDPatches();
 	}
-	else if (!GetCDClass::Instance->Count)
+	else if (!GetCDClass::Instance.Count)
 	{
 		Debug::Log("[Spawner] No CD drives detected. Switching to NoCD mode.\n");
 		ApplyNoCDPatches();
