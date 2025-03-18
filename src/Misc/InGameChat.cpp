@@ -20,6 +20,7 @@
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <HouseClass.h>
+#include <Unsorted.h>
 
 // This corrects the processing of Unicode player names
 // and prohibits incoming messages from players with whom chat is disabled
@@ -27,7 +28,7 @@
 #pragma pack(push, 1)
 struct GlobalPacket_NetMessage
 {
-	static constexpr reference<GlobalPacket_NetMessage, 0xA8D638u> const Instance {};
+	DEFINE_REFERENCE(GlobalPacket_NetMessage, Instance, 0xA8D638u);
 
 	int Command;
 	wchar_t PlayerName[21];
@@ -46,15 +47,15 @@ DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 
 	enum { SkipMessage = 0x48DAD3, PrintMessage = 0x48D937 };
 
-	const int houseIndex = GlobalPacket_NetMessage::Instance->HouseIndex;
+	const int houseIndex = GlobalPacket_NetMessage::Instance.HouseIndex;
 
 	if (houseIndex < 8 && Game::ChatMask[houseIndex])
 	{
-		if (HouseClass::Array->ValidIndex(houseIndex))
+		if (HouseClass::Array.ValidIndex(houseIndex))
 		{
-			HouseClass* pHouse = HouseClass::Array->GetItem(houseIndex);
+			HouseClass* pHouse = HouseClass::Array.GetItem(houseIndex);
 
-			GlobalPacket_NetMessage::Instance->Color = (byte)pHouse->ColorSchemeIndex;
+			GlobalPacket_NetMessage::Instance.Color = (byte)pHouse->ColorSchemeIndex;
 			R->ESI(pHouse->UIName);
 			return PrintMessage;
 		}
@@ -78,8 +79,8 @@ DEFINE_HOOK(0x55EDD2, MessageInput_Write, 0x5)
 		return 0;
 
 	HouseClass* pHouse = HouseClass::CurrentPlayer;
-	wcscpy_s(GlobalPacket_NetMessage::Instance->PlayerName, pHouse->UIName);
-	GlobalPacket_NetMessage::Instance->HouseIndex = (byte)pHouse->ArrayIndex;
+	wcscpy_s(GlobalPacket_NetMessage::Instance.PlayerName, pHouse->UIName);
+	GlobalPacket_NetMessage::Instance.HouseIndex = (byte)pHouse->ArrayIndex;
 
 	return 0x55EE00;
 }
@@ -89,6 +90,6 @@ DEFINE_HOOK(0x55F0A8, MessageInput_Print, 0x5)
 	if (!Spawner::Enabled)
 		return 0;
 
-	R->EAX(GlobalPacket_NetMessage::Instance->PlayerName);
+	R->EAX(GlobalPacket_NetMessage::Instance.PlayerName);
 	return 0x55F0B2;
 }

@@ -21,6 +21,7 @@
 #include "Spawner.Config.h"
 
 #include <CCINIClass.h>
+#include <Ext/INIClass/Body.h>
 
 void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 {
@@ -47,7 +48,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		FogOfWar       = pINI->ReadBool(pSettingsSection, "FogOfWar", FogOfWar);
 		MCVRedeploy    = pINI->ReadBool(pSettingsSection, "MCVRedeploy", MCVRedeploy);
 
-		if (pINI->ReadString_WithoutAresHook(pSettingsSection, "UIGameMode", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
+		if (INIClassExt::ReadString_WithoutAresHook(pINI, pSettingsSection, "UIGameMode", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
 			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIGameMode, std::size(UIGameMode));
 	}
 
@@ -65,7 +66,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		/* ScenarioName */ pINI->ReadString(pSettingsSection, "Scenario", ScenarioName, ScenarioName, sizeof(ScenarioName));
 		/* MapHash      */ pINI->ReadString(pSettingsSection, "MapHash", MapHash, MapHash, sizeof(MapHash));
 
-		if (pINI->ReadString_WithoutAresHook(pSettingsSection, "UIMapName", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
+		if (INIClassExt::ReadString_WithoutAresHook(pINI, pSettingsSection, "UIMapName", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
 			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIMapName, std::size(UIMapName));
 	}
 
@@ -109,7 +110,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
 }
 
-constexpr char* PlayerSectionArray[8] = {
+const char* PlayerSectionArray[8] = {
 	"Settings",
 	"Other1",
 	"Other2",
@@ -120,7 +121,7 @@ constexpr char* PlayerSectionArray[8] = {
 	"Other7"
 };
 
-constexpr char* MultiTagArray[8] = {
+const char* MultiTagArray[8] = {
 	"Multi1",
 	"Multi2",
 	"Multi3",
@@ -131,7 +132,7 @@ constexpr char* MultiTagArray[8] = {
 	"Multi8"
 };
 
-constexpr char* AlliancesSectionArray[8] = {
+const char* AlliancesSectionArray[8] = {
 	"Multi1_Alliances",
 	"Multi2_Alliances",
 	"Multi3_Alliances",
@@ -142,7 +143,7 @@ constexpr char* AlliancesSectionArray[8] = {
 	"Multi8_Alliances"
 };
 
-constexpr char* AlliancesTagArray[8] = {
+const char* AlliancesTagArray[8] = {
 	"HouseAllyOne",
 	"HouseAllyTwo",
 	"HouseAllyThree",
@@ -166,7 +167,7 @@ void SpawnerConfig::PlayerConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 		this->IsHuman = true;
 		this->Difficulty = -1;
 
-		if (pINI->ReadString_WithoutAresHook(pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
+		if (INIClassExt::ReadString_WithoutAresHook(pINI, pSection, "Name", "", Main::readBuffer, sizeof(Main::readBuffer)))
 			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, -1, this->Name, std::size(this->Name));
 
 		this->Color      = pINI->ReadInteger(pSection, "Color", this->Color);

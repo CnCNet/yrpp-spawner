@@ -53,11 +53,11 @@ DEFINE_HOOK(0x6BC14D, WinMain_ReadScreenResolutionFromIni, 0x5)
 	if (!Spawner::Enabled)
 		return 0;
 
-	if (GameOptionsClass::Instance->ShellWidth < 800 || GameOptionsClass::Instance->ShellHeight < 600)
+	if (GameOptionsClass::Instance.ShellWidth < 800 || GameOptionsClass::Instance.ShellHeight < 600)
 		return 0;
 
-	GameOptionsClass::Instance->ShellHeight = GameOptionsClass::Instance->ScreenHeight;
-	GameOptionsClass::Instance->ShellWidth = GameOptionsClass::Instance->ScreenWidth;
+	GameOptionsClass::Instance.ShellHeight = GameOptionsClass::Instance.ScreenHeight;
+	GameOptionsClass::Instance.ShellWidth = GameOptionsClass::Instance.ScreenWidth;
 
 	return 0;
 }
@@ -67,7 +67,7 @@ DEFINE_HOOK(0x640CE2, PreviewClass_DrawMap, 0x5)
 	if (!Spawner::Enabled)
 		return 0;
 
-	if (GameOptionsClass::Instance->ShellWidth < 800 || GameOptionsClass::Instance->ShellHeight < 600)
+	if (GameOptionsClass::Instance.ShellWidth < 800 || GameOptionsClass::Instance.ShellHeight < 600)
 		return 0;
 
 	int Left = 499;
@@ -75,8 +75,8 @@ DEFINE_HOOK(0x640CE2, PreviewClass_DrawMap, 0x5)
 	int Width = 216;
 	int Height = 166;
 
-	Left += (GameOptionsClass::Instance->ShellWidth - 800) >> 1;
-	Top += (GameOptionsClass::Instance->ShellHeight - 600) >> 1;
+	Left += (GameOptionsClass::Instance.ShellWidth - 800) >> 1;
+	Top += (GameOptionsClass::Instance.ShellHeight - 600) >> 1;
 
 	R->EAX(Left);
 	R->ECX(Top);
@@ -91,12 +91,12 @@ DEFINE_HOOK(0x60C43B, EnumChildProc_60C0C0, 0x5)
 	if (!Spawner::Enabled)
 		return 0;
 
-	if (GameOptionsClass::Instance->ShellWidth < 800 || GameOptionsClass::Instance->ShellHeight < 600)
+	if (GameOptionsClass::Instance.ShellWidth < 800 || GameOptionsClass::Instance.ShellHeight < 600)
 		return 0;
 
 	LEA_STACK(RectangleStruct*, Rect, STACK_OFFSET(0x44, -0x10));
-	Rect->X = -((GameOptionsClass::Instance->ShellWidth - 800) >> 1);
-	Rect->Y = -((GameOptionsClass::Instance->ShellHeight - 600) >> 1);
+	Rect->X = -((GameOptionsClass::Instance.ShellWidth - 800) >> 1);
+	Rect->Y = -((GameOptionsClass::Instance.ShellHeight - 600) >> 1);
 	Rect->Width = 640;
 	Rect->Height = 480;
 

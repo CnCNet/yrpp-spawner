@@ -281,7 +281,7 @@ DEFINE_HOOK(0x71F1A2, TEventClass_Execute_AllDestroyed, 0x6)
 	if (pHouse->ActiveInfantryTypes.GetTotal() > 0)
 		return HasAlive;
 
-	for (auto pItem : *InfantryClass::Array)
+	for (auto pItem : InfantryClass::Array)
 	{
 		if (pItem->InLimbo && pHouse == pItem->GetOwningHouse() && pHouse->IsAlliedWith(pItem->Transporter))
 			return HasAlive;
