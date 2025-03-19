@@ -432,7 +432,7 @@ bool Spawner::Reconcile_Players()
 	HouseClass* pHouse;
 
 	// Just use this as Playernodes.
-	auto players = SessionClass::Instance->StartSpots;
+	auto players = SessionClass::Instance.StartSpots;
 
 	/**
 	 *  If there are no players, there's nothing to do.
@@ -449,7 +449,7 @@ bool Spawner::Reconcile_Players()
 
 		for (house = 0; house < players.Count; house++)
 		{
-			pHouse = HouseClass::Array->Items[house];
+			pHouse = HouseClass::Array.Items[house];
 			if (!pHouse)
 				continue;
 
@@ -480,7 +480,7 @@ bool Spawner::Reconcile_Players()
 	 */
 	for (house = 0; house < players.Count; house++)
 	{
-		pHouse = HouseClass::Array->Items[house];
+		pHouse = HouseClass::Array.Items[house];
 
 		if (!pHouse)
 			continue;
@@ -523,7 +523,7 @@ bool Spawner::Reconcile_Players()
 			std::wcscpy(pHouse->UIName, buffer);
 			//strcpy(pHouse->IniName, Fetch_String(TXT_COMPUTER));
 
-			SessionClass::Instance->MPlayerCount--;
+			SessionClass::Instance.MPlayerCount--;
 		}
 	}
 
@@ -531,7 +531,7 @@ bool Spawner::Reconcile_Players()
 	 *  If all went well, our Session.NumPlayers value should now equal the value
 	 *  from the saved game, minus any players we removed.
 	 */
-	return SessionClass::Instance->MPlayerCount == players.Count;
+	return SessionClass::Instance.MPlayerCount == players.Count;
 }
 
 void Spawner::LoadSidesStuff()
@@ -570,13 +570,13 @@ void Print_Saving_Game_Message()
 	/**
 	 *  Send the message.
 	 */
-	MessageListClass::Instance->AddMessage(nullptr, 0, L"Saving game...", 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
+	MessageListClass::Instance.AddMessage(nullptr, 0, L"Saving game...", 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
 
 	/**
 	 *  Force a redraw so that our message gets printed.
 	 */
-	MapClass::Instance->MarkNeedsRedraw(2);
-	MapClass::Instance->Render();
+	MapClass::Instance.MarkNeedsRedraw(2);
+	MapClass::Instance.Render();
 }
 
 /**
@@ -592,8 +592,8 @@ void Spawner::After_Main_Loop()
 {
 	auto pConfig = Spawner::GetConfig();
 
-	const bool doSaveCampaign = SessionClass::Instance->GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
-	const bool doSaveMP = Spawner::Active && SessionClass::Instance->GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
+	const bool doSaveCampaign = SessionClass::Instance.GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
+	const bool doSaveMP = Spawner::Active && SessionClass::Instance.GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
 
 	/**
 	 *  Schedule to make a save if it's time to autosave.
@@ -614,7 +614,7 @@ void Spawner::After_Main_Loop()
 		/**
 		 *  Campaign autosave.
 		 */
-		if (SessionClass::Instance->GameMode == GameMode::Campaign)
+		if (SessionClass::Instance.GameMode == GameMode::Campaign)
 		{
 			static char saveFileName[32];
 			static wchar_t saveDescription[32];
@@ -651,7 +651,7 @@ void Spawner::After_Main_Loop()
 			 */
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
 		}
-		else if (SessionClass::Instance->GameMode == GameMode::LAN)
+		else if (SessionClass::Instance.GameMode == GameMode::LAN)
 		{
 
 			/**
