@@ -86,7 +86,7 @@ DEFINE_HOOK(0x65812E, RadarClass__DiplomacyDialog_UIGameMode, 0x6)
 		return Show;
 	}
 
-	if (!SessionClass::Instance->MPGameMode)
+	if (!SessionClass::Instance.MPGameMode)
 		return DontShow;
 
 	return 0;
@@ -137,12 +137,12 @@ DEFINE_HOOK(0x4FC551, HouseClass__MPlayerDefeated_NoEnemies, 0x5)
 	if (!MPlayerDefeated::pThis)
 		return 0;
 
-	for (const auto pHouse : *HouseClass::Array)
+	for (const auto pHouse : HouseClass::Array)
 	{
 		if (pHouse->Defeated || pHouse == MPlayerDefeated::pThis || pHouse->Type->MultiplayPassive)
 			continue;
 
-		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAllie(MPlayerDefeated::pThis))
+		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAlly(MPlayerDefeated::pThis))
 		{
 			Debug::Log("[Spawner] MPlayer_Defeated() - Defeated player has a living ally");
 			if (Spawner::GetConfig()->DefeatedBecomesObserver)

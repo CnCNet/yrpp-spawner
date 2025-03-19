@@ -42,7 +42,7 @@ void ProtocolZero::SendResponseTime2()
 	if (NextSendFrame >= currentFrame)
 		return;
 
-	const int ipxResponseTime = IPXManagerClass::Instance->ResponseTime();
+	const int ipxResponseTime = IPXManagerClass::Instance.ResponseTime();
 	if (ipxResponseTime <= -1)
 		return;
 

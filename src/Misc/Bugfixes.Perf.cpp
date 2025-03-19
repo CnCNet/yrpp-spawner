@@ -56,7 +56,7 @@ bool __forceinline DetailsCurrentlyEnabled()
 	// not only checks for the min frame rate from the rules, but also whether
 	// the low frame rate is actually desired. in that case, don't reduce.
 	const u_int current = FPSCounter::CurrentFrameRate;
-	const u_int wanted = static_cast<u_int>(60 / Math::clamp(GameOptionsClass::Instance->GameSpeed, 1, 6));
+	const u_int wanted = static_cast<u_int>(60 / Math::clamp(GameOptionsClass::Instance.GameSpeed, 1, 6));
 	return current >= wanted || current >= Detail::GetMinFrameRate();
 }
 
