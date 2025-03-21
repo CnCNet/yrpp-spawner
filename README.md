@@ -16,6 +16,15 @@ Building manually
 Credits
 -------
 - **[Belonit](https://github.com/Belonit)** - Porting and adapting
+- **[Kerbiter](https://github.com/Metadorius)**
+  - Save button for multiplayer pause menu
+  - Beacon crash fix for multiplayer save/load
+- **[TaranDahl](https://github.com/TaranDahl)**
+  - Porting of multiplayer save/load
+  - Porting of autosaves
+- **[Vinifera](https://github.com/Vinifera-Developers/Vinifera) Contributors and [TS Patches](https://github.com/CnCNet/ts-patches) Contributors**
+  - Original TS implementation of multiplayer save/load
+  - Original TS implementation of autosaves
 - **[CnCNet](https://github.com/CnCNet) Contributors** - the [original spawner](https://github.com/CnCNet/yr-patches)
 - **[Ares](https://github.com/Ares-Developers/Ares) and [Phobos](https://github.com/Phobos-developers/Phobos) Contributors** - [YRpp](https://github.com/Phobos-developers/yrpp) and [Syringe](https://github.com/Ares-Developers/Syringe) which are used and some code snippets
 
