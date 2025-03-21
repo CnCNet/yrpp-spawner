@@ -1,9 +1,6 @@
 #include "Body.h"
 
-// Ares replaced ReadString with its implementations, which is very different from the vanilla.
-// Vanilla implementation reads raw bytes, which makes it possible to read the UTF-8 from INI.
-// Ares implementation reads only valid ANSI symbols - Belonit
-int INIClassExt::ReadString_WithoutAresHook(INIClass* pThis, const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
+int __fastcall ReadString_WithoutAresHook_Impl(INIClass* pThis, size_t, const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
 {
 	EPILOG_THISCALL;
 
@@ -13,4 +10,9 @@ int INIClassExt::ReadString_WithoutAresHook(INIClass* pThis, const char* pSectio
 
 	_asm { mov edx, 0x528A10 + 5 };
 	_asm { jmp edx }
+}
+
+int INIClassExt::ReadString_WithoutAresHook(INIClass* pThis, const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
+{
+	return ReadString_WithoutAresHook_Impl(pThis, 0, pSection, pKey, pDefault, pBuffer, szBufferSize);
 }
