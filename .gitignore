@@ -1,10 +1,16 @@
 yrpp-spawner-private/
 Release/**
+Release-Hardened/**
 DevBuild/**
+DevBuild-Hardened/**
 Debug/**
-Release-HardEnd/**
-DevBuild-HardEnd/**
-Debug-HardEnd/**
+Debug-Hardened/**
+Release-CnCNetYR/**
+Release-CnCNetYR-Hardened/**
+DevBuild-CnCNetYR/**
+DevBuild-CnCNetYR-Hardened/**
+Debug-CnCNetYR/**
+Debug-CnCNetYR-Hardened/**
 
 .vs/**
 .vscode/**

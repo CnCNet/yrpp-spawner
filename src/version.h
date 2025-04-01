@@ -18,11 +18,11 @@
 // Indicates YRpp-Spawner-related bugfixes only
 #define VERSION_PATCH 3
 
-#if defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
-	#define PRODUCT_TYPE "(HardEnd + AntiCheat)"
-#elif !defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
-	#define PRODUCT_TYPE "(HardEnd)"
-#elif defined(IS_ANTICHEAT_VER) && !defined(IS_HARDEND_VER)
+#if defined(IS_HARDENED_VER) && defined(IS_CNCNET_YR_VER)
+	#define PRODUCT_TYPE "(CnCNetYR + AntiCheat)"
+#elif !defined(IS_HARDENED_VER) && defined(IS_CNCNET_YR_VER)
+	#define PRODUCT_TYPE "(CnCNetYR)"
+#elif defined(IS_HARDENED_VER) && !defined(IS_CNCNET_YR_VER)
 	#define PRODUCT_TYPE "(AntiCheat)"
 #else
 	#define PRODUCT_TYPE "(Regular)"

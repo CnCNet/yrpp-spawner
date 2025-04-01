@@ -9,6 +9,7 @@
     <ShowAllFiles>true</ShowAllFiles>
     <ThisDir>$(MSBuildThisFileDirectory)</ThisDir>
     <YRppDir>$(ThisDir)YRpp</YRppDir>
+    <PrivateDir>$(ThisDir)Private</PrivateDir>
   </PropertyGroup>
   <!-- Import props -->
   <Import Project="$(ThisDir)\Spawner.props" />
@@ -24,10 +25,10 @@
     <!-- Ext -->
     <ClCompile Include="$(ThisDir)\src\Ext\Event\Body.cpp" />
     <ClCompile Include="$(ThisDir)\src\Ext\INIClass\Body.cpp" />
-    <!-- HardEndStuff -->
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\AppIcon.cpp" />
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Misc.cpp" />
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.cpp" />
+    <!-- CnCNetYR -->
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\AppIcon.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\Misc.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
@@ -72,8 +73,8 @@
     <!-- Ext -->
     <ClInclude Include="$(ThisDir)\src\Ext\Event\Body.h" />
     <ClInclude Include="$(ThisDir)\src\Ext\INIClass\Body.h" />
-    <!-- HardEndStuff -->
-    <ClInclude Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.h" />
+    <!-- CnCNetYR -->
+    <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
@@ -87,4 +88,6 @@
     <ClInclude Include="$(ThisDir)\src\Utilities\Macro.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
   </ItemGroup>
+  <Import Project="$(PrivateDir)\SpawnerPrivate.props"
+          Condition="$(Configuration.Contains('Hardened'))"/>
 </Project>

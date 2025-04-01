@@ -1,3 +1,6 @@
 [submodule "YRpp"]
 	path = YRpp
 	url = git@github.com:CnCNet/YRpp.git
+[submodule "Private"]
+	path = Private
+	url = git@github.com:CnCNet/yrpp-spawner-private.git

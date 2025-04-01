@@ -3,76 +3,38 @@ name: "Release Build"
 on:
   push:
     tags:
+      - "v*"
+      - "v*.*"
+      - "v*.*.*"
       - "v*.*.*.*"
 
 env:
   RELEASE_NAME: ${{ github.ref_name }}
-  ARTIFACT_NAME: CnCNet-Spawner_${{ github.ref_name }}
-
-  SOLUTION_PATH: .
-  BUILD_CONFIGURATION: Release
+  BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
+  ARCHIVE_NAME: CnCNet-Spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.ref_name }}.zip
 
 jobs:
   build:
     runs-on: windows-2019
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+    strategy:
+      matrix:
+        build-type: [Release]  # [Debug, DevBuild, Release]
+        is-cncnet-yr: ['', -CnCNetYR]
+        is-hardened: ['', -Hardened]
 
+    steps:
       - name: Build
         uses: ./.github/actions/build
         with:
-          sln-path: ${{ env.SOLUTION_PATH }}
-          build-config: ${{ env.BUILD_CONFIGURATION }}
-          artifact-name: compiled-dll-regular-${{ github.sha }}
+          build-config: ${{ env.BUILD_CONFIG }}
 
-      - name: Build HardEnd
-        uses: ./.github/actions/build
-        with:
-          sln-path: ${{ env.SOLUTION_PATH }}
-          build-config: ${{ env.BUILD_CONFIGURATION }}-HardEnd
-          artifact-name: compiled-dll-hardend-${{ github.sha }}
-
-      - name: Create Archive For Release
-        run: |
-          mkdir ./artifact
-          mkdir ./artifact/Regular
-          copy ./LICENSE.md ./artifact/Regular/LICENSE.md
-          copy ./README.md ./artifact/Regular/README.md
-          copy ./${{ env.BUILD_CONFIGURATION }}/CnCNet-Spawner.pdb ./artifact/Regular/CnCNet-Spawner.pdb
-          copy ./${{ env.BUILD_CONFIGURATION }}/CnCNet-Spawner.dll ./artifact/Regular/CnCNet-Spawner.dll
-          7z a ${{ env.ARTIFACT_NAME }}.zip ./artifact/Regular/*
-          mkdir ./artifact/HardEnd
-          copy ./LICENSE.md ./artifact/HardEnd/LICENSE.md
-          copy ./README.md ./artifact/HardEnd/README.md
-          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/CnCNet-Spawner.pdb" ./artifact/HardEnd/CnCNet-Spawner.pdb
-          copy "./${{ env.BUILD_CONFIGURATION }}-HardEnd/CnCNet-Spawner.dll" ./artifact/HardEnd/CnCNet-Spawner.dll
-          7z a ${{ env.ARTIFACT_NAME }}-HardEnd.zip ./artifact/HardEnd/*
+      - name: Create an Archive for Release
+        run: 7z a ${{ env.ARCHIVE_NAME }}.zip ./LICENSE.md ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.dll ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.pdb
 
       - name: Upload New Release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ env.RELEASE_NAME }}
-          tag_name: ${{ env.RELEASE_NAME }}
-          body: ${{ env.RELEASE_NAME }}
           append_body: true
-          draft: true
-          files: |
-            ${{ env.ARTIFACT_NAME }}.zip
-            ${{ env.ARTIFACT_NAME }}-HardEnd.zip
+          files: ${{ env.ARCHIVE_NAME }}
 
-  request-anti-cheat-build:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Request AntiCheat Build
-        run: |
-          curl -L \
-          -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/cncnet/yrpp-spawner-private/actions/workflows/release-build-by-request.yml/dispatches \
-          -d '{"ref":"main", "inputs":{"tag": "${{ github.ref_name }}"}}'
