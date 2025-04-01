@@ -19,6 +19,11 @@ jobs:
         is-hardened: ['', -Hardened]
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
+
       - name: Build
         uses: ./.github/actions/build
         with:

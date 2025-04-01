@@ -16,11 +16,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
-        ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
-
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
       with:
