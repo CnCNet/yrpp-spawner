@@ -17,7 +17,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef IS_HARDEND_VER
+#ifdef IS_CNCNET_YR_VER
 #include <Utilities/Macro.h>
 #include <Utilities/Debug.h>
 #include <CCINIClass.h>

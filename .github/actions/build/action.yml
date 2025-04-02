@@ -11,7 +11,7 @@ inputs:
   artifact-name:
     description: "Artifact file name"
     required: false
-    default: compiled-dll-${{ github.sha }}
+    default: ''
 
 runs:
   using: "composite"
@@ -27,16 +27,14 @@ runs:
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} ${{inputs.sln-path}}
+      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} /v:q ${{inputs.sln-path}}
       shell: cmd
 
     - name: Upload Artifact
-      if: ${{ success() }}
+      if: ${{ success() && inputs.artifact-name != '' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: |
           ${{inputs.sln-path}}/${{inputs.build-config}}/CnCNet-Spawner.dll
           ${{inputs.sln-path}}/${{inputs.build-config}}/CnCNet-Spawner.pdb
-          ./LICENSE.md
-          ./README.md

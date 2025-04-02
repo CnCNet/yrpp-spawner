@@ -1,28 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="DevBuild|Win32">
       <Configuration>DevBuild</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-HardEnd|Win32">
-      <Configuration>Release-HardEnd</Configuration>
+    <ProjectConfiguration Include="Debug-CnCNetYR|Win32">
+      <Configuration>Debug-CnCNetYR</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="DevBuild-HardEnd|Win32">
-      <Configuration>DevBuild-HardEnd</Configuration>
+    <ProjectConfiguration Include="DevBuild-CnCNetYR|Win32">
+      <Configuration>DevBuild-CnCNetYR</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-HardEnd|Win32">
-      <Configuration>Debug-HardEnd</Configuration>
+    <ProjectConfiguration Include="Release-CnCNetYR|Win32">
+      <Configuration>Release-CnCNetYR</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Hardened|Win32">
+      <Configuration>Debug-Hardened</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DevBuild-Hardened|Win32">
+      <Configuration>DevBuild-Hardened</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Hardened|Win32">
+      <Configuration>Release-Hardened</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-CnCNetYR-Hardened|Win32">
+      <Configuration>Debug-CnCNetYR-Hardened</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DevBuild-CnCNetYR-Hardened|Win32">
+      <Configuration>DevBuild-CnCNetYR-Hardened</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-CnCNetYR-Hardened|Win32">
+      <Configuration>Release-CnCNetYR-Hardened</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -79,15 +103,23 @@
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release-HardEnd' Or '$(Configuration)'=='DevBuild-HardEnd' Or '$(Configuration)'=='Debug-HardEnd'">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('CnCNetYR'))">
     <ClCompile>
-      <PreprocessorDefinitions>IS_HARDEND_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IS_CNCNET_YR_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>IS_HARDEND_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IS_CNCNET_YR_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='Release-HardEnd'">
+    <ItemDefinitionGroup Condition="$(Configuration.Contains('Hardened'))">
+    <ClCompile>
+      <PreprocessorDefinitions>IS_HARDENED_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>IS_HARDENED_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Release'))">
     <ClCompile>
       <PreprocessorDefinitions>IS_RELEASE_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -95,15 +127,7 @@
       <PreprocessorDefinitions>IS_RELEASE_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='DevBuild' Or '$(Configuration)'=='DevBuild-HardEnd'">
-    <ClCompile>
-      <PreprocessorDefinitions>DevBuild;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>DevBuild;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Debug-HardEnd'">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Debug'))">
     <ClCompile>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Disabled</Optimization>

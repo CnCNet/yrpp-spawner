@@ -4,26 +4,19 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build debug build",
+      "label": "Build",
       "type": "process",
       "command": [],
       "windows": {
-        "command": "scripts/build_debug.bat"
+        "command": "scripts/build.bat",
+        "args": [
+          "${input:buildType}${input:isCnCNetYR}${input:isHardened}"
+        ]
       },
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "Build release build",
-      "type": "process",
-      "command": [],
-      "windows": {
-        "command": "scripts/build_release.bat"
-      },
-      "group": "build",
       "problemMatcher": "$msCompile"
     },
     {
@@ -64,6 +57,57 @@
         "panel": "shared",
         "showReuseMessage": false
       }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "buildType",
+      "type": "pickString",
+      "options": [
+        {
+          "value": "Debug"
+        },
+        {
+          "value": "DevBuild"
+        },
+        {
+          "value": "Release"
+        }
+      ],
+      "default": "Debug",
+      "description": "Select the build type"
+    },
+    {
+      "id": "isCnCNetYR",
+      "type": "pickString",
+      "options": [
+        {
+          "value": "",
+          "label": "No"
+        },
+        {
+          "value": "-CnCNetYR",
+          "label": "Yes"
+        }
+      ],
+      "default": "",
+      "description": "Is this a CnCNet YR build?"
+    },
+    {
+      "id": "isHardened",
+      "type": "pickString",
+      "options": [
+        {
+          "value": "",
+          "label": "No"
+        },
+        {
+          "value": "-Hardened",
+          "label": "Yes"
+        }
+      ],
+      "default": "",
+      "description": "Is this a hardened build? (Enables additional security features)"
     }
   ]
 }
