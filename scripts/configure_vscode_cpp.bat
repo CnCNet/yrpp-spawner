@@ -12,3 +12,10 @@ if exist c_cpp_properties.json (
     copy c_cpp_properties.example.json c_cpp_properties.json
     code c_cpp_properties.json
 )
+
+if exist settings.json (
+    echo Settings configuration file already present, skipping.
+) else (
+    copy settings.example.json settings.json
+    code settings.json
+)

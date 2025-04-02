@@ -5,18 +5,20 @@ Downloads
 Building manually
 -----------------
 
-1. Install **Visual Studio** (2019 is recommended, 2017 is minimum) with the dependencies listed in `.vsconfig` (it will prompt you to install missing dependencies when you open the project, or you can run VS installer and import the config). If you prefer to use **Visual Studio Code** you may install **VS Build Tools** with the dependencies from `.vsconfig` instead. Not using a code editor or IDE and building via **command line scripts** included with the project is also an option.
-2. Clone this repo recursively via your favorite git client (that will also clone YRpp).
+1. Install **Visual Studio** (2022 is recommended, 2019 is minimum) with the dependencies listed in `.vsconfig` (it will prompt you to install missing dependencies when you open the project, or you can run VS installer and import the config). If you prefer to use **Visual Studio Code** you may install **VS Build Tools** with the dependencies from `.vsconfig` instead. Not using a code editor or IDE and building via **command line scripts** included with the project is also an option.
+2. Clone this repo recursively via your favorite git client (that will also clone YRpp and private submodule, if you have access).
 3. To build the extension:
    - in Visual Studio: open the solution file in VS and build it (`Debug` build config is recommended);
-   - in VSCode: open the project folder and hit `Run Build Task...` (`Ctrl + Shift + B`);
-   - barebones: run `scripts/build_debug.bat`.
+   - in VSCode: open the project folder, hit `Run Build Task...` (`Ctrl + Shift + B`) and select the needed config;
+   - barebones: run the corresponding `scripts/build_*.bat`.
 4. Upon build completion the resulting `CnCNet-Spawner.dll` and `CnCNet-Spawner.pdb` would be placed in the subfolder identical to the name of the build config executed.
+
+Please note that you can build the hardened version only if you have access to it's source code. It is though automatically built and made available to download on pull requests, releases and nightly builds via GitHub Actions.
 
 Credits
 -------
 - **[Belonit](https://github.com/Belonit)** - Porting and adapting
-- **[Kerbiter](https://github.com/Metadorius)**
+- **[Kerbiter (Metadorius)](https://github.com/Metadorius)** - Further maintenance
   - Save button for multiplayer pause menu
   - Beacon crash fix for multiplayer save/load
 - **[TaranDahl](https://github.com/TaranDahl)**

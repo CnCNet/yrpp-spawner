@@ -18,18 +18,18 @@
 // Indicates YRpp-Spawner-related bugfixes only
 #define VERSION_PATCH 3
 
-#if defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
-	#define PRODUCT_TYPE "(HardEnd + AntiCheat)"
-#elif !defined(IS_ANTICHEAT_VER) && defined(IS_HARDEND_VER)
-	#define PRODUCT_TYPE "(HardEnd)"
-#elif defined(IS_ANTICHEAT_VER) && !defined(IS_HARDEND_VER)
-	#define PRODUCT_TYPE "(AntiCheat)"
+#if defined(IS_CNCNET_YR_VER) && defined(IS_HARDENED_VER)
+	#define PRODUCT_TYPE "(CnCNet YR, hardened)"
+#elif defined(IS_CNCNET_YR_VER)
+	#define PRODUCT_TYPE "(CnCNet YR)"
+#elif defined(IS_HARDENED_VER)
+	#define PRODUCT_TYPE "(hardened)"
 #else
-	#define PRODUCT_TYPE "(Regular)"
+	#define PRODUCT_TYPE "(regular)"
 #endif
 
-#define PRODUCT_NAME "YRpp-Spawner " PRODUCT_TYPE
-#define FILE_DESCRIPTION "CnCNet-Spawner: " PRODUCT_TYPE
+#define PRODUCT_NAME "YRpp Spawner " PRODUCT_TYPE
+#define FILE_DESCRIPTION "CnCNet Yuri's Revenge Spawner for Syringe, based on YRpp " PRODUCT_TYPE
 
 // Nightly defines GIT_COMMIT and GIT_BRANCH in GH Actions
 

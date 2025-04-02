@@ -76,23 +76,3 @@ DEFINE_HOOK(0x65DC17, DoReinforcements_FixCrash, 0x6)
 
 	return 0;
 }
-
-// Fix crash at 4C2C19
-void __fastcall EBolt_SetOwnerAndWeapon_FixCrash(EBolt* pThis, void*, UnitClass* pOwner, int idxWeapon)
-{
-	// vanilla code
-	if (pOwner && pOwner->WhatAmI() == AbstractType::Unit && pOwner->IsAlive && !pOwner->InLimbo)
-	{
-		pThis->Owner = pOwner;
-		pThis->WeaponSlot = idxWeapon;
-	}
-	// correction code
-	else
-	{
-		pThis->Owner = 0;
-		pThis->WeaponSlot = 0;
-	}
-}
-
-DEFINE_JUMP(CALL, 0x6FD606, GET_OFFSET(EBolt_SetOwnerAndWeapon_FixCrash)); // Replace single call
-DEFINE_JUMP(LJMP, 0x4C2BD0, GET_OFFSET(EBolt_SetOwnerAndWeapon_FixCrash)); // For in case another module tries to call function
