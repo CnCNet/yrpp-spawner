@@ -1,15 +1,10 @@
 name: "Release Build"
 
 on:
-  push:
-    tags:
-      - "v*"
-      - "v*.*"
-      - "v*.*.*"
-      - "v*.*.*.*"
+  release:
+    types: [published]
 
 env:
-  RELEASE_NAME: ${{ github.ref_name }}
   BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
   ARCHIVE_NAME: CnCNet-Spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.ref_name }}.zip
 
@@ -34,10 +29,10 @@ jobs:
         with:
           build-config: ${{ env.BUILD_CONFIG }}
 
-      - name: Create an Archive for Release
+      - name: Create an Archive for the Release
         run: 7z a ${{ env.ARCHIVE_NAME }}.zip ./LICENSE.md ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.dll ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.pdb
 
-      - name: Upload New Release
+      - name: Upload Files to the Release
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
