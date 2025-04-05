@@ -19,7 +19,7 @@ jobs:
         is-hardened: ['', -Hardened]
         # this dimension is only needed to check whether we're in CnCNet repo
         # and exclude hardened build because we may have no access to it
-        has-private-access: ${{ github.repository_owner == 'CnCNet' }}
+        has-private-access: [${{ github.repository_owner == 'CnCNet' }}]
         exclude:
           - is-hardened: -Hardened
             has-private-access: false
