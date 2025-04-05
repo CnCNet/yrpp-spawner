@@ -26,7 +26,7 @@ jobs:
             has-private-access: false
 
     steps:
-      - uses: Maddimax/checkout@7618b1f4010086b3da48eaecce4a26738f216281 # SpecificSubmodule branch
+      - uses: Metadorius/checkout@d1a22c1aff33852a0154ff5262e4eab45178154c # fixed SpecificSubmodule branch
         with:
           ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
           submodule-directories: |
