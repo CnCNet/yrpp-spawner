@@ -17,12 +17,24 @@ jobs:
         build-type: [DevBuild]  # [Debug, DevBuild, Release]
         is-cncnet-yr: ['', -CnCNetYR]
         is-hardened: ['', -Hardened]
+        # this dimension is only needed to check whether we're in CnCNet repo
+        # and exclude hardened build because we may have no access to it
+        has-private-access: ${{ github.repository_owner == 'CnCNet' }}
+        exclude:
+          - is-hardened: -Hardened
+            has-private-access: false
 
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
+
+      - name: Checkout YRpp submodule
+        run: git submodule update --init YRpp
+
+      - name: Checkout private submodule
+        if: ${{ matrix.has-private-access }}
+        run: git submodule update --init Private
 
       - name: Build
         uses: ./.github/actions/build
