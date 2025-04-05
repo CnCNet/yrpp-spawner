@@ -31,7 +31,7 @@ runs:
       shell: cmd
 
     - name: Copy LICENSE.md to deeper dir for artifact upload
-      run: copy LICENSE.md ${{inputs.sln-path}}/${{inputs.build-config}}
+      run: copy ${{inputs.sln-path}}/LICENSE.md ${{inputs.sln-path}}/${{inputs.build-config}}/LICENSE.md
       shell: cmd
 
     - name: Upload artifact
