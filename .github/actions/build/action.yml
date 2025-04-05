@@ -30,16 +30,12 @@ runs:
       run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} /v:q ${{inputs.sln-path}}
       shell: cmd
 
-    - name: Copy LICENSE.md to deeper dir for artifact upload
-      run: copy ${{inputs.sln-path}}/LICENSE.md ${{inputs.sln-path}}/${{inputs.build-config}}/LICENSE.md
-      shell: cmd
-
     - name: Upload artifact
       if: ${{ success() && inputs.artifact-name != '' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: |
-          ${{inputs.sln-path}}/${{inputs.build-config}}/LICENSE.md
+          ${{inputs.sln-path}}/LICENSE.md
           ${{inputs.sln-path}}/${{inputs.build-config}}/CnCNet-Spawner.dll
           ${{!contains(inputs.build-config, 'Hardened') && format('{0}/{1}/CnCNet-Spawner.pdb', inputs.sln-path, inputs.build-config)}}
