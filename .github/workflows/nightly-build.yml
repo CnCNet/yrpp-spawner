@@ -13,6 +13,7 @@ jobs:
     runs-on: windows-2019
 
     strategy:
+      fail-fast: false
       matrix:
         build-type: [DevBuild]  # [Debug, DevBuild, Release]
         is-cncnet-yr: ['', -CnCNetYR]
@@ -20,7 +21,7 @@ jobs:
         # this dimension is only needed to check whether we're in CnCNet repo
         # and exclude hardened build because we may have no access to it
         has-private-access:
-          - ${{ github.repository_owner == 'CnCNet' }}
+          - ${{ github.event.pull_request.head.repo.owner.login == 'CnCNet' }}
         exclude:
           - is-hardened: -Hardened
             has-private-access: false
