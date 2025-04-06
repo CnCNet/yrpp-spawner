@@ -21,7 +21,7 @@ jobs:
         # this dimension is only needed to check whether we're in CnCNet repo
         # and exclude hardened build because we may have no access to it
         has-private-access:
-          - ${{ github.event.pull_request.head.repo.owner.login == 'CnCNet' }}
+          - ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'CnCNet' || github.event_name == 'push' && github.repository_owner == 'CnCNet' }}
         exclude:
           - is-hardened: -Hardened
             has-private-access: false
