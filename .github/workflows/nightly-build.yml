@@ -32,7 +32,7 @@ jobs:
           ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
           submodule-directories: |
             YRpp
-            ${{ matrix.has-private-access && 'Private' }}
+            ${{ matrix.has-private-access && 'Private' || '' }}
 
       - name: Build
         uses: ./.github/actions/build
