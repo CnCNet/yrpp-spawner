@@ -18,12 +18,16 @@ Please note that you can build the hardened version only if you have access to i
 Credits
 -------
 - **[Belonit](https://github.com/Belonit)** - Porting and adapting
-- **[Kerbiter (Metadorius)](https://github.com/Metadorius)** - Further maintenance
+- **[Kerbiter (Metadorius)](https://github.com/Metadorius)**
+  - Further maintenance
+  - Event verification checks
   - Save button for multiplayer pause menu
   - Beacon crash fix for multiplayer save/load
 - **[TaranDahl](https://github.com/TaranDahl)**
   - Porting of multiplayer save/load
   - Porting of autosaves
+- **[Rampastring](https://github.com/Rampastring)**
+  - Original event verification checks
 - **[Vinifera](https://github.com/Vinifera-Developers/Vinifera) Contributors and [TS Patches](https://github.com/CnCNet/ts-patches) Contributors**
   - Original TS implementation of multiplayer save/load
   - Original TS implementation of autosaves

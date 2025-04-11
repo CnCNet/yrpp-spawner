@@ -38,4 +38,4 @@ runs:
         path: |
           ${{inputs.sln-path}}/LICENSE.md
           ${{inputs.sln-path}}/${{inputs.build-config}}/CnCNet-Spawner.dll
-          ${{!contains(inputs.build-config, 'Hardened') && format('{0}/{1}/CnCNet-Spawner.pdb', inputs.sln-path, inputs.build-config)}}
+          ${{!contains(inputs.build-config, 'Hardened') && format('{0}/{1}/CnCNet-Spawner.pdb', inputs.sln-path, inputs.build-config) || ''}}
