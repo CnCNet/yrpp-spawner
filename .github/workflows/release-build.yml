@@ -4,10 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
-  ARCHIVE_NAME: CnCNet-Spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.ref_name }}.zip
-
 jobs:
   build:
     runs-on: windows-2019
@@ -17,6 +13,10 @@ jobs:
         build-type: [Release]  # [Debug, DevBuild, Release]
         is-cncnet-yr: ['', -CnCNetYR]
         is-hardened: ['', -Hardened]
+
+    env:
+      BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
+      ARCHIVE_NAME: CnCNet-Spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.ref_name }}.zip
 
     steps:
       - uses: actions/checkout@v4
