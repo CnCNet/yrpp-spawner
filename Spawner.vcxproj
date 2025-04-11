@@ -17,6 +17,8 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
+    <ClCompile Include="src\UI\Dialogs.cpp" />
+    <ClCompile Include="src\UI\Hooks.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -63,6 +65,8 @@
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
+    <!-- Dialogs -->
+    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
@@ -76,6 +80,7 @@
     <!-- CnCNetYR -->
     <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
+    <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />

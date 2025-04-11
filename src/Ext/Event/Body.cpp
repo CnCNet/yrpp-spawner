@@ -19,6 +19,7 @@
 
 #include "Body.h"
 #include <Spawner/ProtocolZero.h>
+#include <Spawner/Spawner.h>
 
 #include <Helpers/Macro.h>
 #include <EventClass.h>
