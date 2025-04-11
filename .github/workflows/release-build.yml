@@ -34,7 +34,7 @@ jobs:
           7z a ${{ env.ARCHIVE_NAME }}
           ./LICENSE.md
           ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.dll
-          ${{!contains(env.BUILD_CONFIG, 'Hardened') && format('./{0}/CnCNet-Spawner.pdb', env.BUILD_CONFIG)}}
+          ${{!contains(env.BUILD_CONFIG, 'Hardened') && format('./{0}/CnCNet-Spawner.pdb', env.BUILD_CONFIG) || ''}}
 
       - name: Upload Files to the Release
         uses: softprops/action-gh-release@v2
