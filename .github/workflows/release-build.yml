@@ -10,9 +10,9 @@ jobs:
 
     strategy:
       matrix:
-        build-type: [Release]  # [Debug, DevBuild, Release]
-        is-cncnet-yr: ['', -CnCNetYR]
-        is-hardened: ['', -Hardened]
+        build-type: [Release] # [Debug, DevBuild, Release]
+        is-cncnet-yr: ["", -CnCNetYR]
+        is-hardened: ["", -Hardened]
 
     env:
       BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
@@ -31,7 +31,7 @@ jobs:
 
       - name: Create an Archive for the Release
         run: >
-          7z a ${{ env.ARCHIVE_NAME }}.zip
+          7z a ${{ env.ARCHIVE_NAME }}
           ./LICENSE.md
           ./${{ env.BUILD_CONFIG }}/CnCNet-Spawner.dll
           ${{!contains(env.BUILD_CONFIG, 'Hardened') && format('./{0}/CnCNet-Spawner.pdb', env.BUILD_CONFIG)}}
@@ -41,4 +41,3 @@ jobs:
         with:
           append_body: true
           files: ${{ env.ARCHIVE_NAME }}
-
