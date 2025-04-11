@@ -18,7 +18,11 @@ Please note that you can build the hardened version only if you have access to i
 Credits
 -------
 - **[Belonit](https://github.com/Belonit)** - Porting and adapting
-- **[Kerbiter (Metadorius)](https://github.com/Metadorius)** - Further maintenance
+- **[Kerbiter (Metadorius)](https://github.com/Metadorius)**
+  - Further maintenance
+  - Event verification checks
+- **[Rampastring](https://github.com/Rampastring)**
+  - Original event verification checks
 - **[CnCNet](https://github.com/CnCNet) Contributors** - the [original spawner](https://github.com/CnCNet/yr-patches)
 - **[Ares](https://github.com/Ares-Developers/Ares) and [Phobos](https://github.com/Phobos-developers/Phobos) Contributors** - [YRpp](https://github.com/Phobos-developers/yrpp) and [Syringe](https://github.com/Ares-Developers/Syringe) which are used and some code snippets
 
