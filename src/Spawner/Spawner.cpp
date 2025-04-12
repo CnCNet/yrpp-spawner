@@ -297,16 +297,22 @@ bool Spawner::StartScenario(const char* pScenarioName)
 	if (SessionClass::IsCampaign())
 	{
 		pGameModeOptions->Crates = true;
-		return Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 1, 0);
+		return Config->LoadSaveGame
+			? Spawner::LoadSavedGame(Config->SaveGameName)
+			: ScenarioClass::StartScenario(pScenarioName, 1, 0);
 	}
 	else if (SessionClass::IsSkirmish())
 	{
-		return Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 0, -1);
+		return Config->LoadSaveGame
+			? Spawner::LoadSavedGame(Config->SaveGameName)
+			: ScenarioClass::StartScenario(pScenarioName, 0, -1);
 	}
 	else /* if (SessionClass::IsMultiplayer()) */
 	{
 		Spawner::InitNetwork();
-		bool result = Config->LoadSaveGame ? Spawner::LoadSavedGame(Config->SaveGameName) : ScenarioClass::StartScenario(pScenarioName, 0, -1);
+		bool result = Config->LoadSaveGame
+			? Spawner::LoadSavedGame(Config->SaveGameName)
+			: ScenarioClass::StartScenario(pScenarioName, 0, -1);
 
 		if (!result)
 			return false;
@@ -434,15 +440,11 @@ bool Spawner::Reconcile_Players()
 	// Just use this as Playernodes.
 	auto players = SessionClass::Instance.StartSpots;
 
-	/**
-	 *  If there are no players, there's nothing to do.
-	 */
+	// If there are no players, there's nothing to do.
 	if (players.Count == 0)
 		return true;
 
-	/**
-	 *  Make sure every name we're connected to can be found in a House.
-	 */
+	// Make sure every name we're connected to can be found in a House.
 	for (i = 0; i < players.Count; i++)
 	{
 		found = false;
@@ -485,9 +487,7 @@ bool Spawner::Reconcile_Players()
 		if (!pHouse)
 			continue;
 
-		/**
-		 *  Skip this house if it wasn't human to start with.
-		 */
+		// Skip this house if it wasn't human to start with.
 		if (!pHouse->IsHumanPlayer)
 			continue;
 
@@ -506,9 +506,7 @@ bool Spawner::Reconcile_Players()
 			}
 		}
 
-		/**
-		 *  If this name wasn't found, remove it
-		 */
+		// If this name wasn't found, remove it
 		if (!found)
 		{
 			/**
@@ -548,9 +546,7 @@ void Spawner::LoadSidesStuff()
 
 void Spawner::RespondToSaveGame(EventExt* event)
 {
-	/**
-	 *  Mark that we'd like to save the game.
-	 */
+	// Mark that we'd like to save the game.
 	Spawner::DoSave = true;
 }
 
@@ -562,19 +558,13 @@ void Spawner::RespondToSaveGame(EventExt* event)
  */
 void Print_Saving_Game_Message()
 {
-	/**
-	 *  Calculate the message delay.
-	 */
+	// Calculate the message delay.
 	const int message_delay = (int)(RulesClass::Instance->MessageDelay * 900);
 
-	/**
-	 *  Send the message.
-	 */
+	// Send the message.
 	MessageListClass::Instance.AddMessage(nullptr, 0, L"Saving game...", 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
 
-	/**
-	 *  Force a redraw so that our message gets printed.
-	 */
+	// Force a redraw so that our message gets printed.
 	MapClass::Instance.MarkNeedsRedraw(2);
 	MapClass::Instance.Render();
 }
@@ -592,12 +582,10 @@ void Spawner::After_Main_Loop()
 {
 	auto pConfig = Spawner::GetConfig();
 
-	const bool doSaveCampaign = SessionClass::Instance.GameMode == GameMode::Campaign  && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
+	const bool doSaveCampaign = SessionClass::Instance.GameMode == GameMode::Campaign && pConfig->AutoSaveCount > 0 && pConfig->AutoSaveInterval > 0;
 	const bool doSaveMP = Spawner::Active && SessionClass::Instance.GameMode == GameMode::LAN && pConfig->AutoSaveInterval > 0;
 
-	/**
-	 *  Schedule to make a save if it's time to autosave.
-	 */
+	// Schedule to make a save if it's time to autosave.
 	if (doSaveCampaign || doSaveMP)
 	{
 		if (Unsorted::CurrentFrame == Spawner::NextAutoSaveFrame)
@@ -608,60 +596,40 @@ void Spawner::After_Main_Loop()
 
 	if (Spawner::DoSave)
 	{
-
 		Print_Saving_Game_Message();
 
-		/**
-		 *  Campaign autosave.
-		 */
+		// Campaign autosave.
 		if (SessionClass::Instance.GameMode == GameMode::Campaign)
 		{
 			static char saveFileName[32];
 			static wchar_t saveDescription[32];
 
-			/**
-			 *  Prepare the save name and description.
-			 */
+			// Prepare the save name and description.
 			std::sprintf(saveFileName, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
 			std::swprintf(saveDescription, L"Mission Auto-Save (Slot %d)", Spawner::NextAutoSaveNumber + 1);
 
-			/**
-			 *  Pause the mission timer.
-			 */
+			// Pause the mission timer.
 			ScenarioClass::PauseGame();
 			Game::CallBack();
 
-			/**
-			 *  Save!
-			 */
+			// Save!
 			ScenarioClass::Instance->SaveGame(saveFileName, saveDescription);
 
-			/**
-			 *  Unpause the mission timer.
-			 */
+			// Unpause the mission timer.
 			ScenarioClass::ResumeGame();
 
-			/**
-			 *  Increment the autosave number.
-			 */
+			// Increment the autosave number.
 			Spawner::NextAutoSaveNumber = (Spawner::NextAutoSaveNumber + 1) % pConfig->AutoSaveCount;
 
-			/**
-			 *  Schedule the next autosave.
-			 */
+			// Schedule the next autosave.
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
 		}
 		else if (SessionClass::Instance.GameMode == GameMode::LAN)
 		{
-
-			/**
-			 *  Save!
-			 */
+			// Save!
 			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", L"Multiplayer Game");
 
-			/**
-			 *  Schedule the next autosave.
-			 */
+			// Schedule the next autosave.
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
 		}
 

@@ -52,12 +52,12 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIGameMode, std::size(UIGameMode));
 	}
 
-	{// SaveGame Options
-		LoadSaveGame = pINI->ReadBool(pSettingsSection, "LoadSaveGame", LoadSaveGame);
+	{ // SaveGame Options
+		LoadSaveGame       = pINI->ReadBool(pSettingsSection, "LoadSaveGame", LoadSaveGame);
 		/* SavedGameDir   */ pINI->ReadString(pSettingsSection, "SavedGameDir", SavedGameDir, SavedGameDir, sizeof(SavedGameDir));
 		/* SaveGameName   */ pINI->ReadString(pSettingsSection, "SaveGameName", SaveGameName, SaveGameName, sizeof(SaveGameName));
-		AutoSaveCount = pINI->ReadInteger(pSettingsSection, "AutoSaveCount", AutoSaveCount);
-		AutoSaveInterval = pINI->ReadInteger(pSettingsSection, "AutoSaveInterval", AutoSaveInterval);
+		AutoSaveCount      = pINI->ReadInteger(pSettingsSection, "AutoSaveCount", AutoSaveCount);
+		AutoSaveInterval   = pINI->ReadInteger(pSettingsSection, "AutoSaveInterval", AutoSaveInterval);
 		NextAutoSaveNumber = pINI->ReadInteger(pSettingsSection, "NextAutoSaveNumber", NextAutoSaveNumber);
 	}
 
