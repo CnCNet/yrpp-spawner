@@ -13,7 +13,9 @@ Debug-CnCNetYR/**
 Debug-CnCNetYR-Hardened/**
 
 .vs/**
-.vscode/**
+.vscode/c_cpp_properties.json
+.vscode/cspell.json
+.vscode/settings.json
 
 *.vcxproj.user
 *.vcxproj.filters
