@@ -1,0 +1,6 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.cpp": "${capture}.h, , ${capture}.*.h, ${capture}.*.cpp"
+  }
+}
