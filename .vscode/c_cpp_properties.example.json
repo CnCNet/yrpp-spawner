@@ -6,25 +6,26 @@
   // of the described items in your system.
   "env": {
     // Path to Visual Studio or VS Build Tools installation folder.
-    "vsPath": "${env:ProgramFiles}/Microsoft Visual Studio/2022/Community",
+    "vsPath": "${env:ProgramFiles}/Microsoft Visual Studio/2022/Community"
   },
-
   // Don't change below this line unless you know what you're doing.
   "configurations": [
     {
       "name": "Win32",
       "includePath": [
+        "${workspaceFolder}/Private",
         "${workspaceFolder}/src",
         "${workspaceFolder}/YRpp"
       ],
       "defines": [
-        "SYR_VER=2",
+        "IS_CNCNET_YR_VER",
+        "IS_HARDENED_VER",
         "IS_RELEASE_VER",
-        "IS_HARDEND_VER",
+        "_CRT_SECURE_NO_WARNINGS",
+        "_WINDLL",
         "HAS_EXCEPTIONS=0",
         "NOMINMAX",
-        "_CRT_SECURE_NO_WARNINGS",
-        "_WINDLL"
+        "SYR_VER=2"
       ],
       "compilerPath": "${vsPath}/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x86/cl.exe",
       "windowsSdkVersion": "10.0.20348.0",
