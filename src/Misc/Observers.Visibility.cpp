@@ -133,7 +133,7 @@ DEFINE_HOOK(0x692686, DisplayClass_DecideAction_Cloak, 0x6)
 	if (pTechno->IsOwnedByCurrentPlayer || HouseClass::IsCurrentPlayerObserver())
 		return ShouldNotCheck;
 
-	if (pTechno->Owner->IsMutualAllie(HouseClass::CurrentPlayer))
+	if (pTechno->Owner->IsMutualAlly(HouseClass::CurrentPlayer))
 		return ShouldNotCheck;
 
 	return ProceedCloakCheck;
