@@ -90,7 +90,7 @@
       <ObjectFileName>$(IntDir)\%(Directory)</ObjectFileName>
       <CallingConvention>StdCall</CallingConvention>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
-      <DisableSpecificWarnings>4100;4201;4530;4731;4740;4458;4819</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4100;4201;4530;4731;4740;4458;4819;4996</DisableSpecificWarnings>
       <EnableModules>true</EnableModules>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OpenMPSupport>true</OpenMPSupport>
