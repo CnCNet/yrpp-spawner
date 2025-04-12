@@ -64,6 +64,9 @@ DEFINE_PATCH(0x41668B, // DEFINE_HOOK(41668B, AircraftClass_ReceiveDamage, 6)
 );
 #pragma endregion AresSurvivors
 
+// Set cncnet.fnt instead of game.fnt
+DEFINE_PATCH(/* GameStrings::GAME_FNT */ 0x818B98, "cncnet.fnt");
+
 // Revert Phobos fix "SHP debris shadows now respect the Shadow tag"
 // Disable Phobos hook Phobos_BugFixes_SHPShadowCheck
 DEFINE_PATCH(0x423365, 0x84, 0xC0, 0x0F, 0x84, 0x81, 0x00, 0x00, 0x00);
