@@ -66,35 +66,4 @@ DEFINE_PATCH(0x41668B, // DEFINE_HOOK(41668B, AircraftClass_ReceiveDamage, 6)
 
 // Set cncnet.fnt instead of game.fnt
 DEFINE_PATCH(/* GameStrings::GAME_FNT */ 0x818B98, "cncnet.fnt");
-
-// Revert Phobos fix "SHP debris shadows now respect the Shadow tag"
-// Disable Phobos hook Phobos_BugFixes_SHPShadowCheck
-DEFINE_PATCH(0x423365, 0x84, 0xC0, 0x0F, 0x84, 0x81, 0x00, 0x00, 0x00);
-
-// Center Pause Menu Background
-#pragma region CenterPauseMenuBackground
-#include <Surface.h>
-#include <FileFormats/SHP.h>
-
-void __fastcall InitSideRectangles_CenterBackground(
-	Surface* Surface, ConvertClass* Palette, SHPStruct* SHP, int FrameIndex,
-	const Point2D* const Position, const RectangleStruct* const Bounds, BlitterFlags Flags,
-	int Remap, int ZAdjust, ZGradient ZGradientDescIndex, int Brightness,
-	int TintColor, SHPStruct* ZShape, int ZShapeFrame, int XOffset, int YOffset
-)
-{
-	RectangleStruct shpRect = SHP->GetFrameBounds(0);
-	RectangleStruct surRect = Surface->GetRect();
-
-	Point2D nPoint {
-		(surRect.Width - 168 - shpRect.Width) >> 1 ,
-		(surRect.Height - 32 - shpRect.Height) >> 1
-	};
-
-	CC_Draw_Shape(Surface, Palette, SHP, FrameIndex, &nPoint, Bounds, Flags, Remap, ZAdjust,
-		ZGradientDescIndex, Brightness, TintColor, ZShape, ZShapeFrame, XOffset, YOffset);
-}
-
-DEFINE_JUMP(CALL, 0x72F624, GET_OFFSET(InitSideRectangles_CenterBackground));
-#pragma endregion CenterPauseMenuBackground
 #endif

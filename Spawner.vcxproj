@@ -39,7 +39,6 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Perf.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.SpawnManager.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
