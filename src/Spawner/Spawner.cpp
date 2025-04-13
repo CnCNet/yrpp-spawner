@@ -551,25 +551,6 @@ void Spawner::RespondToSaveGame(EventExt* event)
 }
 
 /**
- *  Prints a message that there's an autosave happening.
- *
- *  Original author: Vinifera Project
- *  Migration: TaranDahl
- */
-void Print_Saving_Game_Message()
-{
-	// Calculate the message delay.
-	const int message_delay = (int)(RulesClass::Instance->MessageDelay * 900);
-
-	// Send the message.
-	MessageListClass::Instance.AddMessage(nullptr, 0, L"Saving game...", 4, TextPrintType::Point6Grad | TextPrintType::UseGradPal | TextPrintType::FullShadow, message_delay, false);
-
-	// Force a redraw so that our message gets printed.
-	MapClass::Instance.MarkNeedsRedraw(2);
-	MapClass::Instance.Render();
-}
-
-/**
  *  We do it by ourselves here instead of letting original Westwood code save when
  *  the event is executed, because saving mid-frame before Remove_All_Inactive()
  *  has been called can lead to save corruption
@@ -596,7 +577,8 @@ void Spawner::After_Main_Loop()
 
 	if (Spawner::DoSave)
 	{
-		Print_Saving_Game_Message();
+		// Send the message.
+		MessageListClass::Instance.PrintMessage(L"Saving game...", (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
 
 		// Campaign autosave.
 		if (SessionClass::Instance.GameMode == GameMode::Campaign)

@@ -52,7 +52,7 @@ void LatencyLevel::Apply(LatencyLevelEnum newLatencyLevel)
 	Game::Network::PreCalcFrameRate = 60;
 	Game::Network::PreCalcMaxAhead = GetMaxAhead(newLatencyLevel);
 
-	MessageListClass::Instance.PrintMessage(GetLatencyMessage(newLatencyLevel), 270, ColorScheme::White, true);
+	MessageListClass::Instance.PrintMessage(GetLatencyMessage(newLatencyLevel), (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
 }
 
 int LatencyLevel::GetMaxAhead(LatencyLevelEnum latencyLevel)
