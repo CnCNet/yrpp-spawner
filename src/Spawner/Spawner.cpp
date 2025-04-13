@@ -166,7 +166,7 @@ void Spawner::AssignHouses()
 
 		// Set Bonus Money
 		if (pHousesConfig->CreditsFactor != 1.0)
-			pHouse->Balance *= pHousesConfig->CreditsFactor;
+			pHouse->Balance = int(pHouse->Balance * pHousesConfig->CreditsFactor);
 
 		// Set Handicap Difficulty
 		if (pHousesConfig->HandicapDifficulty != -1)
