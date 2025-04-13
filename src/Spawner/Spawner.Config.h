@@ -58,11 +58,15 @@ class SpawnerConfig
 	{
 		bool IsObserver;
 		int SpawnLocations;
+		double CreditsFactor;
+		int HandicapDifficulty;
 		int Alliances[8];
 
 		HouseConfig()
 			: IsObserver { false }
 			, SpawnLocations { -2 }
+			, CreditsFactor { 1.0 }
+			, HandicapDifficulty { -1 }
 			, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
 		{ }
 

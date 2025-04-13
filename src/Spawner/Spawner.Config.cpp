@@ -99,8 +99,8 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// Players Options
 	for (char i = 0; i < (char)std::size(Players); ++i)
 	{
-		(&Players[i])->LoadFromINIFile(pINI, i);
-		(&Houses[i])->LoadFromINIFile(pINI, i);
+		Players[i].LoadFromINIFile(pINI, i);
+		Houses[i].LoadFromINIFile(pINI, i);
 	}
 
 	// Extended Options
@@ -197,8 +197,10 @@ void SpawnerConfig::HouseConfig::LoadFromINIFile(CCINIClass* pINI, int index)
 	const char* pAlliancesSection = AlliancesSectionArray[index];
 	const char* pMultiTag = MultiTagArray[index];
 
-	this->IsObserver     = pINI->ReadBool("IsSpectator", pMultiTag, this->IsObserver);
-	this->SpawnLocations = pINI->ReadInteger("SpawnLocations", pMultiTag, SpawnLocations);
+	this->IsObserver         = pINI->ReadBool("IsSpectator", pMultiTag, this->IsObserver);
+	this->SpawnLocations     = pINI->ReadInteger("SpawnLocations", pMultiTag, SpawnLocations);
+	this->CreditsFactor      = pINI->ReadDouble("CreditsFactor", pMultiTag, CreditsFactor);
+	this->HandicapDifficulty = pINI->ReadInteger("HandicapDifficulty", pMultiTag, this->HandicapDifficulty);
 
 	if (pINI->GetSection(pAlliancesSection))
 	{
