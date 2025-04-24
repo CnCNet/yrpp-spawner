@@ -586,7 +586,7 @@ void Spawner::After_Main_Loop()
 	if (Spawner::DoSave)
 	{
 		// Send the message.
-		MessageListClass::Instance.PrintMessage(L"Saving game...", (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
+		MessageListClass::Instance.PrintMessage(StringTable::TryFetchString("TXT_AUTOSAVE_MESSAGE", L"Saving game..."), (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
 
 		// Campaign autosave.
 		if (SessionClass::Instance.GameMode == GameMode::Campaign)
@@ -596,7 +596,7 @@ void Spawner::After_Main_Loop()
 
 			// Prepare the save name and description.
 			std::sprintf(saveFileName, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
-			std::swprintf(saveDescription, L"Mission Auto-Save (Slot %d)", Spawner::NextAutoSaveNumber + 1);
+			std::swprintf(saveDescription, StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN", L"Mission Auto-Save (Slot %d)"), Spawner::NextAutoSaveNumber + 1);
 
 			// Pause the mission timer.
 			ScenarioClass::PauseGame();
@@ -617,7 +617,7 @@ void Spawner::After_Main_Loop()
 		else if (SessionClass::Instance.GameMode == GameMode::LAN)
 		{
 			// Save!
-			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", L"Multiplayer Game");
+			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_MULTIPLAYER", L"Multiplayer Game"));
 
 			// Schedule the next autosave.
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
