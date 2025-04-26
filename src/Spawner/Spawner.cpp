@@ -556,7 +556,7 @@ void Spawner::LoadSidesStuff()
 		pItem->LoadFromINI(pINI);
 }
 
-void Spawner::RespondToSaveGame(EventExt* event)
+void Spawner::RespondToSaveGame()
 {
 	// Mark that we'd like to save the game.
 	Spawner::DoSave = true;

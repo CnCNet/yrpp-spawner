@@ -202,7 +202,7 @@ DEFINE_HOOK(0x48CE8A, SomeFunc_InterceptMainLoop, 0x5)
 	return R->Origin() + 0x5;
 }
 
-DEFINE_HOOK(0x52DAED, Game_Start_ResetGlobal, 0x7)
+DEFINE_HOOK(0x52DAEF, Game_Start_ResetGlobal, 0x5)
 {
 	Spawner::DoSave = false;
 	Spawner::NextAutoSaveFrame = -1;
@@ -222,9 +222,7 @@ DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 
 DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 {
-	Spawner::DoSave = true;
-	return 0x4C7B42;
-}
+	Spawner::RespondToSaveGame();
 
 	return 0x4C7B42;
 }

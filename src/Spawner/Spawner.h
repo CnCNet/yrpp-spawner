@@ -44,7 +44,7 @@ public:
 	static bool StartGame();
 	static void AssignHouses();
 	static void After_Main_Loop();
-	static void RespondToSaveGame(EventExt* event);
+	static void RespondToSaveGame();
 
 private:
 	static bool StartScenario(const char* scenarioName);
