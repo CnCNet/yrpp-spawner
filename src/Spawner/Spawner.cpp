@@ -590,7 +590,15 @@ void Spawner::After_Main_Loop()
 	if (Spawner::DoSave)
 	{
 		// Send the message.
-		MessageListClass::Instance.PrintMessage(StringTable::TryFetchString("TXT_AUTOSAVE_MESSAGE", L"Saving game..."), (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
+		const auto TXT_AUTOSAVE_MESSAGE = StringTable::TryFetchString("TXT_AUTOSAVE_MESSAGE", L"Saving game...");
+		MessageListClass::Instance.PrintMessage(TXT_AUTOSAVE_MESSAGE, (int)(RulesClass::Instance->MessageDelay * 900), ColorScheme::White, true);
+
+		// Force a redraw so that our message gets printed.
+		if (Game::SpecialDialog == 0)
+		{
+			MapClass::Instance.MarkNeedsRedraw(2);
+			MapClass::Instance.Render();
+		}
 
 		// Campaign autosave.
 		if (SessionClass::Instance.GameMode == GameMode::Campaign)
@@ -599,8 +607,9 @@ void Spawner::After_Main_Loop()
 			static wchar_t saveDescription[32];
 
 			// Prepare the save name and description.
+			const auto TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN = StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN", L"Mission Auto-Save (Slot %d)");
 			std::sprintf(saveFileName, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
-			std::swprintf(saveDescription, StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN", L"Mission Auto-Save (Slot %d)"), Spawner::NextAutoSaveNumber + 1);
+			std::swprintf(saveDescription, TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN, Spawner::NextAutoSaveNumber + 1);
 
 			// Pause the mission timer.
 			ScenarioClass::PauseGame();
