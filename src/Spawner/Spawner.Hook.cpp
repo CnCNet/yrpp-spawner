@@ -22,7 +22,6 @@
 
 #include <HouseClass.h>
 #include <SessionClass.h>
-#include <BeaconManagerClass.h>
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 #include <Unsorted.h>
@@ -227,11 +226,7 @@ DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 	return 0x4C7B42;
 }
 
-// for some reason beacons are only inited on scenario init, which doesn't happen on load
-DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit, 0x6)
-{
-	BeaconManagerClass::Instance.LoadArt();
-	return 0;
+	return 0x4C7B42;
 }
 
 #pragma endregion
