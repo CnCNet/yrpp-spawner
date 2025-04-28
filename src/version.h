@@ -16,7 +16,7 @@
 // Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
 #define VERSION_REVISION 0
 // Indicates YRpp-Spawner-related bugfixes only
-#define VERSION_PATCH 6
+#define VERSION_PATCH 7
 
 #if defined(IS_CNCNET_YR_VER) && defined(IS_HARDENED_VER)
 	#define PRODUCT_TYPE "(CnCNet YR, hardened)"
