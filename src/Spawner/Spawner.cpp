@@ -25,18 +25,17 @@
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
 
-#include <BeaconManagerClass.h>
 #include <GameOptionsClass.h>
 #include <GameStrings.h>
 #include <HouseClass.h>
 #include <IPXManagerClass.h>
 #include <LoadOptionsClass.h>
+#include <WWMessageBox.h>
 #include <MPGameModeClass.h>
 #include <ScenarioClass.h>
 #include <time.h>
 #include <UDPInterfaceClass.h>
 #include <Unsorted.h>
-#include <WWMessageBox.h>
 #include <WWMouseClass.h>
 
 bool Spawner::Enabled = false;
@@ -352,9 +351,6 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 bool Spawner::LoadSavedGame(const char* saveGameName)
 {
-	// for some reason beacons are only inited on scenario init, which doesn't happen on load
-	BeaconManagerClass::Instance.LoadArt();
-
 	if (!saveGameName[0] || !LoadOptionsClass::LoadMission(saveGameName))
 	{
 		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
