@@ -19,9 +19,12 @@
 
 #include "Debug.h"
 
+#include <Syringe.h>
+#include <cassert>
 #include <CRT.h>
 #include <MessageListClass.h>
 #include <Utilities/Macro.h>
+
 
 char Debug::StringBuffer[0x1000];
 
@@ -85,3 +88,39 @@ DEFINE_PATCH( // Replace SUN.INI with RA2MD.INI in the debug.log
 	/* Offset */ 0x8332F4,
 	/*   Data */ "-------- Loading RA2MD.INI settings --------\n"
 );
+
+// The 2 hooks below trip an assertion and then force the game to crash
+// if something is trying to submit a null pointer to a game layer
+// present for debugging purposes.
+// For some reason this frequently happens after loading multiplayer savegames.
+DEFINE_HOOK(0x5519BB, LayerClass_Submit_NullPointerCrash, 0x5)
+{
+	GET_STACK(void*, object, 0x8);
+
+	assert(object != nullptr);
+
+	if (object == nullptr)
+	{
+		// force a crash
+		int* p = nullptr;
+		*p = 50;
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x551A1A, LayerClass_Submit_NullPointerCrash2, 0x5)
+{
+	GET(void*, object, ECX);
+
+	assert(object != nullptr);
+
+	if (object == nullptr)
+	{
+		// force a crash
+		int* p = nullptr;
+		*p = 50;
+	}
+
+	return 0;
+}
