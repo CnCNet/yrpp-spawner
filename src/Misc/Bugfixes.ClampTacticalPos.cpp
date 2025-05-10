@@ -29,12 +29,12 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 {
 	bool isUpdated = false;
 
-	auto pMapRect = &MapClass::Instance.MapRect;
-	auto pMapVisibleRect = &MapClass::Instance.VisibleRect;
-	auto pSurfaceViewBounds = &DSurface::ViewBounds;
+	const auto pMapRect = &MapClass::Instance.MapRect;
+	const auto pMapVisibleRect = &MapClass::Instance.VisibleRect;
+	const auto pSurfaceViewBounds = &DSurface::ViewBounds;
 
 	{
-		const int xMin = Unsorted::CellWidthInPixels * (pMapVisibleRect->X - (pMapRect->Width >> 1)) + (pSurfaceViewBounds->Width >> 1);
+		const int xMin = (pSurfaceViewBounds->Width / 2) + (Unsorted::CellWidthInPixels / 2) * (pMapVisibleRect->X * 2 - pMapRect->Width);
 		if (tacticalPos->X < xMin)
 		{
 			tacticalPos->X = xMin;
@@ -42,7 +42,11 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 		}
 		else
 		{
-			const int xMax = Math::max(Unsorted::CellWidthInPixels * pMapVisibleRect->Width - pSurfaceViewBounds->Width + xMin, xMin);
+			const int xMax = Math::max(
+				xMin,
+				xMin + (Unsorted::CellWidthInPixels * pMapVisibleRect->Width) - pSurfaceViewBounds->Width
+			);
+
 			if (tacticalPos->X > xMax)
 			{
 				tacticalPos->X = xMax;
@@ -52,7 +56,7 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 	}
 
 	{
-		const int yMin = Unsorted::CellHeightInPixels * (pMapVisibleRect->Y + (pMapRect->Width >> 1)) + (pSurfaceViewBounds->Height >> 1) - int(2.5 * Unsorted::CellHeightInPixels);
+		const int yMin = (pSurfaceViewBounds->Height / 2) + (Unsorted::CellHeightInPixels / 2) * (pMapVisibleRect->Y * 2 + pMapRect->Width - 5);
 		if (tacticalPos->Y < yMin)
 		{
 			tacticalPos->Y = yMin;
@@ -60,7 +64,11 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 		}
 		else
 		{
-			const int yMax = Math::max(Unsorted::CellHeightInPixels * pMapVisibleRect->Height - pSurfaceViewBounds->Height + int(4.5 * Unsorted::CellHeightInPixels) + yMin, yMin);
+			const int yMax = Math::max(
+				yMin,
+				yMin + (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - pSurfaceViewBounds->Height + int(Unsorted::CellHeightInPixels * 4.5)
+			);
+
 			if (tacticalPos->Y > yMax)
 			{
 				tacticalPos->Y = yMax;
@@ -79,8 +87,7 @@ DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 	auto pSurfaceViewBounds = &DSurface::ViewBounds;
 
 	{
-		const int maxWidth =
-			pSurfaceViewBounds->Width - pMapVisibleRect->Width * Unsorted::CellWidthInPixels;
+		const int maxWidth = pSurfaceViewBounds->Width - pMapVisibleRect->Width * Unsorted::CellWidthInPixels;
 
 		if (maxWidth > 0)
 		{
@@ -88,14 +95,15 @@ DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 				pSurfaceViewBounds->Width - maxWidth,
 				0,
 				maxWidth,
-				pSurfaceViewBounds->Height};
+				pSurfaceViewBounds->Height
+			};
 
 			DSurface::Composite->FillRect(&rect, COLOR_BLACK);
 		}
 	}
 
 	{
-		const int maxHeight = pSurfaceViewBounds->Height - pMapVisibleRect->Height * Unsorted::CellHeightInPixels - int(4.5 * Unsorted::CellHeightInPixels);
+		const int maxHeight = pSurfaceViewBounds->Height - (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - int(Unsorted::CellHeightInPixels * 4.5);
 
 		if (maxHeight > 0)
 		{
@@ -103,7 +111,8 @@ DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 				0,
 				pSurfaceViewBounds->Height - maxHeight,
 				pSurfaceViewBounds->Width,
-				maxHeight};
+				maxHeight
+			};
 
 			DSurface::Composite->FillRect(&rect, COLOR_BLACK);
 		}
