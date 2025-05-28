@@ -173,7 +173,7 @@ namespace SavedGames
 {
 	struct CustomMissionID
 	{
-		static constexpr wchar_t* SaveName = L"CustomMissionID";
+		static constexpr const wchar_t* SaveName = L"CustomMissionID";
 
 		int Number;
 
@@ -188,14 +188,14 @@ namespace SavedGames
 
 	struct ExtraTestInfo
 	{
-		static constexpr wchar_t* SaveName = L"Spawner test info";
+		static constexpr const wchar_t* SaveName = L"Spawner test info";
 
 		int CurrentFrame;
 		int TechnoCount;
 
 		explicit ExtraTestInfo()
 			:CurrentFrame { Unsorted::CurrentFrame }
-			, TechnoCount { TechnoClass::Array->Count }
+			, TechnoCount { TechnoClass::Array.Count }
 		{
 		}
 	};
