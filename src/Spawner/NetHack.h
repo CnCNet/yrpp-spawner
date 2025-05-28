@@ -29,8 +29,7 @@ class NetHack
 public:
 	static bool PortHack;
 
-	static
-	int WINAPI SendTo(
+	static int WINAPI SendTo(
 		int sockfd,
 		char* buf,
 		size_t len,
@@ -39,8 +38,7 @@ public:
 		int addrlen
 	);
 
-	static
-	int WINAPI RecvFrom(
+	static int WINAPI RecvFrom(
 		int sockfd,
 		char* buf,
 		size_t len,
@@ -57,8 +55,7 @@ public:
 	static u_long  Ip;
 	static u_short Port;
 
-	static
-	int WINAPI SendTo(
+	static int WINAPI SendTo(
 		int sockfd,
 		char* buf,
 		size_t len,
@@ -67,8 +64,7 @@ public:
 		int addrlen
 	);
 
-	static
-	int WINAPI RecvFrom(
+	static int WINAPI RecvFrom(
 		int sockfd,
 		char* buf,
 		size_t len,

@@ -58,11 +58,15 @@ class SpawnerConfig
 	{
 		bool IsObserver;
 		int SpawnLocations;
+		double CreditsFactor;
+		int HandicapDifficulty;
 		int Alliances[8];
 
 		HouseConfig()
 			: IsObserver { false }
 			, SpawnLocations { -2 }
+			, CreditsFactor { 1.0 }
+			, HandicapDifficulty { -1 }
 			, Alliances { -1, -1, -1, -1, -1, -1, -1, -1 }
 		{ }
 
@@ -95,6 +99,9 @@ public:
 	char SavedGameDir[MAX_PATH]; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
 	char SaveGameName[60];
 	int CustomMissionID;
+	int AutoSaveCount;
+	int AutoSaveInterval;
+	int NextAutoSaveNumber;
 
 	// Scenario Options
 	int  Seed;
@@ -163,6 +170,9 @@ public:
 		, SavedGameDir { "Saved Games" }
 		, SaveGameName { "" }
 		, CustomMissionID { 0 }
+		, AutoSaveCount { 5 }
+		, AutoSaveInterval { 7200 }
+		, NextAutoSaveNumber { 0 }
 
 		// Scenario Options
 		, Seed { 0 }

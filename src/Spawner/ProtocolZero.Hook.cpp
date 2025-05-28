@@ -84,10 +84,10 @@ DEFINE_HOOK(0x64C598, ExecuteDoList__ProtocolZero, 0x6)
 	{
 		auto dl = (uint8_t)R->DL();
 
-		if (dl == (uint8_t)EventType::EMPTY)
+		if (dl == (uint8_t)EventType::Empty)
 			return 0x64C63D;
 
-		if (dl == (uint8_t)EventType::PROCESS_TIME)
+		if (dl == (uint8_t)EventType::ProcessTime)
 			return 0x64C63D;
 
 		if (dl == (uint8_t)EventTypeExt::ResponseTime2)

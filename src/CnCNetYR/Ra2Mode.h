@@ -19,7 +19,7 @@
 
 #pragma once
 
-#ifdef IS_HARDEND_VER
+#ifdef IS_CNCNET_YR_VER
 class Ra2Mode
 {
 	static bool Enabled;

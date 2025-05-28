@@ -4,31 +4,38 @@ on:
   push:
     branches:
       - main
+      - master
       - develop
-
-env:
-  SOLUTION_PATH: .
-  BUILD_CONFIGURATION: DevBuild
+  pull_request:
 
 jobs:
   build:
     runs-on: windows-2019
 
+    strategy:
+      fail-fast: false
+      matrix:
+        build-type: [DevBuild]  # [Debug, DevBuild, Release]
+        is-cncnet-yr: ['', -CnCNetYR]
+        is-hardened: ['', -Hardened]
+        # this dimension is only needed to check whether we're in CnCNet repo
+        # and exclude hardened build because we may have no access to it
+        has-private-access:
+          - ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'CnCNet' || github.event_name == 'push' && github.repository_owner == 'CnCNet' }}
+        exclude:
+          - is-hardened: -Hardened
+            has-private-access: false
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: Metadorius/checkout@d1a22c1aff33852a0154ff5262e4eab45178154c # fixed SpecificSubmodule branch
         with:
-          submodules: recursive
+          ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
+          submodule-directories: |
+            YRpp
+            ${{ matrix.has-private-access && 'Private' || '' }}
 
       - name: Build
         uses: ./.github/actions/build
         with:
-          sln-path: ${{ env.SOLUTION_PATH }}
-          build-config: ${{ env.BUILD_CONFIGURATION }}
-          artifact-name: compiled-dll-regular-${{ github.sha }}
-
-      - name: Build HardEnd
-        uses: ./.github/actions/build
-        with:
-          sln-path: ${{ env.SOLUTION_PATH }}
-          build-config: ${{ env.BUILD_CONFIGURATION }}-HardEnd
-          artifact-name: compiled-dll-hardend-${{ github.sha }}
+          build-config: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
+          artifact-name: spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.sha }}

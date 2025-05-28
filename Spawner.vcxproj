@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <ProjectName>cncnet5</ProjectName>
+    <ProjectName>CnCNet-Spawner</ProjectName>
     <RootNamespace>YRpp-Spawner</RootNamespace>
     <ProjectGuid>{264BD0D2-4BF7-4CFF-B33E-95A018BEA951}</ProjectGuid>
     <VCProjectVersion>15.0</VCProjectVersion>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ShowAllFiles>true</ShowAllFiles>
     <ThisDir>$(MSBuildThisFileDirectory)</ThisDir>
     <YRppDir>$(ThisDir)YRpp</YRppDir>
+    <PrivateDir>$(ThisDir)Private</PrivateDir>
   </PropertyGroup>
   <!-- Import props -->
   <Import Project="$(ThisDir)\Spawner.props" />
@@ -16,6 +17,8 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
+    <ClCompile Include="src\UI\Dialogs.cpp" />
+    <ClCompile Include="src\UI\Hooks.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -23,10 +26,11 @@
     <ClCompile Include="$(ThisDir)\src\Main.Hook.cpp" />
     <!-- Ext -->
     <ClCompile Include="$(ThisDir)\src\Ext\Event\Body.cpp" />
-    <!-- HardEndStuff -->
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\AppIcon.cpp" />
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Misc.cpp" />
-    <ClCompile Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Ext\INIClass\Body.cpp" />
+    <!-- CnCNetYR -->
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\AppIcon.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\Misc.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
@@ -34,7 +38,6 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Perf.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.SpawnManager.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
@@ -60,6 +63,8 @@
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
+    <!-- Dialogs -->
+    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
@@ -69,9 +74,11 @@
     <ClInclude Include="$(ThisDir)\src\Main.Config.h" />
     <!-- Ext -->
     <ClInclude Include="$(ThisDir)\src\Ext\Event\Body.h" />
-    <!-- HardEndStuff -->
-    <ClInclude Include="$(ThisDir)\src\HardEndStuff\Ra2Mode.h" />
+    <ClInclude Include="$(ThisDir)\src\Ext\INIClass\Body.h" />
+    <!-- CnCNetYR -->
+    <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
+    <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
@@ -84,4 +91,6 @@
     <ClInclude Include="$(ThisDir)\src\Utilities\Macro.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
   </ItemGroup>
+  <Import Project="$(PrivateDir)\SpawnerPrivate.props"
+          Condition="$(Configuration.Contains('Hardened'))"/>
 </Project>

@@ -58,7 +58,7 @@ class DumperTypes
 		int index = 1;
 		char indexStr[10];;
 
-		for (auto pItem : *T::Array)
+		for (auto pItem : T::Array)
 		{
 			sprintf(indexStr, "%d", index++);
 			writeLog(file, indexStr);

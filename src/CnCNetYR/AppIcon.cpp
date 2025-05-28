@@ -1,7 +1,7 @@
 /**
 *  yrpp-spawner
 *
-*  Copyright(C) 2022-present CnCNet
+*  Copyright(C) 2024-present CnCNet
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -17,21 +17,19 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Helpers/Macro.h>
-#include <MapClass.h>
-#include <SpawnManagerClass.h>
+#ifdef IS_CNCNET_YR_VER
+#include <Utilities/Macro.h>
+#include "Ra2Mode.h"
 
-// Fix a glitch related to incorrect target setting for missiles
-// Author: Belonit
-DEFINE_HOOK(0x6B75AC, SpawnManagerClass_AI_SetDestinationForMissiles, 0x5)
+HANDLE __fastcall UI_ApplyAppIcon()
 {
-	GET(SpawnManagerClass*, pSpawnManager, ESI);
-	GET(TechnoClass*, pSpawnTechno, EDI);
+	const char* iconPath = Ra2Mode::IsEnabled()
+		? "./Resources/ra2.ico"
+		: "./Resources/clienticon.ico";
 
-	CoordStruct coord = pSpawnManager->Target->GetCenterCoords();
-	CellClass* pCellDestination = MapClass::Instance->TryGetCellAt(coord);
-
-	pSpawnTechno->SetDestination(pCellDestination, true);
-
-	return 0x6B75BC;
+	return LoadImageA(NULL, iconPath, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 }
+
+DEFINE_PATCH(0x777C41, 0x90, 0x90, 0x90, 0x90); // Disable Phobos hook (0x777C41, UI_ApplyAppIcon, 0x9)
+DEFINE_JUMP(CALL, 0x777C45, GET_OFFSET(UI_ApplyAppIcon));
+#endif

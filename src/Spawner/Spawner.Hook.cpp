@@ -22,8 +22,10 @@
 
 #include <HouseClass.h>
 #include <SessionClass.h>
+#include <BeaconManagerClass.h>
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
+#include <Unsorted.h>
 
 DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 {
@@ -85,7 +87,7 @@ DEFINE_HOOK(0x65812E, RadarClass__DiplomacyDialog_UIGameMode, 0x6)
 		return Show;
 	}
 
-	if (!SessionClass::Instance->MPGameMode)
+	if (!SessionClass::Instance.MPGameMode)
 		return DontShow;
 
 	return 0;
@@ -136,12 +138,12 @@ DEFINE_HOOK(0x4FC551, HouseClass__MPlayerDefeated_NoEnemies, 0x5)
 	if (!MPlayerDefeated::pThis)
 		return 0;
 
-	for (const auto pHouse : *HouseClass::Array)
+	for (const auto pHouse : HouseClass::Array)
 	{
 		if (pHouse->Defeated || pHouse == MPlayerDefeated::pThis || pHouse->Type->MultiplayPassive)
 			continue;
 
-		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAllie(MPlayerDefeated::pThis))
+		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAlly(MPlayerDefeated::pThis))
 		{
 			Debug::Log("[Spawner] MPlayer_Defeated() - Defeated player has a living ally");
 			if (Spawner::GetConfig()->DefeatedBecomesObserver)
@@ -179,3 +181,57 @@ DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
 }
 
 #pragma endregion MPlayerDefeated
+
+#pragma region Save&Load
+
+DEFINE_HOOK_AGAIN(0x624271, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x623D72, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x62314E, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x60D407, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK_AGAIN(0x608206, SomeFunc_InterceptMainLoop, 0x5);
+DEFINE_HOOK(0x48CE8A, SomeFunc_InterceptMainLoop, 0x5)
+{
+	/**
+	 *  Main loop.
+	 */
+	Game::MainLoop();
+
+	/**
+	 *  After loop.
+	 */
+	Spawner::After_Main_Loop();
+	return R->Origin() + 0x5;
+}
+
+DEFINE_HOOK(0x52DAEF, Game_Start_ResetGlobal, 0x5)
+{
+	Spawner::DoSave = false;
+	Spawner::NextAutoSaveFrame = -1;
+	Spawner::NextAutoSaveNumber = 0;
+	return 0;
+}
+
+DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
+{
+	/**
+	 *  Schedule the next autosave.
+	 */
+	Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame;
+	Spawner::NextAutoSaveFrame += Spawner::GetConfig()->AutoSaveInterval;
+	return 0;
+}
+
+DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
+{
+	Spawner::RespondToSaveGame();
+	return 0x4C7B42;
+}
+
+// for some reason beacons are only inited on scenario init, which doesn't happen on load
+DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit, 0x6)
+{
+	BeaconManagerClass::Instance.LoadArt();
+	return 0;
+}
+
+#pragma endregion

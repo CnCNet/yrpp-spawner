@@ -11,18 +11,15 @@ inputs:
   artifact-name:
     description: "Artifact file name"
     required: false
-    default: compiled-dll-${{ github.sha }}
+    default: ''
 
 runs:
   using: "composite"
   steps:
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1
-
-    - name: Restore NuGet packages
-      working-directory: ${{ env.GITHUB_WORKSPACE }}
-      run: nuget restore ${{ inputs.sln-path }}
-      shell: cmd
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[16.0, )'
 
     - uses: ammaraskar/msvc-problem-matcher@master
 
@@ -30,16 +27,15 @@ runs:
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} ${{inputs.sln-path}}
+      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} /v:q ${{inputs.sln-path}}
       shell: cmd
 
-    - name: Upload Artifact
-      if: ${{ success() }}
+    - name: Upload artifact
+      if: ${{ success() && inputs.artifact-name != '' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: |
-          ${{inputs.sln-path}}/${{inputs.build-config}}/cncnet5.dll
-          ${{inputs.sln-path}}/${{inputs.build-config}}/cncnet5.pdb
-          ./LICENSE.md
-          ./README.md
+          ${{inputs.sln-path}}/LICENSE.md
+          ${{inputs.sln-path}}/${{inputs.build-config}}/CnCNet-Spawner.dll
+          ${{!contains(inputs.build-config, 'Hardened') && format('{0}/{1}/CnCNet-Spawner.pdb', inputs.sln-path, inputs.build-config) || ''}}
