@@ -112,6 +112,7 @@ public:
 	char ScenarioName[260];
 	char MapHash[0xff];
 	wchar_t UIMapName[45];
+	bool ReadMissionSection;
 
 	// Network Options
 	int Protocol;
@@ -183,6 +184,7 @@ public:
 		, ScenarioName { "spawnmap.ini" }
 		, MapHash { "" }
 		, UIMapName { L"" }
+		, ReadMissionSection { false }
 
 		// Network Options
 		, Protocol { 2 }
