@@ -307,8 +307,9 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		// Rename MISSIONMD.INI to this
 		// because Ares has LoadScreenText.Color and Phobos has Starkku's PR #1145
-		if (Spawner::Config->CustomMissionID != 0) // before parsing
-			Patch::Apply_RAW(0x839724, "Spawn.ini");
+		// 2025-05-28: Moved to a hook in Spawner.Hook.cpp - Starkku
+		// if (Spawner::Config->ReadMissionSection) // before parsing
+		//	 Patch::Apply_RAW(0x839724, "Spawn.ini");
 
 		bool result = Config->LoadSaveGame? Spawner::LoadSavedGame(Config->SaveGameName): ScenarioClass::StartScenario(pScenarioName, 1, 0);
 
