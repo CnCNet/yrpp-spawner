@@ -184,26 +184,11 @@ namespace SavedGames
 		operator int() const { return Number; }
 	};
 
-	// More fun
-
-	struct ExtraTestInfo
-	{
-		static constexpr const wchar_t* SaveName = L"Spawner test info";
-
-		int CurrentFrame;
-		int TechnoCount;
-
-		explicit ExtraTestInfo()
-			:CurrentFrame { Unsorted::CurrentFrame }
-			, TechnoCount { TechnoClass::Array.Count }
-		{
-		}
-	};
 
 	template<typename T>
 	bool AppendToStorage(IStorage* pStorage)
 	{
-		IStream* pStream = nullptr;
+		IStreamPtr pStream = nullptr;
 		bool ret = false;
 		HRESULT hr = pStorage->CreateStream(
 			T::SaveName,
@@ -219,7 +204,6 @@ namespace SavedGames
 			ULONG written = 0;
 			hr = pStream->Write(&info, sizeof(info), &written);
 			ret = SUCCEEDED(hr) && written == sizeof(info);
-			pStream->Release();
 		}
 
 		return ret;
@@ -229,7 +213,7 @@ namespace SavedGames
 	template<typename T>
 	std::optional<T> ReadFromStorage(IStorage* pStorage)
 	{
-		IStream* pStream = nullptr;
+		IStreamPtr pStream = nullptr;
 		bool hasValue = false;
 		HRESULT hr = pStorage->OpenStream(
 			T::SaveName,
@@ -246,8 +230,6 @@ namespace SavedGames
 			ULONG read = 0;
 			hr = pStream->Read(&info, sizeof(info), &read);
 			hasValue = SUCCEEDED(hr) && read == sizeof(info);
-
-			pStream->Release();
 		}
 
 		return hasValue ? std::make_optional(info) : std::nullopt;
@@ -270,7 +252,7 @@ DEFINE_HOOK(0x559921, LoadOptionsClass_FillList_FilterFiles, 0x6)
 	OLECHAR wNameBuffer[0x100] {};
 	SavedGames::FormatPath(Main::readBuffer, pEntry->Filename.data());
 	MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, -1, wNameBuffer, std::size(wNameBuffer));
-	IStorage* pStorage = nullptr;
+	IStoragePtr pStorage = nullptr;
 	bool shouldDelete = false;
 	if (SUCCEEDED(StgOpenStorage(wNameBuffer, NULL,
 		STGM_READWRITE | STGM_SHARE_EXCLUSIVE,
@@ -282,9 +264,6 @@ DEFINE_HOOK(0x559921, LoadOptionsClass_FillList_FilterFiles, 0x6)
 		if (Spawner::GetConfig()->CustomMissionID != id.value_or(0))
 			shouldDelete = true;
 	}
-
-	if (pStorage)
-		pStorage->Release();
 
 	if (shouldDelete)
 	{
@@ -305,8 +284,6 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 	{
 		if (SessionClass::IsCampaign() && Spawner::GetConfig()->CustomMissionID)
 			AppendToStorage<CustomMissionID>(pStorage);
-		if (AppendToStorage<ExtraTestInfo>(pStorage))
-			Debug::Log("[Spawner] Extra meta info appended on sav file\n");
 	}
 
 	return 0;
@@ -316,7 +293,7 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 {
 	LEA_STACK(const wchar_t*, filename, STACK_OFFSET(0x518, -0x4F4));
-	IStorage* pStorage = nullptr;
+	IStoragePtr pStorage = nullptr;
 	using namespace SavedGames;
 
 	if (SUCCEEDED(StgOpenStorage(filename, NULL,
@@ -335,17 +312,7 @@ DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 		{
 			Spawner::GetConfig()->CustomMissionID = 0;
 		}
-
-		if (auto info = ReadFromStorage<ExtraTestInfo>(pStorage))
-		{
-			Debug::Log("[Spawner] CurrentFrame = %d, TechnoCount = %d\n"
-				, info->CurrentFrame
-				, info->TechnoCount
-			);
-		}
 	}
-	if (pStorage)
-		pStorage->Release();
 
 	return 0;
 }
