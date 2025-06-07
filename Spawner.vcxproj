@@ -17,8 +17,11 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
+    <ClCompile Include="src\Commands\Commands.cpp" />
+    <ClCompile Include="src\Commands\QuickSave.cpp" />
     <ClCompile Include="src\UI\Dialogs.cpp" />
     <ClCompile Include="src\UI\Hooks.cpp" />
+    <ClCompile Include="src\Utilities\GeneralUtils.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -90,7 +93,9 @@
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Macro.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\Patch.h" />
+    <ClInclude Include="src\Commands\Commands.h" />
+    <ClInclude Include="src\Commands\QuickSave.h" />
+    <ClInclude Include="src\Utilities\GeneralUtils.h" />
   </ItemGroup>
-  <Import Project="$(PrivateDir)\SpawnerPrivate.props"
-          Condition="$(Configuration.Contains('Hardened'))"/>
+  <Import Project="$(PrivateDir)\SpawnerPrivate.props" Condition="$(Configuration.Contains('Hardened'))" />
 </Project>
