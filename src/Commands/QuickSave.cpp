@@ -3,7 +3,6 @@
 #include <ScenarioClass.h>
 #include <HouseClass.h>
 #include <SessionClass.h>
-#include <Utilities/GeneralUtils.h>
 #include <EventClass.h>
 
 const char* QuickSaveCommandClass::GetName() const
@@ -13,7 +12,7 @@ const char* QuickSaveCommandClass::GetName() const
 
 const wchar_t* QuickSaveCommandClass::GetUIName() const
 {
-	return GeneralUtils::LoadStringUnlessMissing("TXT_QUICKSAVE", L"Quicksave");
+	return StringTable::TryFetchString("TXT_QUICKSAVE", L"Quicksave");
 }
 
 const wchar_t* QuickSaveCommandClass::GetUICategory() const
@@ -23,7 +22,7 @@ const wchar_t* QuickSaveCommandClass::GetUICategory() const
 
 const wchar_t* QuickSaveCommandClass::GetUIDescription() const
 {
-	return GeneralUtils::LoadStringUnlessMissing("TXT_QUICKSAVE_DESC", L"Save the current game.");
+	return StringTable::TryFetchString("TXT_QUICKSAVE_DESC", L"Save the current game.");
 }
 
 void QuickSaveCommandClass::Execute(WWKey eInput) const
