@@ -25,7 +25,7 @@ class TacticalClass;
 // Fixes glitches if the map size is smaller than the screen resolution
 // Author: Belonit
 static constexpr float paddingTopInCell = 5;
-static constexpr float paddingBottompInCell = 4.5;
+static constexpr float paddingBottomInCell = 4.5;
 
 bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* tacticalPos)
 {
@@ -68,7 +68,7 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 		{
 			const int yMax = Math::max(
 				yMin,
-				yMin + (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - pSurfaceViewBounds->Height + int(Unsorted::CellHeightInPixels * paddingBottompInCell)
+				yMin + (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - pSurfaceViewBounds->Height + int(Unsorted::CellHeightInPixels * paddingBottomInCell)
 			);
 
 			if (tacticalPos->Y > yMax)
@@ -105,7 +105,7 @@ DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 	}
 
 	{
-		const int maxHeight = pSurfaceViewBounds->Height - (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - int(Unsorted::CellHeightInPixels * paddingBottompInCell);
+		const int maxHeight = pSurfaceViewBounds->Height - (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - int(Unsorted::CellHeightInPixels * paddingBottomInCell);
 
 		if (maxHeight > 0)
 		{
