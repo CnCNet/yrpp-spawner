@@ -25,6 +25,7 @@ class ProtocolZero
 {
 private:
 	static constexpr int SendResponseTimeInterval = 30;
+	static constexpr int SendResponseTimeFrame = 8 * SendResponseTimeInterval;
 
 public:
 	static bool Enable;

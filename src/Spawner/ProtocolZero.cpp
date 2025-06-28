@@ -41,7 +41,7 @@ void ProtocolZero::SendResponseTime2()
 
 	if (ProtocolZero::NextSendFrame < 0)
 	{
-		ProtocolZero::NextSendFrame = 6 * SendResponseTimeInterval + currentFrame + Game::Network::FrameSendRate;
+		ProtocolZero::NextSendFrame = currentFrame + Game::Network::FrameSendRate + ProtocolZero::SendResponseTimeFrame;
 		return;
 	}
 
@@ -61,7 +61,7 @@ void ProtocolZero::SendResponseTime2()
 
 	if (event.AddEvent())
 	{
-		ProtocolZero::NextSendFrame = currentFrame + SendResponseTimeInterval;
+		ProtocolZero::NextSendFrame = currentFrame + ProtocolZero::SendResponseTimeInterval;
 		Debug::Log("[Spawner] Player %d sending response time of %d, LatencyMode = %d, Frame = %d\n"
 			, event.HouseIndex
 			, event.ResponseTime2.MaxAhead
@@ -100,7 +100,7 @@ void ProtocolZero::HandleResponseTime2(EventExt* event)
 
 	for (char i = 0; i < (char)std::size(PlayerMaxAheads); ++i)
 	{
-		if (Unsorted::CurrentFrame >= (PlayerLastTimingFrame[i] + (SendResponseTimeInterval * 4)))
+		if (Unsorted::CurrentFrame >= (PlayerLastTimingFrame[i] + (ProtocolZero::SendResponseTimeFrame / 2)))
 		{
 			PlayerMaxAheads[i] = 0;
 			PlayerLatencyMode[i] = 0;
