@@ -30,6 +30,15 @@ public:
 	static bool Enable;
 	static unsigned char MaxLatencyLevel;
 	static int WorstMaxAhead;
+	static int NextSendFrame;
+
+	static void Init()
+	{
+		Enable = false;
+		WorstMaxAhead = 24;
+		NextSendFrame = -1;
+		MaxLatencyLevel = 0xff;
+	}
 
 	static void SendResponseTime2();
 	static void HandleResponseTime2(EventExt* event);

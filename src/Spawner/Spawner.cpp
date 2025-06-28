@@ -388,6 +388,7 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
+	ProtocolZero::Init();
 	ProtocolZero::Enable = (pSpawnerConfig->Protocol == 0);
 	if (ProtocolZero::Enable)
 	{

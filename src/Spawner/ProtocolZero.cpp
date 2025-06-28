@@ -29,6 +29,7 @@
 
 bool ProtocolZero::Enable = false;
 int ProtocolZero::WorstMaxAhead = 24;
+int ProtocolZero::NextSendFrame = -1;
 unsigned char ProtocolZero::MaxLatencyLevel = 0xff;
 
 void ProtocolZero::SendResponseTime2()
@@ -36,10 +37,15 @@ void ProtocolZero::SendResponseTime2()
 	if (SessionClass::IsSingleplayer())
 		return;
 
-	static int NextSendFrame = 6 * SendResponseTimeInterval;
 	int currentFrame = Unsorted::CurrentFrame;
 
-	if (NextSendFrame >= currentFrame)
+	if (ProtocolZero::NextSendFrame < 0)
+	{
+		ProtocolZero::NextSendFrame = 6 * SendResponseTimeInterval + currentFrame + Game::Network::FrameSendRate;
+		return;
+	}
+
+	if (ProtocolZero::NextSendFrame >= currentFrame)
 		return;
 
 	const int ipxResponseTime = IPXManagerClass::Instance.ResponseTime();
@@ -55,7 +61,7 @@ void ProtocolZero::SendResponseTime2()
 
 	if (event.AddEvent())
 	{
-		NextSendFrame = currentFrame + SendResponseTimeInterval;
+		ProtocolZero::NextSendFrame = currentFrame + SendResponseTimeInterval;
 		Debug::Log("[Spawner] Player %d sending response time of %d, LatencyMode = %d, Frame = %d\n"
 			, event.HouseIndex
 			, event.ResponseTime2.MaxAhead
@@ -65,7 +71,7 @@ void ProtocolZero::SendResponseTime2()
 	}
 	else
 	{
-		++NextSendFrame;
+		++ProtocolZero::NextSendFrame;
 	}
 }
 
