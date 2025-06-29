@@ -69,13 +69,13 @@ void Ra2Mode::Apply()
 		// The SensorArray logic works with the SensorsOfHouses array, and here we additionally process the DisguiseSensorsOfHouses array
 		struct DetectDisguiseHack
 		{
-			static void __fastcall Sensors_AddOfHouse(CellClass* pThis, void*, unsigned int idx)
+			static void __fastcall Sensors_AddOfHouse(CellClass* pThis, discard_t, unsigned int idx)
 			{
 				pThis->Sensors_AddOfHouse(idx);
 				pThis->DisguiseSensors_AddOfHouse(idx);
 			}
 
-			static void __fastcall Sensors_RemOfHouse(CellClass* pThis, void*, unsigned int idx)
+			static void __fastcall Sensors_RemOfHouse(CellClass* pThis, discard_t, unsigned int idx)
 			{
 				pThis->Sensors_RemOfHouse(idx);
 				pThis->DisguiseSensors_RemOfHouse(idx);

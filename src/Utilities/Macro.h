@@ -34,6 +34,15 @@ __forceinline T* Make_Pointer(const uintptr_t address)
 	return reinterpret_cast<T*>(address);
 }
 
+/**
+* Use when some function argument is unneeded.
+* Currently that happens when faking __thiscall functions
+* via __fastcall ones (fastcall function accepts args via
+* ECX, EDX, then stack, thiscall via ECX for this and stack
+* for rest, so second arg in fastcall-faked function would need to be discarded).
+*/
+typedef size_t discard_t;
+
 #define NAKED __declspec(naked)
 
 #pragma region Patch Macros
