@@ -31,5 +31,5 @@ HANDLE __fastcall UI_ApplyAppIcon()
 }
 
 DEFINE_PATCH(0x777C41, 0x90, 0x90, 0x90, 0x90); // Disable Phobos hook (0x777C41, UI_ApplyAppIcon, 0x9)
-DEFINE_JUMP(CALL, 0x777C45, GET_OFFSET(UI_ApplyAppIcon));
+DEFINE_FUNCTION_JUMP(CALL, 0x777C45, UI_ApplyAppIcon);
 #endif
