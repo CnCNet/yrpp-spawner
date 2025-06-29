@@ -28,9 +28,9 @@
 #include <IPXManagerClass.h>
 
 bool ProtocolZero::Enable = false;
-int ProtocolZero::WorstMaxAhead = 24;
 int ProtocolZero::NextSendFrame = -1;
-unsigned char ProtocolZero::MaxLatencyLevel = 0xff;
+int ProtocolZero::WorstMaxAhead = LatencyLevel::GetMaxAhead(LatencyLevelEnum::LATENCY_LEVEL_6);
+unsigned char ProtocolZero::MaxLatencyLevel = std::numeric_limits<unsigned char>::max();
 
 void ProtocolZero::SendResponseTime2()
 {

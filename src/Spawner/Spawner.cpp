@@ -388,12 +388,15 @@ void Spawner::InitNetwork()
 	Game::Network::PlanetWestwoodStartTime = time(NULL);
 	Game::Network::GameStockKeepingUnit = 0x2901;
 
-	ProtocolZero::Init();
 	ProtocolZero::Enable = (pSpawnerConfig->Protocol == 0);
 	if (ProtocolZero::Enable)
 	{
 		Game::Network::FrameSendRate = 2;
 		Game::Network::PreCalcMaxAhead = pSpawnerConfig->PreCalcMaxAhead;
+
+		ProtocolZero::NextSendFrame = -1;
+		ProtocolZero::WorstMaxAhead = LatencyLevel::GetMaxAhead(LatencyLevelEnum::LATENCY_LEVEL_6);
+
 		ProtocolZero::MaxLatencyLevel = std::clamp(
 			pSpawnerConfig->MaxLatencyLevel,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_1,
