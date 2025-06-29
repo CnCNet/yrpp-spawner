@@ -393,6 +393,10 @@ void Spawner::InitNetwork()
 	{
 		Game::Network::FrameSendRate = 2;
 		Game::Network::PreCalcMaxAhead = pSpawnerConfig->PreCalcMaxAhead;
+
+		ProtocolZero::NextSendFrame = -1;
+		ProtocolZero::WorstMaxAhead = LatencyLevel::GetMaxAhead(LatencyLevelEnum::LATENCY_LEVEL_6);
+
 		ProtocolZero::MaxLatencyLevel = std::clamp(
 			pSpawnerConfig->MaxLatencyLevel,
 			(byte)LatencyLevelEnum::LATENCY_LEVEL_1,
