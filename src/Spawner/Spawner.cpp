@@ -607,7 +607,7 @@ void Spawner::After_Main_Loop()
 			static wchar_t saveDescription[32];
 
 			// Prepare the save name and description.
-			const auto TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN = StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN", L"Mission Auto-Save (Slot %d)");
+			const auto TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN = StringTable::TryFetchString("TXT_AUTOSAVE_DESC_SP", L"Mission Auto-Save (Slot %d)");
 			std::sprintf(saveFileName, "AUTOSAVE%d.SAV", Spawner::NextAutoSaveNumber + 1);
 			std::swprintf(saveDescription, TXT_AUTOSAVE_DESCRIPTION_CAMPAIGN, Spawner::NextAutoSaveNumber + 1);
 
@@ -630,7 +630,7 @@ void Spawner::After_Main_Loop()
 		else if (SessionClass::Instance.GameMode == GameMode::LAN)
 		{
 			// Save!
-			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", StringTable::TryFetchString("TXT_AUTOSAVE_DESCRIPTION_MULTIPLAYER", L"Multiplayer Game"));
+			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", StringTable::TryFetchString("TXT_AUTOSAVE_DESC_MP", L"Multiplayer Game"));
 
 			// Schedule the next autosave.
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
