@@ -630,7 +630,7 @@ void Spawner::After_Main_Loop()
 		else if (SessionClass::Instance.GameMode == GameMode::LAN)
 		{
 			// Save!
-			ScenarioClass::Instance->SaveGame("SAVEGAME.NET", StringTable::TryFetchString("TXT_AUTOSAVE_DESC_MP", L"Multiplayer Game"));
+			ScenarioClass::Instance->SaveGame(GameStrings::SAVEGAME_NET, StringTable::TryFetchString("TXT_AUTOSAVE_DESC_MP", L"Multiplayer Game"));
 
 			// Schedule the next autosave.
 			Spawner::NextAutoSaveFrame = Unsorted::CurrentFrame + pConfig->AutoSaveInterval;
