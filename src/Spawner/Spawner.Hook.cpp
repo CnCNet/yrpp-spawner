@@ -221,6 +221,8 @@ DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 	return 0;
 }
 
+// Do not change the address without adjusting Phobos handling
+// and reading the comments in Spawner::After_Main_Loop
 DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 {
 	Spawner::RespondToSaveGame();
