@@ -62,7 +62,7 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 		}
 
 		// Set ConnTimeout
-		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); //  Scenario_Load_Wait
+		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); // Scenario_Load_Wait
 
 		// Show GameMode in DiplomacyDialog in Skirmish
 		Patch::Apply_LJMP(0x658117, 0x658126); // RadarClass_DiplomacyDialog
