@@ -139,9 +139,9 @@ void Spawner::AssignHouses()
 		// Set SpawnLocations
 		if (!isObserver)
 		{
-			pHouse->StartingPoint = (nSpawnLocations != -2)
-				? std::clamp(nSpawnLocations, 0, 7)
-				: nSpawnLocations;
+			pHouse->StartingPoint = (nSpawnLocations < 0)
+				? -2
+				: std::clamp(nSpawnLocations, 0, 7);
 		}
 		else
 		{
