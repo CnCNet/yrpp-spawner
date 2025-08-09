@@ -105,7 +105,7 @@ void Spawner::AssignHouses()
 
 		const auto pHousesConfig = &Spawner::Config->Houses[indexOfHouseArray];
 		const int nSpawnLocations = pHousesConfig->SpawnLocations;
-		const bool isObserver = pHouse->IsHumanPlayer &&pHousesConfig->IsObserver;
+		const bool isObserver = pHouse->IsHumanPlayer && pHousesConfig->IsObserver;
 
 		// Set Alliances
 		for (char i = 0; i < (char)std::size(pHousesConfig->Alliances); ++i)
