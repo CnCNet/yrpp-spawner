@@ -66,7 +66,7 @@ DEFINE_HOOK(0x658473, RadarClass__658330_SetObserverFlag, 0x5)
 
 	GET(HouseClass*, pHouse, EBX);
 	if (pHouse->IsHumanPlayer && pHouse->Defeated && pHouse->IsInitiallyObserver())
-		R->ECX(-3);
+		R->ECX(HouseTypeClass::TempObserverID);
 
 	return 0x658485;
 }

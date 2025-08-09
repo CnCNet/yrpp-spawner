@@ -262,7 +262,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 			if (pPlayer->IsObserver && !Spawner::Config->IsCampaign)
 			{
 				if (pNode->Country < 0)
-					pNode->Country = -3;
+					pNode->Country = HouseTypeClass::TempObserverID;
 
 				pNode->SpectatorFlag = 0xFFFFFFFF;
 
