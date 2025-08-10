@@ -41,9 +41,9 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 			Patch::Apply_CALL(0x68745E, Spawner::AssignHouses); // Read_Scenario_INI
 			Patch::Apply_CALL(0x68ACFF, Spawner::AssignHouses); // ScenarioClass::Read_INI
 
-			Patch::Apply_LJMP(0x5D74A0, 0x5D7570); // MPGameModeClass_AllyTeams
-			Patch::Apply_LJMP(0x501721, 0x501736); // HouseClass_ComputerParanoid
-			Patch::Apply_LJMP(0x686A9E, 0x686AC6); // RemoveAIPlayers
+			Patch::Apply_LJMP(0x5D74A0, 0x5D7570);   // MPGameModeClass_AllyTeams
+			Patch::Apply_LJMP(0x501721, 0x501736);   // HouseClass_ComputerParanoid
+			//Patch::Apply_LJMP(0x686A9E, 0x686AC6); // ReadScenario_InitSomeThings - Moved to a hook to allow conditional toggling of Special house's alliances.
 		}
 
 		{ // NetHack
@@ -238,3 +238,11 @@ DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit, 0x6)
 }
 
 #pragma endregion
+
+DEFINE_HOOK(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
+{
+	if (Spawner::GetConfig()->SpecialHouseIsAlly)
+		return 0;
+
+	return 0x686AC6;
+}
