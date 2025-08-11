@@ -588,12 +588,12 @@ void Spawner::After_Main_Loop()
 		&& SessionClass::Instance.GameMode == GameMode::LAN
 		&& pConfig->AutoSaveInterval > 0;
 
-	const bool IsAutoSaving = (doSaveSP || doSaveMP)
+	const bool isAutoSaving = (doSaveSP || doSaveMP)
 		&& Unsorted::CurrentFrame == Spawner::NextAutoSaveFrame;
 
 	// Schedule to make a save if it's time to autosave.
 	// The save might be triggered manually, so we have to OR it.
-	Spawner::DoSave |= IsAutoSaving;
+	Spawner::DoSave |= isAutoSaving;
 
 	if (Spawner::DoSave)
 	{
@@ -659,7 +659,7 @@ void Spawner::After_Main_Loop()
 			// If you want to fixup this - again, be my guest.
 			// - Kerbiter
 
-			assert(IsAutoSaving);
+			assert(isAutoSaving);
 
 			static char saveFileName[32];
 			static wchar_t saveDescription[128];
