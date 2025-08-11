@@ -129,7 +129,7 @@ DEFINE_HOOK(0x4FC262, HouseClass__MPlayerDefeated_SkipObserver, 0x6)
 	if (!MPlayerDefeated::pThis)
 		return 0;
 
-	return MPlayerDefeated::pThis->IsObserver()
+	return MPlayerDefeated::pThis->IsInitiallyObserver()
 		? ProcEpilogue
 		: 0;
 }
@@ -169,8 +169,24 @@ DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
 	GET_STACK(int, numHumans, STACK_OFFSET(0xC0, -0xA8));
 	GET_STACK(int, numAlive, STACK_OFFSET(0xC0, -0xAC));
 
-	bool continueWithoutHumans = Spawner::GetConfig()->ContinueWithoutHumans ||
-		(SessionClass::IsSkirmish() && HouseClass::CurrentPlayer->IsInitiallyObserver());
+	bool continueWithoutHumans = Spawner::GetConfig()->ContinueWithoutHumans
+		|| MPlayerDefeated::pThis->IsInitiallyObserver();
+
+	if (!continueWithoutHumans && !MPlayerDefeated::pThis->IsHumanPlayer)
+	{
+		bool isHasAliveHumanPlayers = false;
+		for (const auto pHouse : HouseClass::Array)
+		{
+			if (pHouse->IsHumanPlayer && !pHouse->Defeated)
+			{
+				isHasAliveHumanPlayers = true;
+				break;
+			}
+		}
+
+		if (!isHasAliveHumanPlayers)
+			continueWithoutHumans = true;
+	}
 
 	if (numAlive > 1 && (numHumans != 0 || continueWithoutHumans))
 	{

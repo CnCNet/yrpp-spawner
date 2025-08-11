@@ -107,11 +107,7 @@ void Spawner::AssignHouses()
 
 		const auto pHousesConfig = &Spawner::Config->Houses[indexOfHouseArray];
 		const int nSpawnLocations = pHousesConfig->SpawnLocations;
-		const bool isObserver = pHouse->IsHumanPlayer && (
-			pHousesConfig->IsObserver
-			|| nSpawnLocations == -1
-			|| nSpawnLocations == 90
-		);
+		const bool isObserver = pHouse->IsHumanPlayer && pHousesConfig->IsObserver;
 
 		// Set Alliances
 		for (char i = 0; i < (char)std::size(pHousesConfig->Alliances); ++i)
@@ -145,9 +141,9 @@ void Spawner::AssignHouses()
 		// Set SpawnLocations
 		if (!isObserver)
 		{
-			pHouse->StartingPoint = (nSpawnLocations != -2)
-				? std::clamp(nSpawnLocations, 0, 7)
-				: nSpawnLocations;
+			pHouse->StartingPoint = (nSpawnLocations < 0)
+				? -2
+				: std::clamp(nSpawnLocations, 0, 7);
 		}
 		else
 		{
@@ -268,7 +264,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 			if (pPlayer->IsObserver && !Spawner::Config->IsCampaign)
 			{
 				if (pNode->Country < 0)
-					pNode->Country = -3;
+					pNode->Country = HouseTypeClass::TempObserverID;
 
 				pNode->SpectatorFlag = 0xFFFFFFFF;
 
