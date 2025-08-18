@@ -26,6 +26,7 @@
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 #include <Unsorted.h>
+#include <CCINIClass.h>
 
 DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 {
@@ -263,4 +264,30 @@ DEFINE_HOOK(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
 		return 0;
 
 	return 0x686AC6;
+}
+
+DEFINE_HOOK(0x686D46, ReadScenarioINI_MissionININame, 0x5)
+{
+	LEA_STACK(CCFileClass*, pFile, STACK_OFFSET(0x174, -0xF0));
+
+	if (Spawner::GetConfig()->ReadMissionSection)
+	{
+		pFile->SetFileName("SPAWN.INI");
+		return 0x686D57;
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x65F57F, BriefingDialog_MissionININame, 0x6)
+{
+	LEA_STACK(CCFileClass*, pFile, STACK_OFFSET(0x1D4, -0x16C));
+
+	if (Spawner::GetConfig()->ReadMissionSection)
+	{
+		pFile->SetFileName("SPAWN.INI");
+		return 0x65F58F;
+	}
+
+	return 0;
 }
