@@ -30,23 +30,24 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		return;
 
 	{ // Game Mode Options
-		MPModeIndex    = pINI->ReadInteger(pSettingsSection, "GameMode", MPModeIndex);
-		Bases          = pINI->ReadBool(pSettingsSection, "Bases", Bases);
-		Credits        = pINI->ReadInteger(pSettingsSection, "Credits", Credits);
-		BridgeDestroy  = pINI->ReadBool(pSettingsSection, "BridgeDestroy", BridgeDestroy);
-		Crates         = pINI->ReadBool(pSettingsSection, "Crates", Crates);
-		ShortGame      = pINI->ReadBool(pSettingsSection, "ShortGame", ShortGame);
-		SuperWeapons   = pINI->ReadBool(pSettingsSection, "Superweapons", SuperWeapons);
-		BuildOffAlly   = pINI->ReadBool(pSettingsSection, "BuildOffAlly", BuildOffAlly);
-		GameSpeed      = pINI->ReadInteger(pSettingsSection, "GameSpeed", GameSpeed);
-		MultiEngineer  = pINI->ReadBool(pSettingsSection, "MultiEngineer", MultiEngineer);
-		UnitCount      = pINI->ReadInteger(pSettingsSection, "UnitCount", UnitCount);
-		AIPlayers      = pINI->ReadInteger(pSettingsSection, "AIPlayers", AIPlayers);
-		AIDifficulty   = pINI->ReadInteger(pSettingsSection, "AIDifficulty", AIDifficulty);
-		AlliesAllowed  = pINI->ReadBool(pSettingsSection, "AlliesAllowed", AlliesAllowed);
-		HarvesterTruce = pINI->ReadBool(pSettingsSection, "HarvesterTruce", HarvesterTruce);
-		FogOfWar       = pINI->ReadBool(pSettingsSection, "FogOfWar", FogOfWar);
-		MCVRedeploy    = pINI->ReadBool(pSettingsSection, "MCVRedeploy", MCVRedeploy);
+		MPModeIndex        = pINI->ReadInteger(pSettingsSection, "GameMode", MPModeIndex);
+		Bases              = pINI->ReadBool(pSettingsSection, "Bases", Bases);
+		Credits            = pINI->ReadInteger(pSettingsSection, "Credits", Credits);
+		BridgeDestroy      = pINI->ReadBool(pSettingsSection, "BridgeDestroy", BridgeDestroy);
+		Crates             = pINI->ReadBool(pSettingsSection, "Crates", Crates);
+		ShortGame          = pINI->ReadBool(pSettingsSection, "ShortGame", ShortGame);
+		SuperWeapons       = pINI->ReadBool(pSettingsSection, "Superweapons", SuperWeapons);
+		BuildOffAlly       = pINI->ReadBool(pSettingsSection, "BuildOffAlly", BuildOffAlly);
+		GameSpeed          = pINI->ReadInteger(pSettingsSection, "GameSpeed", GameSpeed);
+		MultiEngineer      = pINI->ReadBool(pSettingsSection, "MultiEngineer", MultiEngineer);
+		UnitCount          = pINI->ReadInteger(pSettingsSection, "UnitCount", UnitCount);
+		AIPlayers          = pINI->ReadInteger(pSettingsSection, "AIPlayers", AIPlayers);
+		AIDifficulty       = pINI->ReadInteger(pSettingsSection, "AIDifficulty", AIDifficulty);
+		AlliesAllowed      = pINI->ReadBool(pSettingsSection, "AlliesAllowed", AlliesAllowed);
+		HarvesterTruce     = pINI->ReadBool(pSettingsSection, "HarvesterTruce", HarvesterTruce);
+		FogOfWar           = pINI->ReadBool(pSettingsSection, "FogOfWar", FogOfWar);
+		MCVRedeploy        = pINI->ReadBool(pSettingsSection, "MCVRedeploy", MCVRedeploy);
+		SpecialHouseIsAlly = pINI->ReadBool(pSettingsSection, "SpecialHouseIsAlly", SpecialHouseIsAlly);
 
 		if (INIClassExt::ReadString_WithoutAresHook(pINI, pSettingsSection, "UIGameMode", "", Main::readBuffer, sizeof(Main::readBuffer)) > 0)
 			MultiByteToWideChar(CP_UTF8, 0, Main::readBuffer, strlen(Main::readBuffer), UIGameMode, std::size(UIGameMode));
@@ -106,14 +107,16 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	}
 
 	// Extended Options
-	Ra2Mode                  = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode);
-	QuickMatch               = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
-	SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
-	WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
-	AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
-	ContinueWithoutHumans    = pINI->ReadBool(pSettingsSection, "ContinueWithoutHumans", ContinueWithoutHumans);
-	DefeatedBecomesObserver  = pINI->ReadBool(pSettingsSection, "DefeatedBecomesObserver", DefeatedBecomesObserver);
-	Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
+	{
+		Ra2Mode                  = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode);
+		QuickMatch               = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
+		SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
+		WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
+		AINamesByDifficulty      = pINI->ReadBool(pSettingsSection, "AINamesByDifficulty", AINamesByDifficulty);
+		ContinueWithoutHumans    = pINI->ReadBool(pSettingsSection, "ContinueWithoutHumans", ContinueWithoutHumans);
+		DefeatedBecomesObserver  = pINI->ReadBool(pSettingsSection, "DefeatedBecomesObserver", DefeatedBecomesObserver);
+		Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
+	}
 }
 
 const char* PlayerSectionArray[8] = {

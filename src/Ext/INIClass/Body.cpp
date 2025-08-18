@@ -1,6 +1,7 @@
 #include "Body.h"
+#include <Utilities/Macro.h>
 
-int __fastcall ReadString_WithoutAresHook_Impl(INIClass* pThis, size_t, const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
+int __fastcall ReadString_WithoutAresHook_Impl(INIClass* pThis, discard_t, const char* pSection, const char* pKey, const char* pDefault, char* pBuffer, size_t szBufferSize)
 {
 	EPILOG_THISCALL;
 

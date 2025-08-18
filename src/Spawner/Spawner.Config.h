@@ -93,6 +93,7 @@ public:
 	bool FogOfWar;
 	bool MCVRedeploy;
 	wchar_t UIGameMode[60];
+	bool SpecialHouseIsAlly;
 
 	// SaveGame Options
 	bool LoadSaveGame;
@@ -165,6 +166,7 @@ public:
 		, FogOfWar { false }
 		, MCVRedeploy { true }
 		, UIGameMode { L"" }
+		, SpecialHouseIsAlly { true }
 
 		// SaveGame
 		, LoadSaveGame { false }

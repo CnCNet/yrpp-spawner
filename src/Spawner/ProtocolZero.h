@@ -25,11 +25,13 @@ class ProtocolZero
 {
 private:
 	static constexpr int SendResponseTimeInterval = 30;
+	static constexpr int SendResponseTimeFrame = 8 * SendResponseTimeInterval;
 
 public:
 	static bool Enable;
 	static unsigned char MaxLatencyLevel;
 	static int WorstMaxAhead;
+	static int NextSendFrame;
 
 	static void SendResponseTime2();
 	static void HandleResponseTime2(EventExt* event);

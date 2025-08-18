@@ -32,8 +32,8 @@ DEFINE_HOOK(0x77786B, MainWindowProc_HandleRageQuit, 0x5)
 		{
 			RageQuit = true;
 
-			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::Destruct));
-			EventClass::AddEvent(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::Exit));
+			EventClass::OutList.Add(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::Destruct));
+			EventClass::OutList.Add(EventClass(HouseClass::CurrentPlayer->ArrayIndex, EventType::Exit));
 		}
 		else
 		{

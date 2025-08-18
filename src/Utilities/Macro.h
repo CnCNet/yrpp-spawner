@@ -34,6 +34,15 @@ __forceinline T* Make_Pointer(const uintptr_t address)
 	return reinterpret_cast<T*>(address);
 }
 
+/**
+* Use when some function argument is unneeded.
+* Currently that happens when faking __thiscall functions
+* via __fastcall ones (fastcall function accepts args via
+* ECX, EDX, then stack, thiscall via ECX for this and stack
+* for rest, so second arg in fastcall-faked function would need to be discarded).
+*/
+typedef size_t discard_t;
+
 #define NAKED __declspec(naked)
 
 #pragma region Patch Macros
@@ -168,6 +177,24 @@ typedef _VTABLE _OFFSET;
 	}                                                             \
 	_ALLOCATE_DYNAMIC_PATCH(name, offset, sizeof(data), &data);
 #pragma endregion Dynamic Patch
+
+#pragma region Thiscall Patch
+#define _GET_FUNCTION_ADDRESS(function, getterName)               \
+	static constexpr __forceinline uintptr_t getterName()         \
+	{                                                             \
+		uintptr_t addr;                                           \
+		{ _asm mov eax, function }                                \
+		{ _asm mov addr, eax }                                    \
+		return addr;                                              \
+	}
+
+#define DEFINE_FUNCTION_JUMP(jumpType, offset, function)          \
+	namespace NAMESPACE_THISCALL_JUMP##offset                     \
+	{                                                             \
+		_GET_FUNCTION_ADDRESS(function, GetAddr)                  \
+		DEFINE_JUMP(jumpType, offset, GetAddr())                  \
+	}
+#pragma endregion
 
 #pragma endregion Macros
 #pragma endregion Patch Macros

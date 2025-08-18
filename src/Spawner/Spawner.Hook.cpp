@@ -42,9 +42,9 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 			Patch::Apply_CALL(0x68745E, Spawner::AssignHouses); // Read_Scenario_INI
 			Patch::Apply_CALL(0x68ACFF, Spawner::AssignHouses); // ScenarioClass::Read_INI
 
-			Patch::Apply_LJMP(0x5D74A0, 0x5D7570); // MPGameModeClass_AllyTeams
-			Patch::Apply_LJMP(0x501721, 0x501736); // HouseClass_ComputerParanoid
-			Patch::Apply_LJMP(0x686A9E, 0x686AC6); // RemoveAIPlayers
+			Patch::Apply_LJMP(0x5D74A0, 0x5D7570);   // MPGameModeClass_AllyTeams
+			Patch::Apply_LJMP(0x501721, 0x501736);   // HouseClass_ComputerParanoid
+			//Patch::Apply_LJMP(0x686A9E, 0x686AC6); // ReadScenario_InitSomeThings - Moved to a hook to allow conditional toggling of Special house's alliances.
 		}
 
 		{ // NetHack
@@ -63,13 +63,16 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 		}
 
 		// Set ConnTimeout
-		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); //  Scenario_Load_Wait
+		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); // Scenario_Load_Wait
 
 		// Show GameMode in DiplomacyDialog in Skirmish
 		Patch::Apply_LJMP(0x658117, 0x658126); // RadarClass_DiplomacyDialog
 
 		// Leaves bottom bar closed for losing players during last game frames
 		Patch::Apply_LJMP(0x6D1639, 0x6D1640); // TabClass_6D1610
+
+		// Skip load *.PKT, *.YRO and *.YRM map files
+		Patch::Apply_LJMP(0x699AD9, 0x69A1B2); // SessionClass::Read_Scenario_Descriptions
 	}
 
 	return 0;
@@ -127,7 +130,7 @@ DEFINE_HOOK(0x4FC262, HouseClass__MPlayerDefeated_SkipObserver, 0x6)
 	if (!MPlayerDefeated::pThis)
 		return 0;
 
-	return MPlayerDefeated::pThis->IsObserver()
+	return MPlayerDefeated::pThis->IsInitiallyObserver()
 		? ProcEpilogue
 		: 0;
 }
@@ -167,8 +170,24 @@ DEFINE_HOOK(0x4FC57C, HouseClass__MPlayerDefeated_CheckAliveAndHumans, 0x7)
 	GET_STACK(int, numHumans, STACK_OFFSET(0xC0, -0xA8));
 	GET_STACK(int, numAlive, STACK_OFFSET(0xC0, -0xAC));
 
-	bool continueWithoutHumans = Spawner::GetConfig()->ContinueWithoutHumans ||
-		(SessionClass::IsSkirmish() && HouseClass::CurrentPlayer->IsInitiallyObserver());
+	bool continueWithoutHumans = Spawner::GetConfig()->ContinueWithoutHumans
+		|| MPlayerDefeated::pThis->IsInitiallyObserver();
+
+	if (!continueWithoutHumans && !MPlayerDefeated::pThis->IsHumanPlayer)
+	{
+		bool isHasAliveHumanPlayers = false;
+		for (const auto pHouse : HouseClass::Array)
+		{
+			if (pHouse->IsHumanPlayer && !pHouse->Defeated)
+			{
+				isHasAliveHumanPlayers = true;
+				break;
+			}
+		}
+
+		if (!isHasAliveHumanPlayers)
+			continueWithoutHumans = true;
+	}
 
 	if (numAlive > 1 && (numHumans != 0 || continueWithoutHumans))
 	{
@@ -222,6 +241,8 @@ DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 	return 0;
 }
 
+// Do not change the address without adjusting Phobos handling
+// and reading the comments in Spawner::After_Main_Loop
 DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 {
 	Spawner::RespondToSaveGame();
@@ -236,6 +257,14 @@ DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit, 0x6)
 }
 
 #pragma endregion
+
+DEFINE_HOOK(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
+{
+	if (Spawner::GetConfig()->SpecialHouseIsAlly)
+		return 0;
+
+	return 0x686AC6;
+}
 
 DEFINE_HOOK(0x686D46, ReadScenarioINI_MissionININame, 0x5)
 {
