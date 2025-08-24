@@ -121,6 +121,7 @@ public:
 	int MaxAhead;
 	int PreCalcMaxAhead;
 	byte MaxLatencyLevel;
+	bool ForceMultiplayer;
 
 	// Tunnel Options
 	int  TunnelId;
@@ -192,6 +193,7 @@ public:
 		, MaxAhead { -1 }
 		, PreCalcMaxAhead { 0 }
 		, MaxLatencyLevel { 0xFF }
+		, ForceMultiplayer { false }
 
 		// Tunnel Options
 		, TunnelId { 0 }

@@ -291,7 +291,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 	{ // Set SessionType
 		if (Spawner::Config->IsCampaign)
 			pSession->GameMode = GameMode::Campaign;
-		else if (Game::PlayerCount > 1)
+		else if (Game::PlayerCount > 1 || Spawner::Config->ForceMultiplayer)
 			pSession->GameMode = GameMode::Internet; // HACK: will be set to LAN later
 		else
 			pSession->GameMode = GameMode::Skirmish;
