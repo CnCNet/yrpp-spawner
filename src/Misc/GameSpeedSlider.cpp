@@ -26,7 +26,7 @@
 bool GameSpeedSlider::IsEnabled()
 {
 	auto cfg = Spawner::GetConfig();
-	return Spawner::Enabled && cfg && cfg->GameSpeedSlider;
+	return Spawner::Enabled && cfg && !cfg->DisableGameSpeed;
 }
 
 bool GameSpeedSlider::IsDisabled()

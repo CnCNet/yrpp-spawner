@@ -136,7 +136,7 @@ public:
 
 	// Extended Options
 	bool Ra2Mode;
-	bool GameSpeedSlider;
+	bool DisableGameSpeed;
 	bool QuickMatch;
 	bool SkipScoreScreen;
 	bool WriteStatistics;
@@ -228,7 +228,7 @@ public:
 
 		// Extended Options
 		, Ra2Mode { false }
-		, GameSpeedSlider { false }
+		, DisableGameSpeed { false }
 		, QuickMatch { false }
 		, SkipScoreScreen { Main::GetConfig()->SkipScoreScreen }
 		, WriteStatistics { false }
