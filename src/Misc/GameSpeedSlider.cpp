@@ -35,7 +35,7 @@ bool GameSpeedSlider::IsNeedToApply()
 }
 
 // Apply at startup using the WinMain hook point.
-DEFINE_HOOK_AGAIN(0x6BD7CB, WinMain_GameSpeedSliderPatches, 0x5)
+DEFINE_HOOK(0x6BD7CB, WinMain_GameSpeedSliderPatches, 0x5)
 {
     if (GameSpeedSlider::IsNeedToApply())
         GameSpeedSlider::Apply();
@@ -44,7 +44,7 @@ DEFINE_HOOK_AGAIN(0x6BD7CB, WinMain_GameSpeedSliderPatches, 0x5)
 }
 
 // Hide the GameSpeed (FPS) slider group when the feature is disabled (default).
-DEFINE_HOOK_AGAIN(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
+DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 {
     if (Spawner::Enabled && !GameSpeedSlider::IsEnabled())
     {
