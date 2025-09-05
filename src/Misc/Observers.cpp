@@ -75,14 +75,14 @@ DEFINE_HOOK(0x658473, RadarClass__658330_SetObserverFlag, 0x5)
 
 // Allow skirmish observer to control gamespeed
 // TODO: Allow control speed in skirmish if all human players is Observer
-// DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog, 0x5)
-// {
-// 	enum { AllowControlSpeed = 0x4E211A, ForbidControlSpeed = 0x4E20C3 };
-//
-// 	return (SessionClass::IsSkirmish() && Game::ObserverMode)
-// 		? AllowControlSpeed
-// 		: 0;
-// }
+DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog, 0x5)
+{
+	enum { AllowControlSpeed = 0x4E211A, ForbidControlSpeed = 0x4E20C3 };
+
+	return (SessionClass::IsSkirmish() && Game::ObserverMode)
+		? AllowControlSpeed
+		: 0;
+}
 
 #pragma region Curent player is Observer
 
