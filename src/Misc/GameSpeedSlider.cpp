@@ -65,15 +65,3 @@ DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 	return 0;
 }
 
-// Drop incoming GAMESPEED network events only when disabled (except skirmish observers).
-DEFINE_HOOK(0x4C794B, Networking_HandleEvent_GAMESPEED_Block_Disabled, 0x6)
-{
-	if (GameSpeedSlider::IsDisabled())
-	{
-		bool const allowSkirmishObserver = (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver());
-		if (!allowSkirmishObserver)
-			return 0x4C79F4; // Discard event
-	}
-
-	return 0; // Normal flow
-}
