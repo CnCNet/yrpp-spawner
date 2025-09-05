@@ -49,6 +49,7 @@
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\GameSpeedSlider.cpp" />
     <!-- Spawner -->
     <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
@@ -86,6 +87,8 @@
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
+    <!-- Misc headers -->
+    <ClInclude Include="$(ThisDir)\src\Misc\GameSpeedSlider.h" />
     <!-- Utilities -->
     <ClInclude Include="$(ThisDir)\src\Utilities\Debug.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />
