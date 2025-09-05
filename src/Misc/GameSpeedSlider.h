@@ -21,14 +21,14 @@
 
 class GameSpeedSlider
 {
-    static bool Enabled;
+	static bool Enabled;
 
 public:
-    static void Apply();
-    static bool IsNeedToApply();
+	static void Apply();
+	static bool IsNeedToApply();
 
-    static bool IsEnabled()
-    {
-        return GameSpeedSlider::Enabled;
-    }
+	static bool IsEnabled()
+	{
+		return GameSpeedSlider::Enabled;
+	}
 };
