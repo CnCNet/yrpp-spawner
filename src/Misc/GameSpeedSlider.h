@@ -21,14 +21,8 @@
 
 class GameSpeedSlider
 {
-	static bool Enabled;
-
 public:
-	static void Apply();
-	static bool IsNeedToApply();
-
-	static bool IsEnabled()
-	{
-		return GameSpeedSlider::Enabled;
-	}
+	// Enabled only when spawner active and config flag set.
+	static bool IsEnabled();
+	static bool IsDisabled();
 };

@@ -20,33 +20,27 @@
 #include "GameSpeedSlider.h"
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
+#include <SessionClass.h>
+#include <HouseClass.h>
 
-bool GameSpeedSlider::Enabled = false;
-
-void GameSpeedSlider::Apply()
+bool GameSpeedSlider::IsEnabled()
 {
-	GameSpeedSlider::Enabled = true;
+	auto cfg = Spawner::GetConfig();
+	return Spawner::Enabled && cfg && cfg->GameSpeedSlider;
 }
 
-bool GameSpeedSlider::IsNeedToApply()
+bool GameSpeedSlider::IsDisabled()
 {
-	auto const pConfig = Spawner::GetConfig();
-	return Spawner::Enabled && pConfig->GameSpeedSlider;
+	return !IsEnabled();
 }
 
-// Apply at startup using the WinMain hook point.
-DEFINE_HOOK(0x6BD7CB, WinMain_GameSpeedSliderPatches, 0x5)
-{
-	if (GameSpeedSlider::IsNeedToApply())
-		GameSpeedSlider::Apply();
-
-    return 0;
-}
-
-// Hide the GameSpeed (FPS) slider group when the feature is disabled (default).
+// Hide the GameSpeed (FPS) slider group only when feature disabled.
+// Skirmish observers must always retain the slider regardless of config.
 DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 {
-	if (Spawner::Enabled && !GameSpeedSlider::IsEnabled())
+	bool const isSkirmishObserver = (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver());
+
+	if (GameSpeedSlider::IsDisabled() && !isSkirmishObserver)
 	{
 		GET(void*, fnGetCtrlById, EDI);
 		GET(void*, fnShowWindow, EBP);
@@ -71,11 +65,15 @@ DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 	return 0;
 }
 
-// Drop incoming GAMESPEED network events when feature is disabled.
+// Drop incoming GAMESPEED network events only when disabled (except skirmish observers).
 DEFINE_HOOK(0x4C794B, Networking_HandleEvent_GAMESPEED_Block_Disabled, 0x6)
 {
-	if (Spawner::Enabled && !GameSpeedSlider::IsEnabled())
-		return 0x4C79F4; // Discard event
+	if (GameSpeedSlider::IsDisabled())
+	{
+		bool const allowSkirmishObserver = (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver());
+		if (!allowSkirmishObserver)
+			return 0x4C79F4; // Discard event
+	}
 
 	return 0; // Normal flow
 }
