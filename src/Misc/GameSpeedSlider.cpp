@@ -29,18 +29,13 @@ bool GameSpeedSlider::IsEnabled()
 	return Spawner::Enabled && cfg && !cfg->DisableGameSpeed;
 }
 
-bool GameSpeedSlider::IsDisabled()
-{
-	return !IsEnabled();
-}
-
 // Hide the GameSpeed (FPS) slider group only when feature disabled.
 // Skirmish observers must always retain the slider regardless of config.
 DEFINE_HOOK(0x4E20BA, GameControlsClass__SomeDialog_GameSpeedSlider, 0x5)
 {
 	bool const isSkirmishObserver = (SessionClass::IsSkirmish() && HouseClass::CurrentPlayer && HouseClass::CurrentPlayer->IsObserver());
 
-	if (GameSpeedSlider::IsDisabled() && !isSkirmishObserver)
+	if (!GameSpeedSlider::IsEnabled() && !isSkirmishObserver)
 	{
 		GET(void*, fnGetCtrlById, EDI);
 		GET(void*, fnShowWindow, EBP);
