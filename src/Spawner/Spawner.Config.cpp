@@ -108,6 +108,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 	// Extended Options
 	{
 		Ra2Mode                  = pINI->ReadBool(pSettingsSection, "Ra2Mode", Ra2Mode);
+		DisableGameSpeed         = pINI->ReadBool(pSettingsSection, "DisableGameSpeed", DisableGameSpeed);
 		QuickMatch               = pINI->ReadBool(pSettingsSection, "QuickMatch", QuickMatch);
 		SkipScoreScreen          = pINI->ReadBool(pSettingsSection, "SkipScoreScreen", SkipScoreScreen);
 		WriteStatistics          = pINI->ReadBool(pSettingsSection, "WriteStatistics", WriteStatistics);
