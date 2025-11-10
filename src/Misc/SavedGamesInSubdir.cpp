@@ -316,3 +316,30 @@ DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 
 	return 0;
 }
+
+// Custom missions especially can contain paths in scenario filenames which cause
+// the initial save game to fail, remove the paths before filename and make the
+// filename uppercase to match with usual savegame names.
+DEFINE_HOOK(0x55DC85, MainLoop_SaveGame_SanitizeFilename, 0x7)
+{
+	LEA_STACK(char*, pFilename, STACK_OFFSET(0x1C4, -0x178));
+	LEA_STACK(const wchar_t*, pDescription, STACK_OFFSET(0x1C4, -0x70));
+
+	char* slash1 = strrchr(pFilename, '/');
+	char* slash2 = strrchr(pFilename, '\\');
+	char* lastSlash = (slash1 > slash2) ? slash1 : slash2;
+
+	if (lastSlash != NULL)
+	{
+		pFilename = lastSlash + 1;
+		*lastSlash = '\0';
+	}
+
+	for (char* p = pFilename; *p; ++p)
+		*p = (char)toupper((unsigned char)*p);
+
+	R->ECX(pFilename);
+	R->EDX(pDescription);
+
+	return 0x55DC90;
+}
