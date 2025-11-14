@@ -331,6 +331,18 @@ bool Spawner::StartScenario(const char* pScenarioName)
 		if (!pSession->CreateConnections())
 			return false;
 
+		/**
+		* Ares does not support MultiEngineer switching in multiplayer, however
+		* we can disable it simply by set EngineerCaptureLevel to 1
+		*
+		* https://ares-developers.github.io/Ares-docs/restored/multiengineer.html
+		* https://github.com/Phobos-developers/Antares/blob/7241a5ff20f4dbf7153cc77e16edca5c9db473d4/src/Ext/Infantry/Body.cpp#L44-L46
+		*
+		* author: Belonit
+		*/
+		if (!pGameModeOptions->MultiEngineer)
+			RulesClass::Instance->EngineerCaptureLevel = 1.0;
+
 		if (Main::GetConfig()->AllowChat == false)
 		{
 			Game::ChatMask[0] = false;
