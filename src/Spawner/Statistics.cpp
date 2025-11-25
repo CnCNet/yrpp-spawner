@@ -205,8 +205,8 @@ DEFINE_HOOK(0x64C81E, ExecuteDoList_SendStatistics_2, 0x6)
 // add a call to RegisterGameEndTime here to set the correct GameEndTime
 DEFINE_HOOK(0x64C84B, ExecuteDoList_SendStatistics_3, 0x5)
 {
-	CALL(0x6C8820); // RegisterGameEndTime
-	CALL(0x6C6F50); // SendStatisticsPacket
+	Game::RegisterGameEndTime();
+	Game::SendStatisticsPacket();
 
 	return 0x64C84B + 0x5;
 }
