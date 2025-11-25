@@ -202,7 +202,6 @@ DEFINE_HOOK(0x64C81E, ExecuteDoList_SendStatistics_2, 0x6)
 		: DontSend;
 }
 
-// add a call to RegisterGameEndTime here to set the correct GameEndTime
 DEFINE_HOOK(0x64C84B, ExecuteDoList_SendStatistics_3, 0x5)
 {
 	Game::RegisterGameEndTime();
