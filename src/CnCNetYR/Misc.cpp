@@ -32,7 +32,7 @@ DEFINE_JUMP(LJMP, 0x69A797, 0x69A937);
 void __fastcall IDTooLong(char* id)
 {
 	if (strlen(id) > 24)
-		Debug::Log("[Developer error] Tried to create a type with ID '%s' which is longer than the maximum length of 24.\n", id);
+		Debug::LogGame("[Developer error] Tried to create a type with ID '%s' which is longer than the maximum length of 24.\n", id);
 }
 
 DEFINE_NAKED_HOOK(0x41088D, AbstractTypeClass_CTOR_IDTooLong)

@@ -176,7 +176,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 {
 	if (pScenarioName[0] == 0 && !Config->LoadSaveGame)
 	{
-		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
+		Debug::Log("Failed Read Scenario [%s]\n", pScenarioName);
 
 		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
@@ -360,7 +360,7 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 {
 	if (!saveGameName[0] || !LoadOptionsClass::LoadMission(saveGameName))
 	{
-		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
+		Debug::Log("Failed Load Game [%s]\n", saveGameName);
 
 		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_ERROR_LOADING_GAME),

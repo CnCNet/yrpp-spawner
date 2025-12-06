@@ -25,10 +25,17 @@
 #include <MessageListClass.h>
 #include <Utilities/Macro.h>
 
-
 char Debug::StringBuffer[0x1000];
 
 void Debug::Log(const char* pFormat, ...)
+{
+	va_list args;
+	Debug::LogGame("[Spawner] ");
+	Debug::LogGame(pFormat, args);
+	va_end(args);
+}
+
+void Debug::LogGame(const char* pFormat, ...)
 {
 	JMP_STD(0x4068E0);
 }
@@ -38,7 +45,7 @@ void Debug::LogAndMessage(const char* pFormat, ...)
 	va_list args;
 	va_start(args, pFormat);
 	vsprintf_s(StringBuffer, pFormat, args);
-	Log("%s", StringBuffer);
+	Debug::Log("%s", StringBuffer);
 	va_end(args);
 	wchar_t buffer[0x1000];
 	CRT::mbstowcs(buffer, StringBuffer, 0x1000);
@@ -48,7 +55,7 @@ void Debug::LogAndMessage(const char* pFormat, ...)
 void Debug::LogWithVArgs(const char* pFormat, va_list args)
 {
 	vsprintf_s(StringBuffer, pFormat, args);
-	Log("%s", StringBuffer);
+	Debug::Log("%s", StringBuffer);
 }
 
 void Debug::INIParseFailed(const char* section, const char* flag, const char* value, const char* Message)
@@ -65,7 +72,7 @@ void Debug::FatalErrorAndExit(const char* pFormat, ...)
 {
 	va_list args;
 	va_start(args, pFormat);
-	LogWithVArgs(pFormat, args);
+	Debug::LogWithVArgs(pFormat, args);
 	va_end(args);
 	FatalExit(static_cast<int>(ExitCode::Undefined));
 }
@@ -74,7 +81,7 @@ void Debug::FatalErrorAndExit(ExitCode nExitCode, const char* pFormat, ...)
 {
 	va_list args;
 	va_start(args, pFormat);
-	LogWithVArgs(pFormat, args);
+	Debug::LogWithVArgs(pFormat, args);
 	va_end(args);
 	FatalExit(static_cast<int>(nExitCode));
 }

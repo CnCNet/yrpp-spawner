@@ -148,7 +148,7 @@ DEFINE_HOOK(0x4FC551, HouseClass__MPlayerDefeated_NoEnemies, 0x5)
 
 		if ((pHouse->IsHumanPlayer || Spawner::GetConfig()->ContinueWithoutHumans) && pHouse->IsMutualAlly(MPlayerDefeated::pThis))
 		{
-			Debug::Log("[Spawner] MPlayer_Defeated() - Defeated player has a living ally");
+			Debug::Log("MPlayer_Defeated() - Defeated player has a living ally");
 			if (Spawner::GetConfig()->DefeatedBecomesObserver)
 				MPlayerDefeated::pThis->MakeObserver();
 

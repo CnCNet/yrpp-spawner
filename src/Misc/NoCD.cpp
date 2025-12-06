@@ -90,7 +90,7 @@ DEFINE_HOOK(0x6BD7CB, WinMain_NoCDPatches, 0x5)
 	}
 	else if (!GetCDClass::Instance.Count)
 	{
-		Debug::Log("[Spawner] No CD drives detected. Switching to NoCD mode.\n");
+		Debug::Log("No CD drives detected. Switching to NoCD mode.\n");
 		ApplyNoCDPatches();
 	}
 

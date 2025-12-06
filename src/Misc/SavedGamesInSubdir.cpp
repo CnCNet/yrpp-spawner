@@ -30,13 +30,14 @@ namespace SavedGames
 	{
 		if (!std::filesystem::exists(Spawner::GetConfig()->SavedGameDir))
 		{
-			Debug::Log("\n[Spawner] Folder Saved Games does not exist, creating...\n");
+			Debug::LogGame("\n");
+			Debug::Log("Folder Saved Games does not exist, creating...\n");
 			if (!std::filesystem::create_directories(Spawner::GetConfig()->SavedGameDir))
 			{
-				Debug::Log("\tCannot create folder Saved Games!\n");
+				Debug::LogGame("\tCannot create folder Saved Games!\n");
 				return false;
 			}
-			Debug::Log("\tDone.\n");
+			Debug::LogGame("\tDone.\n");
 		}
 		return true;
 	}

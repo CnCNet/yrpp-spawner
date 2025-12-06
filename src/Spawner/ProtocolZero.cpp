@@ -62,7 +62,7 @@ void ProtocolZero::SendResponseTime2()
 	if (event.AddEvent())
 	{
 		ProtocolZero::NextSendFrame = currentFrame + ProtocolZero::SendResponseTimeInterval;
-		Debug::Log("[Spawner] Player %d sending response time of %d, LatencyMode = %d, Frame = %d\n"
+		Debug::Log("Player %d sending response time of %d, LatencyMode = %d, Frame = %d\n"
 			, event.HouseIndex
 			, event.ResponseTime2.MaxAhead
 			, event.ResponseTime2.LatencyLevel
@@ -82,7 +82,7 @@ void ProtocolZero::HandleResponseTime2(EventExt* event)
 
 	if (event->ResponseTime2.MaxAhead == 0)
 	{
-		Debug::Log("[Spawner] Returning because event->MaxAhead == 0\n");
+		Debug::Log("Returning because event->MaxAhead == 0\n");
 		return;
 	}
 

@@ -40,7 +40,7 @@ void LatencyLevel::Apply(LatencyLevelEnum newLatencyLevel)
 	if (newLatencyLevel <= CurentLatencyLevel)
 		return;
 
-	Debug::Log("[Spawner] Player %ls, Loss mode (%d, %d) Frame = %d\n"
+	Debug::Log("Player %ls, Loss mode (%d, %d) Frame = %d\n"
 		, HouseClass::CurrentPlayer->UIName
 		, newLatencyLevel
 		, CurentLatencyLevel
