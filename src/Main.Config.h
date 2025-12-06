@@ -21,46 +21,50 @@
 class MainConfig
 {
 public:
+	// Options
+	bool AllowChat;
+	bool AllowTaunts;
+	bool DDrawHandlesClose;
+	bool DisableEdgeScrolling;
 	bool MPDebug;
+	bool QuickExit;
+	bool SingleProcAffinity;
+	bool SkipScoreScreen;
+	bool SpeedControl;
+
+	// Video
+	bool NoWindowFrame;
+	bool WindowedMode;
+	int DDrawTargetFPS;
+
+	// Other
 	bool DumpTypes;
 	bool NoCD;
 	int RA2ModeSaveID;
 
-	bool SingleProcAffinity;
-	bool DisableEdgeScrolling;
-	bool QuickExit;
-	bool SkipScoreScreen;
-	bool DDrawHandlesClose;
-	bool SpeedControl;
-
-	bool WindowedMode;
-	bool NoWindowFrame;
-	int  DDrawTargetFPS;
-
-	bool AllowTaunts;
-	bool AllowChat;
-
-	void LoadFromINIFile();
-	void ApplyStaticOptions();
-
 	MainConfig()
-		: MPDebug { false }
+		// Options
+		: AllowChat { true }
+		, AllowTaunts { true }
+		, DDrawHandlesClose { false }
+		, DisableEdgeScrolling { false }
+		, MPDebug { false }
+		, QuickExit { false }
+		, SingleProcAffinity { true }
+		, SkipScoreScreen { false }
+		, SpeedControl { false }
+
+		// Video
+		, DDrawTargetFPS { -1 }
+		, NoWindowFrame { false }
+		, WindowedMode { false }
+
+		// Other
 		, DumpTypes { false }
 		, NoCD { false }
 		, RA2ModeSaveID { 0 }
-
-		, SingleProcAffinity { true }
-		, DisableEdgeScrolling { false }
-		, QuickExit { false }
-		, SkipScoreScreen { false }
-		, DDrawHandlesClose { false }
-		, SpeedControl { false }
-
-		, WindowedMode { false }
-		, NoWindowFrame { false }
-		, DDrawTargetFPS { -1 }
-
-		, AllowTaunts { true }
-		, AllowChat { true }
 	{ }
+
+	void LoadFromINIFile();
+	void ApplyStaticOptions();
 };
