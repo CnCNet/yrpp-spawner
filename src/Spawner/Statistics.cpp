@@ -202,6 +202,14 @@ DEFINE_HOOK(0x64C81E, ExecuteDoList_SendStatistics_2, 0x6)
 		: DontSend;
 }
 
+DEFINE_HOOK(0x64C84B, ExecuteDoList_SendStatistics_3, 0x5)
+{
+	Game::RegisterGameEndTime();
+	Game::SendStatisticsPacket();
+
+	return 0x64C84B + 0x5;
+}
+
 DEFINE_HOOK(0x647AE8, QueueAIMultiplayer_SendStatistics_1, 0x7)
 {
 	enum { Send = 0x647AF5, DontSend = 0x6482A6 };
@@ -213,7 +221,7 @@ DEFINE_HOOK(0x647AE8, QueueAIMultiplayer_SendStatistics_1, 0x7)
 
 DEFINE_HOOK(0x64823C, QueueAIMultiplayer_SendStatistics_2, 0x5)
 {
-	Debug::Log(reinterpret_cast<char*>(0x8373BC) /* "Failure executing DoList\n" */);
+	Debug::LogGame(reinterpret_cast<char*>(0x8373BC) /* "Failure executing DoList\n" */);
 
 	enum { Send = 0x648257, DontSend = 0x64825C };
 

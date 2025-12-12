@@ -40,7 +40,7 @@ void LatencyLevel::Apply(LatencyLevelEnum newLatencyLevel)
 	if (newLatencyLevel <= CurentLatencyLevel)
 		return;
 
-	Debug::Log("[Spawner] Player %ls, Loss mode (%d, %d) Frame = %d\n"
+	Debug::Log("Player %ls, Loss mode (%d, %d) Frame = %d\n"
 		, HouseClass::CurrentPlayer->UIName
 		, newLatencyLevel
 		, CurentLatencyLevel
@@ -57,7 +57,7 @@ void LatencyLevel::Apply(LatencyLevelEnum newLatencyLevel)
 
 int LatencyLevel::GetMaxAhead(LatencyLevelEnum latencyLevel)
 {
-	const int maxAhead[] =
+	static const int maxAhead[] =
 	{
 		/* 0 */ 1
 
@@ -77,7 +77,7 @@ int LatencyLevel::GetMaxAhead(LatencyLevelEnum latencyLevel)
 
 const wchar_t* LatencyLevel::GetLatencyMessage(LatencyLevelEnum latencyLevel)
 {
-	const wchar_t* message[] =
+	static const wchar_t* message[] =
 	{
 		/* 0 */ L"CnCNet: Latency mode set to: 0 - Initial" // Players should never see this, if it doesn't then it's a bug
 

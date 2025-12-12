@@ -177,7 +177,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 {
 	if (pScenarioName[0] == 0 && !Config->LoadSaveGame)
 	{
-		Debug::Log("[Spawner] Failed Read Scenario [%s]\n", pScenarioName);
+		Debug::Log("Failed Read Scenario [%s]\n", pScenarioName);
 
 		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_UNABLE_READ_SCENARIO),
@@ -345,6 +345,15 @@ bool Spawner::StartScenario(const char* pScenarioName)
 		if (!pSession->CreateConnections())
 			return false;
 
+		// Ares does not support MultiEngineer switching in multiplayer, however
+		// we can disable it simply by setting EngineerCaptureLevel to 1 - Belonit
+
+		// https://ares-developers.github.io/Ares-docs/restored/multiengineer.html
+		// https://github.com/Phobos-developers/Antares/blob/7241a5ff20f4dbf7153cc77e16edca5c9db473d4/src/Ext/Infantry/Body.cpp#L44-L46
+
+		if (!pGameModeOptions->MultiEngineer)
+			RulesClass::Instance->EngineerCaptureLevel = 1.0;
+
 		if (Main::GetConfig()->AllowChat == false)
 		{
 			Game::ChatMask[0] = false;
@@ -365,7 +374,7 @@ bool Spawner::LoadSavedGame(const char* saveGameName)
 {
 	if (!saveGameName[0] || !LoadOptionsClass::LoadMission(saveGameName))
 	{
-		Debug::Log("[Spawner] Failed Load Game [%s]\n", saveGameName);
+		Debug::Log("Failed Load Game [%s]\n", saveGameName);
 
 		WWMessageBox::Instance.Process(
 			StringTable::LoadString(GameStrings::TXT_ERROR_LOADING_GAME),

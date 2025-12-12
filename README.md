@@ -24,7 +24,7 @@ Credits
 -------
 
 - **[Belonit](https://github.com/Belonit)**
-  - Porting and adapting of the original spawner
+  - Porting and adapting of the [original spawner](https://github.com/CnCNet/yr-patches)
   - Further maintenance
   - Fix for drawing maps smaller than the screen
 - **[Kerbiter (Metadorius)](https://github.com/Metadorius)**

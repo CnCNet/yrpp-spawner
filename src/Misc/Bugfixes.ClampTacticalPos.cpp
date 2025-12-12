@@ -81,7 +81,7 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 
 	return isUpdated;
 }
-DEFINE_JUMP(LJMP, 0x6D8640, GET_OFFSET(Tactical_ClampTacticalPos))
+DEFINE_FUNCTION_JUMP(LJMP, 0x6D8640, Tactical_ClampTacticalPos)
 
 DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 {

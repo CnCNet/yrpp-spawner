@@ -105,7 +105,7 @@ DEFINE_HOOK(0x647E6B, QueueAIMultiplayer__ProtocolZero_SetTiming, 0x5)
 		GET(int, NewRetryDelta, EBP);
 		GET(int, NewRetryTimeout, EAX);
 
-		Debug::Log("[Spawner] NewRetryDelta = %d, NewRetryTimeout = %d, FrameSendRate = %d, CurentLatencyLevel = %d\n"
+		Debug::Log("NewRetryDelta = %d, NewRetryTimeout = %d, FrameSendRate = %d, CurentLatencyLevel = %d\n"
 			, NewRetryDelta
 			, NewRetryTimeout
 			, (int)Game::Network::FrameSendRate
