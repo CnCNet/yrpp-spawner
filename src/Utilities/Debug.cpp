@@ -26,12 +26,14 @@
 #include <Utilities/Macro.h>
 
 char Debug::StringBuffer[0x1000];
+char Debug::FinalStringBuffer[0x1000];
 
 void Debug::Log(const char* pFormat, ...)
 {
 	va_list args;
-	Debug::LogGame("[Spawner] ");
-	Debug::LogGame(pFormat, args);
+	va_start(args, pFormat);
+	vsprintf_s(FinalStringBuffer, pFormat, args);
+	LogGame("%s %s", "[Phobos]", FinalStringBuffer);
 	va_end(args);
 }
 

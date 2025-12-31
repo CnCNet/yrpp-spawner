@@ -30,6 +30,7 @@ public:
 	};
 
 	static char StringBuffer[0x1000];
+	static char FinalStringBuffer[0x1000];
 
 	static void Log(const char* pFormat, ...);
 	static void LogGame(const char* pFormat, ...);
