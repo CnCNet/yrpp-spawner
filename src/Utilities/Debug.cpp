@@ -33,7 +33,7 @@ void Debug::Log(const char* pFormat, ...)
 	va_list args;
 	va_start(args, pFormat);
 	vsprintf_s(FinalStringBuffer, pFormat, args);
-	LogGame("%s %s", "[Phobos]", FinalStringBuffer);
+	LogGame("%s %s", "[Spawner]", FinalStringBuffer);
 	va_end(args);
 }
 
