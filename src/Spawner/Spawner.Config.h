@@ -99,6 +99,7 @@ public:
 	bool LoadSaveGame;
 	char SavedGameDir[MAX_PATH]; // Nested paths are also supported, e.g. "Saved Games\\Yuri's Revenge"
 	char SaveGameName[60];
+	int CustomMissionID;
 	int AutoSaveCount;
 	int AutoSaveInterval;
 	int NextAutoSaveNumber;
@@ -172,6 +173,7 @@ public:
 		, LoadSaveGame { false }
 		, SavedGameDir { "Saved Games" }
 		, SaveGameName { "" }
+		, CustomMissionID { 0 }
 		, AutoSaveCount { 5 }
 		, AutoSaveInterval { 7200 }
 		, NextAutoSaveNumber { 0 }
