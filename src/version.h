@@ -7,7 +7,7 @@
 #define _STR_(x) #x
 
 // Build number. Incremented on each released build
-#define BUILD_NUMBER 13
+#define BUILD_NUMBER 14
 
 // Indicates project maturity and completeness
 #define VERSION_MAJOR 0
@@ -16,7 +16,7 @@
 // Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
 #define VERSION_REVISION 0
 // Indicates YRpp-Spawner-related bugfixes only
-#define VERSION_PATCH 13
+#define VERSION_PATCH 14
 
 #if defined(IS_CNCNET_YR_VER) && defined(IS_HARDENED_VER)
 	#define PRODUCT_TYPE "(CnCNet YR, hardened)"
