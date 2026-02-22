@@ -107,7 +107,7 @@ public:
 	// Scenario Options
 	int  Seed;
 	int  TechLevel;
-	bool IsCampaign;int CustomMissionID;
+	bool IsCampaign;
 	int  Tournament;
 	DWORD WOLGameID;
 	char ScenarioName[260];
