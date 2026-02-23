@@ -40,6 +40,45 @@ struct GlobalPacket_NetMessage
 };
 #pragma pack(pop)
 
+// Continuously enforce DisableChat by resetting ChatMask every frame,
+// preventing players from re-enabling chat via the alliances menu.
+DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender__DisableChat, 0x5)
+{
+	if (!Spawner::Enabled)
+		return 0;
+
+	if (Spawner::GetConfig()->DisableChat)
+	{
+		for (int i = 0; i < 8; i++)
+			Game::ChatMask[i] = false;
+	}
+
+	return 0;
+}
+
+// Don't send message to others when DisableChat is active.
+// Mirrors: hack 0x0055EF38, 0x0055EF3E in chat_disable.asm
+DEFINE_HOOK(0x55EF38, MessageSend_DisableChat, 0x6)
+{
+	if (Spawner::Enabled && Spawner::GetConfig()->DisableChat)
+		return 0x55F056; // skip the send
+
+	return 0; // execute original: cmp edi, ebx; mov [esp+0x14], ebx
+}
+
+// After receiving a message, don't play sound if AddMessage returned NULL
+// (i.e. the message was suppressed). Mirrors: hack 0x0048D97E in chat_disable.asm
+DEFINE_HOOK(0x48D97E, NetworkCallBack_NetMessage_Sound, 0x5)
+{
+	if (!Spawner::Enabled)
+		return 0;
+
+	if (!R->EAX<void*>())
+		return 0x48D99A; // skip sound
+
+	return 0; // execute original: mov eax, [0x8871E0]
+}
+
 DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 {
 	if (!Spawner::Enabled)
