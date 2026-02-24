@@ -20,6 +20,7 @@
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <HouseClass.h>
+#include <MessageListClass.h>
 #include <Unsorted.h>
 
 // This corrects the processing of Unicode player names
@@ -40,20 +41,15 @@ struct GlobalPacket_NetMessage
 };
 #pragma pack(pop)
 
-// Continuously enforce DisableChat by resetting ChatMask every frame,
-// preventing players from re-enabling chat via the alliances menu.
-DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender__DisableChat, 0x5)
+void __fastcall MainLoop_AfterRender_DisableChat(MessageListClass* pMessageList, DWORD)
 {
-	if (!Spawner::Enabled)
-		return 0;
+	pMessageList->Manage();
 
-	if (Spawner::GetConfig()->DisableChat)
-	{
-		for (int i = 0; i < 8; i++)
-			Game::ChatMask[i] = false;
-	}
+	if (!Spawner::Enabled || !Spawner::GetConfig()->DisableChat)
+		return;
 
-	return 0;
+	for (int i = 0; i < 8; ++i)
+		Game::ChatMask[i] = false;
 }
 
 // Don't send message to others when DisableChat is active.

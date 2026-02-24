@@ -27,6 +27,8 @@
 #include <Utilities/Macro.h>
 #include <Unsorted.h>
 
+void __fastcall MainLoop_AfterRender_DisableChat(class MessageListClass* pMessageList, DWORD);
+
 DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 {
 	if (Spawner::Enabled)
@@ -60,6 +62,9 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 			Patch::Apply_LJMP(0x553321, 0x5533C5); // LoadProgressMgr_Draw_CooperativeDescription
 			Patch::Apply_LJMP(0x55D0DF, 0x55D0E8); // AuxLoop_Cooperative_EndgameCrashFix
 		}
+
+		// Disable chat from alliances menu when DisableChat is enabled.
+		Patch::Apply_CALL(0x55DDA5, MainLoop_AfterRender_DisableChat); // MainLoop_AfterRender
 
 		// Set ConnTimeout
 		Patch::Apply_TYPED<int>(0x6843C7, { Spawner::GetConfig()->ConnTimeout }); // Scenario_Load_Wait
