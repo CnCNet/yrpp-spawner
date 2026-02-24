@@ -24,7 +24,6 @@
 #include "ProtocolZero.LatencyLevel.h"
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
-#include <Utilities/Patch.h>
 
 #include <GameOptionsClass.h>
 #include <GameStrings.h>

@@ -185,8 +185,8 @@ namespace SavedGames
 	};
 
 
-	template<typename T>
-	bool AppendToStorage(IStorage* pStorage)
+	template<typename T> requires std::is_trivially_copyable_v<T>
+	bool WriteToStorage(IStorage* pStorage)
 	{
 		IStreamPtr pStream = nullptr;
 		bool ret = false;
@@ -210,7 +210,7 @@ namespace SavedGames
 	}
 
 
-	template<typename T>
+	template<typename T> requires std::is_trivially_copyable_v<T>
 	std::optional<T> ReadFromStorage(IStorage* pStorage)
 	{
 		IStreamPtr pStream = nullptr;
@@ -223,7 +223,7 @@ namespace SavedGames
 			&pStream
 		);
 
-		T info;
+		T info {};
 
 		if (SUCCEEDED(hr) && pStream != nullptr)
 		{
@@ -280,10 +280,10 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 	GET_STACK(IStorage*, pStorage, STACK_OFFSET(0x4A0, -0x490));
 	using namespace SavedGames;
 
-	if (pStorage)
+	if (pStorage && SessionClass::IsCampaign())
 	{
-		if (SessionClass::IsCampaign() && Spawner::GetConfig()->CustomMissionID)
-			AppendToStorage<CustomMissionID>(pStorage);
+		if (Spawner::GetConfig()->CustomMissionID)
+			WriteToStorage<CustomMissionID>(pStorage);
 	}
 
 	return 0;
@@ -304,7 +304,7 @@ DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 		if (auto id = ReadFromStorage<CustomMissionID>(pStorage))
 		{
 			int num = id->Number;
-			Debug::Log("[Spawner] sav file CustomMissionID = %d\n", num);
+			Debug::Log("sav file CustomMissionID = %d\n", num);
 			Spawner::GetConfig()->CustomMissionID = num;
 			ScenarioClass::Instance->EndOfGame = true;
 		}
