@@ -56,8 +56,20 @@ void __fastcall MainLoop_AfterRender_DisableChat(MessageListClass* pMessageList,
 // Mirrors: hack 0x0055EF38, 0x0055EF3E in chat_disable.asm
 DEFINE_HOOK(0x55EF38, MessageSend_DisableChat, 0x6)
 {
+	static int LastDisableChatFeedbackFrame = -1000;
+
 	if (Spawner::Enabled && Spawner::GetConfig()->DisableChat)
+	{
+		const int currentFrame = Unsorted::CurrentFrame;
+
+		if (currentFrame - LastDisableChatFeedbackFrame >= 90)
+		{
+			MessageListClass::Instance.PrintMessage(L"Chat is disabled. Message not sent.");
+			LastDisableChatFeedbackFrame = currentFrame;
+		}
+
 		return 0x55F056; // skip the send
+	}
 
 	return 0; // execute original: cmp edi, ebx; mov [esp+0x14], ebx
 }
