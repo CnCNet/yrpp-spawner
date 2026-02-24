@@ -125,6 +125,20 @@ DEFINE_HOOK(0x4ABE3C, DisplayClass_MouseLeftRelease_Cloak, 0xA)
 	return Unselect;
 }
 
+DEFINE_HOOK(0x692686, DisplayClass_WhatAction_Cloak, 0x6)
+{
+	GET(TechnoClass*, pTechno, EDI);
+	enum { ProceedCloakCheck = 0x692690, ShouldNotCheck = 0x6926DB };
+
+	if (pTechno->IsOwnedByCurrentPlayer || HouseClass::IsCurrentPlayerObserver())
+		return ShouldNotCheck;
+
+	if (pTechno->Owner->IsMutualAlly(HouseClass::CurrentPlayer))
+		return ShouldNotCheck;
+
+	return ProceedCloakCheck;
+}
+
 // Show cloaked Technos on radar for observers and mutual allies
 DEFINE_HOOK(0x70D386, TechnoClass_Radar_Cloak, 0xA)
 {
