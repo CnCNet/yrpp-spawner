@@ -41,15 +41,9 @@ struct GlobalPacket_NetMessage
 };
 #pragma pack(pop)
 
-void __fastcall MainLoop_AfterRender_DisableChat(MessageListClass* pMessageList, DWORD)
+static bool inline IsDisableChatEnabled()
 {
-	pMessageList->Manage();
-
-	if (!Spawner::Enabled || !Spawner::GetConfig()->DisableChat)
-		return;
-
-	for (int i = 0; i < 8; ++i)
-		Game::ChatMask[i] = false;
+	return Spawner::Enabled && Spawner::GetConfig()->DisableChat;
 }
 
 // Don't send message to others when DisableChat is active.
@@ -58,7 +52,7 @@ DEFINE_HOOK(0x55EF38, MessageSend_DisableChat, 0x6)
 {
 	static int LastDisableChatFeedbackFrame = -1000;
 
-	if (Spawner::Enabled && Spawner::GetConfig()->DisableChat)
+	if (IsDisableChatEnabled())
 	{
 		const int currentFrame = Unsorted::CurrentFrame;
 
@@ -87,12 +81,42 @@ DEFINE_HOOK(0x48D97E, NetworkCallBack_NetMessage_Sound, 0x5)
 	return 0; // execute original: mov eax, [0x8871E0]
 }
 
+// In diplomacy dialog, make chat checkbox non-interactive for each player,
+// matching the existing Player_MuteSWLaunches disabled-checkbox behavior.
+// Hook point is after `push 0` (lParam), so jumping to 0x657FC0 preserves stack layout.
+DEFINE_HOOK(0x657F95, RadarClass_Diplomacy_DisableChatToggleUI, 0x2)
+{
+	return IsDisableChatEnabled()
+		? 0x657FC0
+		: 0;
+}
+
+// Continuously enforce DisableChat by resetting ChatMask every frame,
+// preventing re-enabling chat from the alliance menu.
+DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
+{
+	auto const Original = reinterpret_cast<int(__thiscall*)(void*)>(0x5D4430);
+	GET(void*, pThis, ECX);
+	Original(pThis);
+
+	if (IsDisableChatEnabled())
+	{
+		for (int i = 0; i < 8; ++i)
+			Game::ChatMask[i] = false;
+	}
+
+	return 0x55DDAA;
+}
+
 DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 {
 	if (!Spawner::Enabled)
 		return 0;
 
 	enum { SkipMessage = 0x48DAD3, PrintMessage = 0x48D937 };
+
+	if (IsDisableChatEnabled())
+		return SkipMessage;
 
 	const int houseIndex = GlobalPacket_NetMessage::Instance.HouseIndex;
 
