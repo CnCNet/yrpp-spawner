@@ -22,6 +22,7 @@
 #include <HouseClass.h>
 #include <MessageListClass.h>
 #include <Unsorted.h>
+#include <Windows.h>
 
 // This corrects the processing of Unicode player names
 // and prohibits incoming messages from players with whom chat is disabled
@@ -38,6 +39,13 @@ struct GlobalPacket_NetMessage
 	wchar_t Message[112];
 	byte Color;
 	byte CRC;
+};
+
+struct DiplomacyChatToggleState
+{
+	DEFINE_REFERENCE(DiplomacyChatToggleState, Instance, 0xA8D108u);
+
+	byte ByHouse[8];
 };
 #pragma pack(pop)
 
@@ -91,6 +99,19 @@ DEFINE_HOOK(0x657F95, RadarClass_Diplomacy_DisableChatToggleUI, 0x2)
 		: 0;
 }
 
+// The non-interactive branch (loc_657FC0) sets BM_SETCHECK(1) before disabling.
+// Force it back to OFF for DisableChat so visuals match the intended locked state.
+DEFINE_HOOK(0x657FDB, RadarClass_Diplomacy_ForceDisabledChatVisualOff, 0x5)
+{
+	if (IsDisableChatEnabled())
+	{
+		GET(HWND, hWnd, EBP);
+		SendMessageA(hWnd, BM_SETCHECK, BST_UNCHECKED, 0);
+	}
+
+	return 0;
+}
+
 // Continuously enforce DisableChat by resetting ChatMask every frame,
 // preventing re-enabling chat from the alliance menu.
 DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
@@ -102,7 +123,10 @@ DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
 	if (IsDisableChatEnabled())
 	{
 		for (int i = 0; i < 8; ++i)
+		{
+			DiplomacyChatToggleState::Instance.ByHouse[i] = 0;
 			Game::ChatMask[i] = false;
+		}
 	}
 
 	return 0x55DDAA;
