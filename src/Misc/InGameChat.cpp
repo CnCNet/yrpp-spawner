@@ -41,12 +41,6 @@ struct GlobalPacket_NetMessage
 	byte CRC;
 };
 
-struct DiplomacyChatToggleState
-{
-	DEFINE_REFERENCE(DiplomacyChatToggleState, Instance, 0xA8D108u);
-
-	byte ByHouse[8];
-};
 #pragma pack(pop)
 
 static bool inline IsDisableChatEnabled()
@@ -123,10 +117,7 @@ DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
 	if (IsDisableChatEnabled())
 	{
 		for (int i = 0; i < 8; ++i)
-		{
-			DiplomacyChatToggleState::Instance.ByHouse[i] = 0;
 			Game::ChatMask[i] = false;
-		}
 	}
 
 	return 0x55DDAA;
