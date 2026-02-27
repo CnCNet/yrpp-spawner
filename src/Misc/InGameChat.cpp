@@ -20,7 +20,9 @@
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <HouseClass.h>
+#include <MessageListClass.h>
 #include <Unsorted.h>
+#include <Windows.h>
 
 // This corrects the processing of Unicode player names
 // and prohibits incoming messages from players with whom chat is disabled
@@ -38,7 +40,88 @@ struct GlobalPacket_NetMessage
 	byte Color;
 	byte CRC;
 };
+
 #pragma pack(pop)
+
+static bool inline IsDisableChatEnabled()
+{
+	return Spawner::Enabled && Spawner::GetConfig()->DisableChat;
+}
+
+// Don't send message to others when DisableChat is active.
+// Mirrors: hack 0x0055EF38, 0x0055EF3E in chat_disable.asm
+DEFINE_HOOK(0x55EF38, MessageSend_DisableChat, 0x6)
+{
+	static int LastDisableChatFeedbackFrame = -1000;
+
+	if (IsDisableChatEnabled())
+	{
+		const int currentFrame = Unsorted::CurrentFrame;
+
+		if (currentFrame - LastDisableChatFeedbackFrame >= 90)
+		{
+			MessageListClass::Instance.PrintMessage(L"Chat is disabled. Message not sent.");
+			LastDisableChatFeedbackFrame = currentFrame;
+		}
+
+		return 0x55F056; // skip the send
+	}
+
+	return 0; // execute original: cmp edi, ebx; mov [esp+0x14], ebx
+}
+
+// After receiving a message, don't play sound if AddMessage returned NULL
+// (i.e. the message was suppressed). Mirrors: hack 0x0048D97E in chat_disable.asm
+DEFINE_HOOK(0x48D97E, NetworkCallBack_NetMessage_Sound, 0x5)
+{
+	if (!Spawner::Enabled)
+		return 0;
+
+	if (!R->EAX<void*>())
+		return 0x48D99A; // skip sound
+
+	return 0; // execute original: mov eax, [0x8871E0]
+}
+
+// In diplomacy dialog, make chat checkbox non-interactive for each player,
+// matching the existing Player_MuteSWLaunches disabled-checkbox behavior.
+// Hook point is after `push 0` (lParam), so jumping to 0x657FC0 preserves stack layout.
+DEFINE_HOOK(0x657F95, RadarClass_Diplomacy_DisableChatToggleUI, 0x2)
+{
+	return IsDisableChatEnabled()
+		? 0x657FC0
+		: 0;
+}
+
+// The non-interactive branch (loc_657FC0) sets BM_SETCHECK(1) before disabling.
+// Force it back to OFF for DisableChat so visuals match the intended locked state.
+DEFINE_HOOK(0x657FDB, RadarClass_Diplomacy_ForceDisabledChatVisualOff, 0x5)
+{
+	if (IsDisableChatEnabled())
+	{
+		GET(HWND, hWnd, EBP);
+		SendMessageA(hWnd, BM_SETCHECK, BST_UNCHECKED, 0);
+	}
+
+	return 0;
+}
+
+// Continuously enforce DisableChat by resetting ChatMask every frame,
+// preventing re-enabling chat from the alliance menu.
+DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
+{
+	auto const Original = reinterpret_cast<int(__thiscall*)(void*)>(0x5D4430);
+	GET(void*, pThis, ECX);
+	Original(pThis);
+
+	if (IsDisableChatEnabled())
+	{
+		for (int i = 0; i < 8; ++i)
+			Game::ChatMask[i] = false;
+	}
+
+	return 0x55DDAA;
+}
 
 DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 {
@@ -46,6 +129,9 @@ DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 		return 0;
 
 	enum { SkipMessage = 0x48DAD3, PrintMessage = 0x48D937 };
+
+	if (IsDisableChatEnabled())
+		return SkipMessage;
 
 	const int houseIndex = GlobalPacket_NetMessage::Instance.HouseIndex;
 
