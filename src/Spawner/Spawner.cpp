@@ -303,9 +303,22 @@ bool Spawner::StartScenario(const char* pScenarioName)
 	if (SessionClass::IsCampaign())
 	{
 		pGameModeOptions->Crates = true;
-		return Config->LoadSaveGame
-			? Spawner::LoadSavedGame(Config->SaveGameName)
-			: ScenarioClass::StartScenario(pScenarioName, 1, 0);
+
+		if (Config->LoadSaveGame)
+			return Spawner::LoadSavedGame(Config->SaveGameName);
+
+		// Rename MISSIONMD.INI to this
+		// because Ares has LoadScreenText.Color and Phobos has Starkku's PR #1145
+		// 2025-05-28: Moved to a hook in Spawner.Hook.cpp - Starkku
+		// if (Spawner::Config->ReadMissionSection) // before parsing
+		//	 Patch::Apply_RAW(0x839724, "Spawn.ini");
+
+		bool result = ScenarioClass::StartScenario(pScenarioName, 1, 0);
+
+		if (Spawner::Config->CustomMissionID != 0) // after parsing
+			ScenarioClass::Instance->EndOfGame = true;
+
+		return result;
 	}
 	else if (SessionClass::IsSkirmish())
 	{
