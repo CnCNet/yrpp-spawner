@@ -73,6 +73,13 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 
 		// Skip load *.PKT, *.YRO and *.YRM map files
 		Patch::Apply_LJMP(0x699AD9, 0x69A1B2); // SessionClass::Read_Scenario_Descriptions
+
+		if (Spawner::GetConfig()->DisableSaveLoad)
+		{
+			Patch::Apply_LJMP(0x55DBCD, 0x55DC99); // Disable MainLoop_SaveGame (Spawner&Phobos)
+			Patch::Apply_RAW(0x67CEF0, { 0x33,0xC0,0xC3 }); // Corrupt savegame function
+			Patch::Apply_TYPED(0x83D560, { (DWORD)std::rand() }); // Corrupt save game magicn
+		}
 	}
 
 	return 0;

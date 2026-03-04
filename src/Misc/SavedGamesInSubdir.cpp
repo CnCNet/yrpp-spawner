@@ -284,6 +284,8 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 	{
 		if (Spawner::GetConfig()->CustomMissionID)
 			WriteToStorage<CustomMissionID>(pStorage);
+		if (Spawner::GetConfig()->DisableSaveLoad)// you fucking cheater
+			pStorage->DestroyElement(L"CONTENTS");
 	}
 
 	return 0;
@@ -343,3 +345,90 @@ DEFINE_HOOK(0x55DC85, MainLoop_SaveGame_SanitizeFilename, 0x7)
 
 	return 0x55DC90;
 }
+
+#pragma region nosaveload
+#include <WWMessageBox.h>
+#include <LoadProgressManager.h>
+
+DEFINE_HOOK(0x686089, DoLose_RetryDialogForCampaigns, 0x7)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	WWMessageBox::Instance.Process(
+		PRIMARYLANGID(GetUserDefaultUILanguage()) == LANG_CHINESE ? L"\u83dc" : L"GG",
+		StringTable::LoadString("TXT_OK"), nullptr, nullptr);
+
+	return 0x6860EE;
+}
+
+// disable load, save and delete buttons on the ingame menu
+DEFINE_HOOK(0x4F17F6, sub_4F1720_DisableSaves, 0x6)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+	GET(HWND, hDlg, EBP);
+
+	enum { LoadGameButton = 1310, DeleteGameButton = 1312 };
+
+	for (int item = LoadGameButton; item <= DeleteGameButton; ++item)
+	{
+		if (HWND hItem = GetDlgItem(hDlg, item))
+			EnableWindow(hItem, FALSE);
+	}
+
+	return 0x4F1834;
+}
+inline const wchar_t* get_TXT_HARDCORE_MODE()
+{
+	std::wstring_view msg = StringTable::LoadString("TXT_HARDCORE_MODE");
+	if (msg.empty() || msg.starts_with(L"MISSING"))
+		msg = L"HARDCORE";
+	return msg.data();
+}
+DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText_Campaign, 0x5)
+{
+	GET(LoadProgressManager*, self, EBP);
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	Point2D pos
+	{
+		self->TitleBarRect.X + self->TitleBarRect.Width - 100,
+		self->TitleBarRect.Y + 10
+	};
+	LEA_STACK(RectangleStruct*, pBnd, STACK_OFFSET(0x1268, -0x1204));
+	if (auto logo = FileSystem::LoadSHPFile("hardcorelogo.shp"))
+	{
+		self->ProgressSurface->DrawSHP(FileSystem::PALETTE_PAL, logo, 0, &pos, pBnd, BlitterFlags::bf_400, 0, 0, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
+	}
+	else
+	{
+		self->ProgressSurface->DrawText(get_TXT_HARDCORE_MODE(), &pos, COLOR_RED);
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x4F4573, GScreenClass_Draw_SpawnerShit, 0x5)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+	wchar_t buffer[0x20] {};
+	int seconds = Unsorted::CurrentFrame / 15;
+	swprintf(buffer, std::size(buffer), L"%s %d:%02d", get_TXT_HARDCORE_MODE(), seconds / 60, seconds % 60);
+	auto wanted = Drawing::GetTextDimensions(buffer, { 0,0 }, 0, 2, 0);
+
+	RectangleStruct rect = {
+		DSurface::Composite->GetWidth() - wanted.Width - 20,
+		0,
+		wanted.Width + 10,
+		wanted.Height + 10
+	};
+
+	Point2D location { rect.X - 5,5 };
+
+	DSurface::Composite->FillRect(&rect, COLOR_BLACK);
+	DSurface::Composite->DrawText(buffer, &location, COLOR_WHITE);
+
+	//Fucking Phobos
+	R->ECX(*(int*)0x887640);
+	return 0x4F4589;
+}
+#pragma endregion

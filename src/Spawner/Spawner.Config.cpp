@@ -118,6 +118,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		ContinueWithoutHumans    = pINI->ReadBool(pSettingsSection, "ContinueWithoutHumans", ContinueWithoutHumans);
 		DefeatedBecomesObserver  = pINI->ReadBool(pSettingsSection, "DefeatedBecomesObserver", DefeatedBecomesObserver);
 		Observer_ShowAIOnSidebar = pINI->ReadBool(pSettingsSection, "Observer.ShowAIOnSidebar", Observer_ShowAIOnSidebar);
+		DisableSaveLoad          = pINI->ReadBool(pSettingsSection, "DisableSaveLoad", false) && IsCampaign && !LoadSaveGame;
 	}
 }
 
