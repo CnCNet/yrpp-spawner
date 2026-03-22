@@ -18,7 +18,7 @@
 */
 
 #include <Utilities/Macro.h>
-#include <TechnoClass.h>
+#include <FootClass.h>
 #include <WeaponTypeClass.h>
 
 // NOTE: Overrides incorrect Ares hook at the same address.
