@@ -58,6 +58,9 @@ DEFINE_HOOK(0x55EF38, MessageSend_DisableChat, 0x6)
 	{
 		const int currentFrame = Unsorted::CurrentFrame;
 
+		if (currentFrame < LastDisableChatFeedbackFrame)
+			LastDisableChatFeedbackFrame = -1000; // new match started
+
 		if (currentFrame - LastDisableChatFeedbackFrame >= 90)
 		{
 			MessageListClass::Instance.PrintMessage(L"Chat is disabled. Message not sent.");
