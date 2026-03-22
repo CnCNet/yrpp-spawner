@@ -88,12 +88,13 @@ DEFINE_HOOK(0x48D97E, NetworkCallBack_NetMessage_Sound, 0x5)
 
 // In diplomacy dialog, make chat checkbox non-interactive for each player,
 // matching the existing Player_MuteSWLaunches disabled-checkbox behavior.
-// Hook point is after `push 0` (lParam), so jumping to 0x657FC0 preserves stack layout.
-DEFINE_HOOK(0x657F95, RadarClass_Diplomacy_DisableChatToggleUI, 0x2)
+// Replaces `mov eax, Player_MuteSWLaunches` (5 bytes at 0x657F8E).
+// The subsequent `push 0; test eax, eax; jnz 0x657FC0` remains intact and
+// branches to the disabled-checkbox path when EAX is non-zero.
+DEFINE_HOOK(0x657F8E, RadarClass_Diplomacy_DisableChatToggleUI, 0x5)
 {
-	return IsDisableChatEnabled()
-		? 0x657FC0
-		: 0;
+	R->EAX(IsDisableChatEnabled() ? 1 : Unsorted::MuteSWLaunches);
+	return 0;
 }
 
 // The non-interactive branch (loc_657FC0) sets BM_SETCHECK(1) before disabling.
