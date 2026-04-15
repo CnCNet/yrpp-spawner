@@ -34,7 +34,9 @@
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CrateLandType.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ClampTacticalPos.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.OpenTopCloak.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CommonCrashes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
