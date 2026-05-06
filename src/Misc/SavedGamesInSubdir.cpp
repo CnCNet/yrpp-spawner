@@ -284,8 +284,6 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 	{
 		if (Spawner::GetConfig()->CustomMissionID)
 			WriteToStorage<CustomMissionID>(pStorage);
-		if (Spawner::GetConfig()->DisableSaveLoad)// you fucking cheater
-			pStorage->DestroyElement(L"CONTENTS");
 	}
 
 	return 0;
@@ -350,12 +348,20 @@ DEFINE_HOOK(0x55DC85, MainLoop_SaveGame_SanitizeFilename, 0x7)
 #include <WWMessageBox.h>
 #include <LoadProgressManager.h>
 
+const wchar_t* Fetch_CSF_Text(const char* label, const wchar_t* defaultText)
+{
+	std::wstring_view msg = StringTable::LoadString(label);
+	if (msg.empty() || msg.starts_with(L"MISSING"))
+		return defaultText;
+	return msg.data();
+}
+
 DEFINE_HOOK(0x686089, DoLose_RetryDialogForCampaigns, 0x7)
 {
 	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
 
 	WWMessageBox::Instance.Process(
-		PRIMARYLANGID(GetUserDefaultUILanguage()) == LANG_CHINESE ? L"\u83dc" : L"GG",
+		Fetch_CSF_Text("TXT_HARDCORE_FAILURE", L"GG"),
 		StringTable::LoadString("TXT_OK"), nullptr, nullptr);
 
 	return 0x6860EE;
@@ -377,13 +383,7 @@ DEFINE_HOOK(0x4F17F6, sub_4F1720_DisableSaves, 0x6)
 
 	return 0x4F1834;
 }
-inline const wchar_t* get_TXT_HARDCORE_MODE()
-{
-	std::wstring_view msg = StringTable::LoadString("TXT_HARDCORE_MODE");
-	if (msg.empty() || msg.starts_with(L"MISSING"))
-		msg = L"HARDCORE";
-	return msg.data();
-}
+std::wstring HardCoreText {};
 DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText_Campaign, 0x5)
 {
 	GET(LoadProgressManager*, self, EBP);
@@ -394,6 +394,8 @@ DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText_Campaign, 0x5)
 		self->TitleBarRect.X + self->TitleBarRect.Width - 100,
 		self->TitleBarRect.Y + 10
 	};
+	if(HardCoreText.empty())
+		HardCoreText = Fetch_CSF_Text("TXT_HARDCORE_MODE", L"HardCore");
 	LEA_STACK(RectangleStruct*, pBnd, STACK_OFFSET(0x1268, -0x1204));
 	if (auto logo = FileSystem::LoadSHPFile("hardcorelogo.shp"))
 	{
@@ -401,7 +403,7 @@ DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText_Campaign, 0x5)
 	}
 	else
 	{
-		self->ProgressSurface->DrawText(get_TXT_HARDCORE_MODE(), &pos, COLOR_RED);
+		self->ProgressSurface->DrawText(HardCoreText.c_str(), &pos, COLOR_RED);
 	}
 
 	return 0;
@@ -411,23 +413,37 @@ DEFINE_HOOK(0x4F4573, GScreenClass_Draw_SpawnerShit, 0x5)
 {
 	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
 	wchar_t buffer[0x20] {};
-	int seconds = Unsorted::CurrentFrame / 15;
-	swprintf(buffer, std::size(buffer), L"%s %d:%02d", get_TXT_HARDCORE_MODE(), seconds / 60, seconds % 60);
+	int total_seconds = Unsorted::CurrentFrame / 15;
+
+	int hours = total_seconds / 3600;
+	int minutes = (total_seconds / 60) % 60;
+	int seconds = total_seconds % 60;
+
+	if (hours > 0)
+	{
+		swprintf(buffer, std::size(buffer), L"%ls %d:%02d:%02d", HardCoreText.c_str(), hours, minutes, seconds);
+	}
+	else
+	{
+		swprintf(buffer, std::size(buffer), L"%ls %02d:%02d", HardCoreText.c_str(), minutes, seconds);
+	}
+
 	auto wanted = Drawing::GetTextDimensions(buffer, { 0,0 }, 0, 2, 0);
 
 	RectangleStruct rect = {
-		DSurface::Composite->GetWidth() - wanted.Width - 20,
+		DSurface::Composite->GetWidth() - wanted.Width - 30,
 		0,
 		wanted.Width + 10,
 		wanted.Height + 10
 	};
 
-	Point2D location { rect.X - 5,5 };
-
-	DSurface::Composite->FillRect(&rect, COLOR_BLACK);
+	Point2D location { rect.X +5 ,5 };
+	ColorStruct color { 0x0, 0x0 ,0x0};
+	DSurface::Composite->FillRectTrans(&rect, &color, 50);
+	DSurface::Composite->DrawRect(&rect, COLOR_WHITE);
 	DSurface::Composite->DrawText(buffer, &location, COLOR_WHITE);
 
-	//Fucking Phobos
+	//Phobos' extended tooltips interferred
 	R->ECX(*(int*)0x887640);
 	return 0x4F4589;
 }
