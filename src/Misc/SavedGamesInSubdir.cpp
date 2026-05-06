@@ -343,3 +343,108 @@ DEFINE_HOOK(0x55DC85, MainLoop_SaveGame_SanitizeFilename, 0x7)
 
 	return 0x55DC90;
 }
+
+#pragma region nosaveload
+#include <WWMessageBox.h>
+#include <LoadProgressManager.h>
+
+const wchar_t* Fetch_CSF_Text(const char* label, const wchar_t* defaultText)
+{
+	std::wstring_view msg = StringTable::LoadString(label);
+	if (msg.empty() || msg.starts_with(L"MISSING"))
+		return defaultText;
+	return msg.data();
+}
+
+DEFINE_HOOK(0x686089, DoLose_RetryDialogForCampaigns, 0x7)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	WWMessageBox::Instance.Process(
+		Fetch_CSF_Text("TXT_HARDCORE_FAILURE", L"GG"),
+		StringTable::LoadString("TXT_OK"), nullptr, nullptr);
+
+	return 0x6860EE;
+}
+
+// disable load, save and delete buttons on the ingame menu
+DEFINE_HOOK(0x4F17F6, sub_4F1720_DisableSaves, 0x6)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+	GET(HWND, hDlg, EBP);
+
+	enum { LoadGameButton = 1310, DeleteGameButton = 1312 };
+
+	for (int item = LoadGameButton; item <= DeleteGameButton; ++item)
+	{
+		if (HWND hItem = GetDlgItem(hDlg, item))
+			EnableWindow(hItem, FALSE);
+	}
+
+	return 0x4F1834;
+}
+std::wstring HardCoreText {};
+DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText_Campaign, 0x5)
+{
+	GET(LoadProgressManager*, self, EBP);
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	Point2D pos
+	{
+		self->TitleBarRect.X + self->TitleBarRect.Width - 100,
+		self->TitleBarRect.Y + 10
+	};
+	if(HardCoreText.empty())
+		HardCoreText = Fetch_CSF_Text("TXT_HARDCORE_MODE", L"HardCore");
+	LEA_STACK(RectangleStruct*, pBnd, STACK_OFFSET(0x1268, -0x1204));
+	if (auto logo = FileSystem::LoadSHPFile("hardcorelogo.shp"))
+	{
+		self->ProgressSurface->DrawSHP(FileSystem::PALETTE_PAL, logo, 0, &pos, pBnd, BlitterFlags::bf_400, 0, 0, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
+	}
+	else
+	{
+		self->ProgressSurface->DrawText(HardCoreText.c_str(), &pos, COLOR_RED);
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x4F4573, GScreenClass_Draw_SpawnerShit, 0x5)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+	wchar_t buffer[0x20] {};
+	int total_seconds = Unsorted::CurrentFrame / 15;
+
+	int hours = total_seconds / 3600;
+	int minutes = (total_seconds / 60) % 60;
+	int seconds = total_seconds % 60;
+
+	if (hours > 0)
+	{
+		swprintf(buffer, std::size(buffer), L"%ls %d:%02d:%02d", HardCoreText.c_str(), hours, minutes, seconds);
+	}
+	else
+	{
+		swprintf(buffer, std::size(buffer), L"%ls %02d:%02d", HardCoreText.c_str(), minutes, seconds);
+	}
+
+	auto wanted = Drawing::GetTextDimensions(buffer, { 0,0 }, 0, 2, 0);
+
+	RectangleStruct rect = {
+		DSurface::Composite->GetWidth() - wanted.Width - 30,
+		0,
+		wanted.Width + 10,
+		wanted.Height + 10
+	};
+
+	Point2D location { rect.X +5 ,5 };
+	ColorStruct color { 0x0, 0x0 ,0x0};
+	DSurface::Composite->FillRectTrans(&rect, &color, 50);
+	DSurface::Composite->DrawRect(&rect, COLOR_WHITE);
+	DSurface::Composite->DrawText(buffer, &location, COLOR_WHITE);
+
+	//Phobos' extended tooltips interferred
+	R->ECX(*(int*)0x887640);
+	return 0x4F4589;
+}
+#pragma endregion

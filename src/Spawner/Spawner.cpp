@@ -315,7 +315,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		bool result = ScenarioClass::StartScenario(pScenarioName, 1, 0);
 
-		if (Spawner::Config->CustomMissionID != 0) // after parsing
+		if (Spawner::Config->CustomMissionID != 0 || Spawner::Config->DisableSaveLoad) // after parsing
 			ScenarioClass::Instance->EndOfGame = true;
 
 		return result;
