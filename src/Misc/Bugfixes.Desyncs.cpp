@@ -25,8 +25,6 @@
 // leaving LandType stale. This diverges between players when an aircraft
 // passes over the cell(s) which later leads to pathfinding differences.
 
-#ifdef IS_CNCNET_YR_VER
-
 #include <Utilities/Macro.h>
 #include <CellClass.h>
 #include <FootClass.h>
@@ -345,5 +343,3 @@ DEFINE_HOOK(0x70F1E3, TechnoClass_DrawBehind_InvisibleDesyncFix, 0x8)
 // TODO: Remove when Phobos Release is greater than 0.4.0.2
 // as that has a better fix for this.
 DEFINE_PATCH(0x5C0E30, 0xB0, 0x01)
-
-#endif
