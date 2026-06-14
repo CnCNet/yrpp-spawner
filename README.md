@@ -34,12 +34,16 @@ Credits
   - Beacon crash fix for multiplayer save/load
   - Game speed slider toggle
   - Fake multiplayer flag
+- **[EJ](https://github.com/11EJDE11)**
+  - Whole lot of desync fixes
 - **[ZivDero](https://github.com/ZivDero)**
   - Handicaps (difficulty & credits) support
 - **[Starkku](https://github.com/Starkku)**
   - Allow customizing whether or not special house is ally to all players via spawn.ini option (#51)
 - **[RAZER](https://github.com/CnCRAZER)**
   - Game speed slider toggle
+  - Revert of Battle Fortress cloak changes for CnCNet YR
+  - Ability to disable ingame chat
 - **[TaranDahl](https://github.com/TaranDahl)**
   - Porting of multiplayer save/load
   - Porting of autosaves
