@@ -31,6 +31,13 @@
 #include <MapClass.h>
 #include <TechnoClass.h>
 
+// CellClass::RecalcAttributes takes a cell level; -1 means "recalc but keep the
+// current level unchanged" (see CellClass.h).
+static constexpr int KeepCellLevel = -1;
+
+// CellClass::OverlayTypeIndex sentinel meaning "no overlay present on this cell".
+static constexpr int NoOverlay = -1;
+
 // ============================================================
 // Aircraft shadow desync fix
 // ============================================================
@@ -52,7 +59,7 @@ DEFINE_JUMP(CALL6, 0x4148AB, 0x5F4300); // Set_Height restore
 DEFINE_HOOK(0x4A1BEF, CrateClass_Get_Crate_RecalcAttributes, 0x6)
 {
 	GET(CellClass*, pCell, EBX);
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	return 0;
 }
 
@@ -60,7 +67,7 @@ DEFINE_HOOK(0x4A1BEF, CrateClass_Get_Crate_RecalcAttributes, 0x6)
 DEFINE_HOOK(0x56C1DA, MapClass_Remove_Crate_RecalcAttributes, 0x6)
 {
 	GET(CellClass*, pCell, EBX);
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	return 0;
 }
 
@@ -69,10 +76,11 @@ DEFINE_HOOK(0x56C1DA, MapClass_Remove_Crate_RecalcAttributes, 0x6)
 // ============================================================
 
 // HouseClass::Flag_Remove: clears the flag home cell overlay without RecalcAttributes.
+// Unused, but kept for correctness should such a mode be used.
 DEFINE_HOOK(0x4FBF3C, HouseClass_Flag_Remove_RecalcAttributes, 0x5)
 {
 	GET(CellClass*, pCell, EAX);
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	return 0;
 }
 
@@ -87,7 +95,7 @@ DEFINE_HOOK(0x74C775, VeinholeMonster_Constructor_RecalcAttributes, 0x6)
 {
 	GET(CellClass*, pCell, EAX);
 	pCell->Level = (char)R->DL(); // write Level-1 before RecalcAttributes
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	MapClass::Instance.ResetZones(pCell->MapCoords);
 	MapClass::Instance.RecalculateSubZones(pCell->MapCoords);
 	return 0x74C77B;
@@ -100,7 +108,7 @@ DEFINE_HOOK(0x74C775, VeinholeMonster_Constructor_RecalcAttributes, 0x6)
 // Called when a bridge section overlay is fully removed (OverlayTypeIndex = -1).
 static void BridgeCellDestroyed(CellClass* pCell)
 {
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	MapClass::Instance.ResetZones(pCell->MapCoords);
 	MapClass::Instance.RecalculateSubZones(pCell->MapCoords);
 }
@@ -109,7 +117,7 @@ static void BridgeCellDestroyed(CellClass* pCell)
 // type index still valid).
 static void BridgeCellDamaged(CellClass* pCell)
 {
-	pCell->RecalcAttributes(DWORD(-1));
+	pCell->RecalcAttributes(KeepCellLevel);
 	MapClass::Instance.RecalculateZones(pCell->MapCoords);
 	MapClass::Instance.RecalculateSubZones(pCell->MapCoords);
 }
@@ -121,7 +129,7 @@ static void BridgeCellDamaged(CellClass* pCell)
 DEFINE_HOOK(0x56EFF2, MapBridge_56EF50_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x56EFF9;
 }
@@ -129,7 +137,7 @@ DEFINE_HOOK(0x56EFF2, MapBridge_56EF50_RecalcCell, 0x7)
 DEFINE_HOOK(0x56F392, MapBridge_56F2F0_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x56F399;
 }
@@ -137,7 +145,7 @@ DEFINE_HOOK(0x56F392, MapBridge_56F2F0_RecalcCell, 0x7)
 DEFINE_HOOK(0x56F956, MapBridge_Destroy_56F8B0_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x56F95D;
 }
@@ -145,7 +153,7 @@ DEFINE_HOOK(0x56F956, MapBridge_Destroy_56F8B0_RecalcCell, 0x7)
 DEFINE_HOOK(0x56FD26, MapBridge_56FCC0_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x56FD2D;
 }
@@ -153,7 +161,7 @@ DEFINE_HOOK(0x56FD26, MapBridge_56FCC0_RecalcCell, 0x7)
 DEFINE_HOOK(0x5721C2, MapBridge_572100_RecalcCell_A, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x5721C9;
 }
@@ -161,7 +169,7 @@ DEFINE_HOOK(0x5721C2, MapBridge_572100_RecalcCell_A, 0x7)
 DEFINE_HOOK(0x5724E2, MapBridge_572480_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x5724E9;
 }
@@ -169,7 +177,7 @@ DEFINE_HOOK(0x5724E2, MapBridge_572480_RecalcCell, 0x7)
 DEFINE_HOOK(0x572882, MapBridge_572820_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x572889;
 }
@@ -177,7 +185,7 @@ DEFINE_HOOK(0x572882, MapBridge_572820_RecalcCell, 0x7)
 DEFINE_HOOK(0x572E46, MapBridge_572DE0_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x572E4D;
 }
@@ -185,7 +193,7 @@ DEFINE_HOOK(0x572E46, MapBridge_572DE0_RecalcCell, 0x7)
 DEFINE_HOOK(0x573216, MapBridge_5731B0_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x57321D;
 }
@@ -193,7 +201,7 @@ DEFINE_HOOK(0x573216, MapBridge_5731B0_RecalcCell, 0x7)
 DEFINE_HOOK(0x57779F, MapBridge_577740_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x5777A6;
 }
@@ -201,7 +209,7 @@ DEFINE_HOOK(0x57779F, MapBridge_577740_RecalcCell, 0x7)
 DEFINE_HOOK(0x5778BB, MapBridge_577860_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, ESI);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x5778C2;
 }
@@ -302,7 +310,7 @@ DEFINE_HOOK(0x5777FC, MapBridge_577740_Damaged_ESI, 0x7)
 DEFINE_HOOK(0x74CBEE, VeinholeArea_Bridge_RecalcCell, 0x7)
 {
 	GET(CellClass*, pCell, EBP);
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x74CBF5;
 }
@@ -315,7 +323,7 @@ DEFINE_HOOK(0x576721, MapBridge_576200_RecalcCell, 0xA)
 {
 	GET(CellClass*, pCell, ESI);
 	pCell->OverlayData = 0;
-	pCell->OverlayTypeIndex = -1;
+	pCell->OverlayTypeIndex = NoOverlay;
 	BridgeCellDestroyed(pCell);
 	return 0x57672B;
 }
