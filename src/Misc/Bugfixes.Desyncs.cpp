@@ -332,18 +332,18 @@ DEFINE_HOOK(0x576721, MapBridge_576200_RecalcCell, 0xA)
 // see 1) on https://modenc2.markjfox.net/Reconnection_Error
 DEFINE_HOOK(0x70F1E3, TechnoClass_DrawBehind_InvisibleDesyncFix, 0x8)
 {
-    enum { CreateBehindAnim = 0x70F1EB, SkipBehindAnim = 0x70F659 };
+	enum { CreateBehindAnim = 0x70F1EB, SkipBehindAnim = 0x70F659 };
 
-    GET(VisualType, visual, EAX);
-    GET(TechnoClass*, pThis, ESI);
+	GET(VisualType, visual, EAX);
+	GET(TechnoClass*, pThis, ESI);
 
-    if (visual != VisualType::Normal) // original gate: only proceed when visually normal
-        return SkipBehindAnim;
+	if (visual != VisualType::Normal) // original gate: only proceed when visually normal
+		return SkipBehindAnim;
 
-    if (pThis->GetTechnoType()->Invisible) // desync fix: owner-dependent VISUAL_NORMAL
-        return SkipBehindAnim;
+	if (pThis->GetTechnoType()->Invisible) // desync fix: owner-dependent VISUAL_NORMAL
+		return SkipBehindAnim;
 
-    return CreateBehindAnim;
+	return CreateBehindAnim;
 }
 
 // Fixes a desync caused by a check for shrouding at a specific cell
