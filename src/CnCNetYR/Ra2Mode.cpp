@@ -179,23 +179,6 @@ bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
 	return false;
 }
 
-// Allow allies to repair on service depot
-DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)
-{
-	if (!Ra2Mode::IsEnabled())
-		return 0;
-
-	GET(TechnoClass*, pThis, ESI);
-	GET(ObjectClass*, pObject, EDI);
-
-	auto const pBuilding = abstract_cast<BuildingClass* const>(pObject);
-	auto const pBuildingOwner = pBuilding ? pBuilding->Owner : nullptr;
-
-	return (pBuildingOwner && pBuildingOwner->IsAlliedWith(pThis))
-		? 0x70059D
-		: 0x7005E6;
-}
-
 // Allow to repair the BlackHawk Transport on service depot
 #pragma region AllowRepairFlyMZone
 
