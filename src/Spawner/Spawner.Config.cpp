@@ -86,6 +86,7 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		PreCalcMaxAhead  = pINI->ReadInteger(pSettingsSection, "PreCalcMaxAhead", PreCalcMaxAhead);
 		MaxLatencyLevel  = (byte)pINI->ReadInteger(pSettingsSection, "MaxLatencyLevel", (int)MaxLatencyLevel);
 		ForceMultiplayer = pINI->ReadBool(pSettingsSection, "ForceMultiplayer", ForceMultiplayer);
+		Host             = pINI->ReadBool(pSettingsSection, "Host", Host);
 	}
 
 	{ // Tunnel Options
