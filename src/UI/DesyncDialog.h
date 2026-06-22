@@ -96,7 +96,7 @@ private:
 	void Refill_Chat_List();
 	void Append_Chat_Line(const char* line);
 	void Send_Chat();
-	void On_Chat_Edit_Focus(bool gained);
+	void Update_Chat_Placeholder();
 	void Send_Heartbeat();
 	void Send_Continue();
 	void Send_Sign_Off();

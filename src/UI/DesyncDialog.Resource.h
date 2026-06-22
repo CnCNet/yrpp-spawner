@@ -34,5 +34,6 @@
 #define IDC_DESYNC_PLAYER_LIST     5011
 #define IDC_DESYNC_CHAT_LIST       5012
 #define IDC_DESYNC_CHAT_EDIT       5013
+#define IDC_DESYNC_CHAT_SEND       5014
 #define IDC_DESYNC_CONTINUE        5021
 #define IDC_DESYNC_QUIT            5022

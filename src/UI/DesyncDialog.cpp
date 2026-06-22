@@ -73,7 +73,11 @@ namespace
 	// Engine global-packet command for a player signing off.
 	constexpr int NET_SIGN_OFF = 0xA;
 
-	constexpr char CHAT_EDIT_PLACEHOLDER[] = "Type here to chat...";
+	// The chat edit's hint text, from the string table (English fallback).
+	const wchar_t* Chat_Edit_Placeholder()
+	{
+		return StringTable::TryFetchString("GUI:DesyncChatHint", L"Type here to chat...");
+	}
 
 	/**
 	 *  Player list column positions, in pixels within the listbox client
@@ -214,6 +218,7 @@ DesyncDialogOutcomeType DesyncDialogClass::Run()
 		}
 
 		Check_Heartbeat_Timeouts();
+		Update_Chat_Placeholder();
 
 		if (Decision == IDC_DESYNC_QUIT) {
 			outcome = DESYNC_OUTCOME_QUIT;
@@ -322,15 +327,19 @@ void DesyncDialogClass::Create_Dialog()
 	Refill_Chat_List();
 
 	ShowWindow(Window, SW_SHOWNORMAL);
+	SetForegroundWindow(Window);
 
 	/**
-	 *  Give the dialog focus the way the engine focuses its own dialogs, then
-	 *  move focus to the player list rather than the chat edit box, so the
-	 *  player isn't typing into chat the instant the dialog appears.
+	 *  Seed the chat edit's hint text unless it already has focus; thereafter
+	 *  Update_Chat_Placeholder (polled from the pump) clears it while the player
+	 *  is typing and restores it when the box is left empty.
 	 */
-	SetForegroundWindow(Window);
-	HWND llist = GetDlgItem(Window, IDC_DESYNC_PLAYER_LIST);
-	SetFocus(llist);
+	HWND edit = GetDlgItem(Window, IDC_DESYNC_CHAT_EDIT);
+	if (edit != nullptr && GetFocus() != edit) {
+		SendMessage(edit, WW_SETTEXTW, 0, reinterpret_cast<LPARAM>(Chat_Edit_Placeholder()));
+		ChatPlaceholderActive = true;
+	}
+
 	Debug::Log("DesyncDialog: Create_Dialog complete.\n");
 }
 
@@ -517,6 +526,13 @@ void DesyncDialogClass::Send_Chat()
 	}
 
 	/**
+	 *  The box is showing its hint text, not a real message - nothing to send.
+	 */
+	if (ChatPlaceholderActive) {
+		return;
+	}
+
+	/**
 	 *  The chat edit is an owner-draw NewEdit: it keeps its text in the engine's
 	 *  own buffer rather than the Win32 window text, so read and clear it with the
 	 *  WW_*TEXT messages, not Get/SetWindowText.
@@ -529,6 +545,17 @@ void DesyncDialogClass::Send_Chat()
 	}
 
 	SendMessage(edit, WW_SETTEXTW, 0, reinterpret_cast<LPARAM>(L""));
+
+	/**
+	 *  Repaint the edit right away. The owner-draw edit only redraws itself on
+	 *  a text change when it has focus, so clearing it from the Send button
+	 *  (where the button, not the edit, is focused) would otherwise leave the
+	 *  old text on screen until the next pump cycle. Pressing Enter doesn't hit
+	 *  this because the edit is already focused.
+	 */
+	InvalidateRect(edit, nullptr, TRUE);
+	UpdateWindow(edit);
+
 	SetFocus(edit);
 
 	SessionExt::IsChatToAllies = false; // broadcast to everyone, not just allies
@@ -549,10 +576,15 @@ void DesyncDialogClass::Send_Chat()
 
 
 /**
- *  Manages the hint text in the chat edit box: the hint is shown while the
- *  box is empty and unfocused, and cleared when the player clicks into it.
+ *  Manages the hint text in the chat edit box: the hint is shown while the box
+ *  is empty and unfocused, and cleared once the player clicks into it.
+ *
+ *  Polled from the pump loop: the owner-draw NewEdit keeps its text in the
+ *  engine's own buffer (the WW_*TEXT messages, not the Win32 window text) and
+ *  sends no focus notifications, so there is nothing to drive this off events.
+ *  We track focus with GetFocus instead.
  */
-void DesyncDialogClass::On_Chat_Edit_Focus(bool gained)
+void DesyncDialogClass::Update_Chat_Placeholder()
 {
 	if (!Is_Active()) {
 		return;
@@ -563,12 +595,21 @@ void DesyncDialogClass::On_Chat_Edit_Focus(bool gained)
 		return;
 	}
 
-	if (gained && ChatPlaceholderActive) {
-		SetWindowText(edit, "");
-		ChatPlaceholderActive = false;
-	} else if (!gained && GetWindowTextLength(edit) == 0) {
-		SetWindowText(edit, CHAT_EDIT_PLACEHOLDER);
-		ChatPlaceholderActive = true;
+	if (GetFocus() == edit) {
+		if (ChatPlaceholderActive) {
+			SendMessage(edit, WW_SETTEXTW, 0, reinterpret_cast<LPARAM>(L""));
+			ChatPlaceholderActive = false;
+			InvalidateRect(edit, nullptr, TRUE);
+		}
+	} else if (!ChatPlaceholderActive) {
+		char buf[MAX_MESSAGE_LENGTH];
+		buf[0] = '\0';
+		SendMessage(edit, WW_GETTEXTA, sizeof(buf), reinterpret_cast<LPARAM>(buf));
+		if (buf[0] == '\0') {
+			SendMessage(edit, WW_SETTEXTW, 0, reinterpret_cast<LPARAM>(Chat_Edit_Placeholder()));
+			ChatPlaceholderActive = true;
+			InvalidateRect(edit, nullptr, TRUE);
+		}
 	}
 }
 
@@ -960,6 +1001,10 @@ BOOL CALLBACK DesyncDialogClass::Dialog_Proc(HWND window, UINT message, WPARAM w
 
 		case WM_COMMAND:
 			switch (LOWORD(wparam)) {
+
+				case IDC_DESYNC_CHAT_SEND:
+					DesyncDialog.Send_Chat();
+					return TRUE;
 
 				case IDC_DESYNC_CONTINUE:
 				case IDC_DESYNC_QUIT:
