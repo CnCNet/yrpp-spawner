@@ -26,7 +26,7 @@
 #pragma once
 
 // Dialog templates (live in this DLL; found via the FetchResource hook).
-#define IDD_DESYNC_HOST            5000 // Game master: Load/Continue/Quit.
+#define IDD_DESYNC_HOST            5000 // Game master: Continue/Quit.
 #define IDD_DESYNC_WAIT            5001 // Everyone else: wait for the master.
 
 // Controls.
@@ -34,8 +34,5 @@
 #define IDC_DESYNC_PLAYER_LIST     5011
 #define IDC_DESYNC_CHAT_LIST       5012
 #define IDC_DESYNC_CHAT_EDIT       5013
-#define IDC_DESYNC_COUNTDOWN_TEXT  5014
-#define IDC_DESYNC_COUNTDOWN_BAR   5015
-#define IDC_DESYNC_LOAD            5020
 #define IDC_DESYNC_CONTINUE        5021
 #define IDC_DESYNC_QUIT            5022

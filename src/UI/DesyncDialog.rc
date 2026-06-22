@@ -8,7 +8,7 @@
 // IPX options dialog, res 215): a 533x369 template that the owner-draw framework
 // moves full-screen and scales onto the in-game background (BKGD*.SHP + sidebar).
 // Action buttons sit in the right-hand column (x=425, 108x23); content fills the
-// left/centre. The host variant offers Load/Continue/Quit; the wait variant only
+// left/centre. The host variant offers Continue/Quit; the wait variant only
 // lets a non-host player Quit.
 //
 // Control captions are CSF labels ("GUI:..."); the owner-draw framework resolves
@@ -24,21 +24,16 @@ BEGIN
                     LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
                     LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
     LTEXT           "GUI:DesyncOutOfSync",-1,235,44,175,12,NOT WS_GROUP
-    LTEXT           "GUI:DesyncHostLoadInfo",-1,235,58,175,32,NOT WS_GROUP
-    LTEXT           "GUI:DesyncHostContinueInfo",-1,235,92,175,44,NOT WS_GROUP
-    LTEXT           "GUI:DesyncHostQuitInfo",-1,235,138,175,44,NOT WS_GROUP
+    LTEXT           "GUI:DesyncHostContinueInfo",-1,235,58,175,44,NOT WS_GROUP
+    LTEXT           "GUI:DesyncHostQuitInfo",-1,235,104,175,44,NOT WS_GROUP
     LISTBOX         IDC_DESYNC_CHAT_LIST,63,188,347,110,NOT LBS_NOTIFY |
                     LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
                     LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
     EDITTEXT        IDC_DESYNC_CHAT_EDIT,63,302,347,14,ES_AUTOHSCROLL | NOT WS_BORDER
-    LTEXT           "GUI:DesyncLoadingCountdown",IDC_DESYNC_COUNTDOWN_TEXT,63,322,240,12,NOT WS_GROUP | NOT WS_VISIBLE
-    GROUPBOX        "",IDC_DESYNC_COUNTDOWN_BAR,300,320,110,14,NOT WS_VISIBLE
-    CONTROL         "GUI:DesyncLoadButton",IDC_DESYNC_LOAD,"Button",BS_OWNERDRAW |
-                    WS_TABSTOP,422,122,108,23
     CONTROL         "GUI:DesyncContinueButton",IDC_DESYNC_CONTINUE,"Button",BS_OWNERDRAW |
-                    WS_TABSTOP,422,149,108,23
+                    WS_TABSTOP,422,122,108,23
     CONTROL         "GUI:DesyncQuitButton",IDC_DESYNC_QUIT,"Button",BS_OWNERDRAW |
-                    WS_TABSTOP,422,176,108,23
+                    WS_TABSTOP,422,149,108,23
     CONTROL         "",1685,"Static",SS_LEFT | SS_CENTERIMAGE,2,355,303,12
 END
 
@@ -52,15 +47,12 @@ BEGIN
                     LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
                     LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
     LTEXT           "GUI:DesyncOutOfSync",-1,235,44,175,12,NOT WS_GROUP
-    LTEXT           "GUI:DesyncWaitLoadInfo",-1,235,58,175,32,NOT WS_GROUP
-    LTEXT           "GUI:DesyncWaitContinueInfo",-1,235,92,175,44,NOT WS_GROUP
-    LTEXT           "GUI:DesyncWaitInfo",-1,235,138,175,44,NOT WS_GROUP
+    LTEXT           "GUI:DesyncWaitContinueInfo",-1,235,58,175,44,NOT WS_GROUP
+    LTEXT           "GUI:DesyncWaitInfo",-1,235,104,175,44,NOT WS_GROUP
     LISTBOX         IDC_DESYNC_CHAT_LIST,63,188,347,110,NOT LBS_NOTIFY |
                     LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
                     LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
     EDITTEXT        IDC_DESYNC_CHAT_EDIT,63,302,347,14,ES_AUTOHSCROLL | NOT WS_BORDER
-    LTEXT           "GUI:DesyncLoadingCountdown",IDC_DESYNC_COUNTDOWN_TEXT,63,322,240,12,NOT WS_GROUP | NOT WS_VISIBLE
-    GROUPBOX        "",IDC_DESYNC_COUNTDOWN_BAR,300,320,110,14,NOT WS_VISIBLE
     CONTROL         "GUI:DesyncQuitButton",IDC_DESYNC_QUIT,"Button",BS_OWNERDRAW |
                     WS_TABSTOP | WS_DISABLED,422,122,108,23
     CONTROL         "",1685,"Static",SS_LEFT | SS_CENTERIMAGE,2,355,303,12

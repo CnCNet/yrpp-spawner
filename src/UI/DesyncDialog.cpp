@@ -50,11 +50,11 @@
 #include <EventClass.h>
 #include <Surface.h>
 #include <PCX.h>
-#include <Drawing.h>
 #include <MapClass.h>
 #include <IPX.h>
 #include <IPXManagerClass.h>
 #include <WWMouseClass.h>
+#include <StringTable.h>
 #include <Unsorted.h>
 
 #include <algorithm>
@@ -77,7 +77,6 @@ namespace
 	constexpr int HEARTBEAT_INTERVAL_MS = 1000;
 	constexpr int HEARTBEAT_TIMEOUT_MS = 25000;
 	constexpr int QUIT_ENABLE_DELAY_MS = 10000;
-	constexpr int LOAD_COUNTDOWN_MS = 5000;
 	constexpr int CHAT_BACKLOG_MAX = 50;
 
 	// Chat message buffer size; matches the engine's global chat message field.
@@ -196,7 +195,6 @@ DesyncDialogOutcomeType DesyncDialogClass::Run()
 
 	Decision = 0;
 	ContinueReceived = false;
-	LoadCountdownActive = false;
 	std::fill(std::begin(PlayerLeft), std::end(PlayerLeft), false);
 	std::fill(std::begin(LastHeartbeatFrom), std::end(LastHeartbeatFrom), std::chrono::steady_clock::now());
 	ChatBacklog.clear();
@@ -229,34 +227,11 @@ DesyncDialogOutcomeType DesyncDialogClass::Run()
 
 		Check_Heartbeat_Timeouts();
 
-		/**
-		 *  Quitting is always allowed, even during the load countdown.
-		 */
 		if (Decision == IDC_DESYNC_QUIT) {
 			outcome = DESYNC_OUTCOME_QUIT;
 			break;
 		}
 
-		// --- Save-load path: ported but DISABLED until multiplayer save-load
-		//     is implemented. The Load button is disabled, so no load is ever
-		//     scheduled and the countdown below never starts.
-#if 0
-		if (!LoadCountdownActive && PendingMultiplayerSaveLoadTime) {
-			Start_Load_Countdown();
-		}
-
-		if (LoadCountdownActive) {
-
-			Update_Countdown_Text();
-			InvalidateRect(Window, nullptr, FALSE);
-
-			if (std::chrono::steady_clock::now() >= *PendingMultiplayerSaveLoadTime) {
-				outcome = DESYNC_OUTCOME_LOAD;
-				break;
-			}
-
-		} else
-#endif
 		if (ContinueReceived || Decision == IDC_DESYNC_CONTINUE) {
 
 			if (Decision == IDC_DESYNC_CONTINUE) {
@@ -264,20 +239,6 @@ DesyncDialogOutcomeType DesyncDialogClass::Run()
 			}
 			outcome = DESYNC_OUTCOME_CONTINUE;
 			break;
-
-		} else if (Decision == IDC_DESYNC_LOAD) {
-
-			// --- Open the stock load dialog so the master can pick a save.
-			//     DISABLED for now (the Load button is disabled); needs the
-			//     multiplayer save-load logic to be ported first.
-#if 0
-			KillTimer(Window, HEARTBEAT_TIMER);
-			EnableWindow(Window, FALSE);
-			LoadOptionsClass().Load_Dialog();
-			EnableWindow(Window, TRUE);
-			SetFocus(GetDlgItem(Window, IDC_DESYNC_PLAYER_LIST));
-			SetTimer(Window, HEARTBEAT_TIMER, HEARTBEAT_INTERVAL_MS, nullptr);
-#endif
 		}
 
 		Decision = 0;
@@ -358,8 +319,6 @@ void DesyncDialogClass::Create_Dialog()
 	Update_Player_List();
 
 	if (IsHostDialog) {
-		// Load is disabled for now (multiplayer save-load is further work).
-		EnableWindow(GetDlgItem(Window, IDC_DESYNC_LOAD), FALSE);
 		EnableWindow(GetDlgItem(Window, IDC_DESYNC_CONTINUE), TRUE);
 	} else {
 
@@ -408,14 +367,6 @@ void DesyncDialogClass::Destroy_Dialog()
 void DesyncDialogClass::Morph_To_Host_Dialog_If_Needed()
 {
 	if (!Is_Active() || IsHostDialog) {
-		return;
-	}
-
-	/**
-	 *  If a load countdown is already running, the decision has been made;
-	 *  there is nothing left to decide.
-	 */
-	if (LoadCountdownActive) {
 		return;
 	}
 
@@ -488,13 +439,13 @@ void DesyncDialogClass::Update_Player_List()
 		const wchar_t* status;
 		COLORREF color;
 		if (PlayerLeft[i]) {
-			status = L"Quit";
+			status = StringTable::TryFetchString("GUI:DesyncStatusQuit", L"Quit");
 			color = RGB(200, 0, 0);
 		} else if (SessionExt::Is_Out_of_Sync(i)) {
-			status = L"Desynced";
+			status = StringTable::TryFetchString("GUI:DesyncStatusDesynced", L"Desynced");
 			color = RGB(200, 200, 0);
 		} else {
-			status = L"OK";
+			status = StringTable::TryFetchString("GUI:DesyncStatusOK", L"OK");
 			color = RGB(0, 200, 0);
 		}
 
@@ -794,10 +745,6 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 
 	Debug::Log("DesyncDialog: desync detected on frame %u.\n", current_frame);
 
-	/**
-	 *  (A scheduled multiplayer save load would re-sync everyone instead; that
-	 *  path is deferred until save-load is ported.)
-	 */
 	const DesyncDialogOutcomeType outcome = Run();
 
 	switch (outcome) {
@@ -819,154 +766,14 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 		return false;
 
 	case DESYNC_OUTCOME_QUIT:
+	default:
 		/**
 		 *  Sign off so the others drop us, then let the caller stop the game
 		 *  (the Execute_DoList hook returns failure to it).
 		 */
 		Send_Sign_Off();
 		return true;
-
-	case DESYNC_OUTCOME_LOAD:
-	default:
-		/**
-		 *  A multiplayer save load would happen here; deferred for now, so stop.
-		 */
-		return true;
 	}
-}
-
-
-/**
- *  Starts the countdown to a scheduled multiplayer save load.
- *
- *  DISABLED: depends on the multiplayer save-load logic, which is further work.
- */
-void DesyncDialogClass::Start_Load_Countdown()
-{
-#if 0
-	Debug::Log("DesyncDialog: starting the load countdown.\n");
-
-	LoadCountdownActive = true;
-	LastCountdownSecond = -1;
-
-	if (!Is_Active()) {
-		return;
-	}
-
-	Append_Chat_Line("Loading the saved game...");
-
-	ShowWindow(GetDlgItem(Window, IDC_DESYNC_COUNTDOWN_TEXT), SW_SHOW);
-	ShowWindow(GetDlgItem(Window, IDC_DESYNC_COUNTDOWN_BAR), SW_SHOW);
-	Update_Countdown_Text();
-
-	if (IsHostDialog) {
-		EnableWindow(GetDlgItem(Window, IDC_DESYNC_LOAD), FALSE);
-		EnableWindow(GetDlgItem(Window, IDC_DESYNC_CONTINUE), FALSE);
-	}
-
-	InvalidateRect(Window, nullptr, FALSE);
-#endif
-}
-
-
-/**
- *  Updates the countdown label with the number of seconds remaining.
- *
- *  DISABLED: depends on the multiplayer save-load logic, which is further work.
- */
-void DesyncDialogClass::Update_Countdown_Text()
-{
-#if 0
-	if (!Is_Active() || !LoadCountdownActive || !PendingMultiplayerSaveLoadTime) {
-		return;
-	}
-
-	using namespace std::chrono;
-	int remaining_ms = static_cast<int>(duration_cast<milliseconds>(*PendingMultiplayerSaveLoadTime - steady_clock::now()).count());
-	if (remaining_ms < 0) {
-		remaining_ms = 0;
-	}
-
-	/**
-	 *  Round up so the label shows "5" for the first second, down to "1" for
-	 *  the last, and never a bare "0".
-	 */
-	int seconds = (remaining_ms + 999) / 1000;
-	if (seconds < 1) {
-		seconds = 1;
-	}
-
-	if (seconds == LastCountdownSecond) {
-		return;
-	}
-	LastCountdownSecond = seconds;
-
-	char buf[64];
-	std::snprintf(buf, std::size(buf), "Loading the saved game in %d second%s...", seconds, seconds == 1 ? "" : "s");
-	SetDlgItemText(Window, IDC_DESYNC_COUNTDOWN_TEXT, buf);
-#endif
-}
-
-
-/**
- *  Draws the load countdown progress bar, the same way the vanilla
- *  reconnection dialog draws its sync bars.
- *
- *  DISABLED: depends on the multiplayer save-load logic, which is further work.
- *  The YR-adapted drawing is kept below for when it is re-enabled.
- */
-void DesyncDialogClass::Draw_Countdown_Bar(HWND window)
-{
-	(void)window;
-#if 0
-	if (!LoadCountdownActive || !PendingMultiplayerSaveLoadTime) {
-		return;
-	}
-
-	HWND bar = GetDlgItem(window, IDC_DESYNC_COUNTDOWN_BAR);
-	if (bar == nullptr) {
-		return;
-	}
-
-	/**
-	 *  Get the placeholder control's rectangle, relative to the client
-	 *  area of the game's window (which is what the game surfaces map to).
-	 */
-	RECT winrect;
-	GetWindowRect(bar, &winrect);
-
-	RECT client {};
-	GetClientRect(Game::hWnd, &client);
-	ClientToScreen(Game::hWnd, reinterpret_cast<POINT*>(&client));
-
-	RectangleStruct bar_rect;
-	bar_rect.X = winrect.left - client.left;
-	bar_rect.Y = winrect.top - client.top;
-	bar_rect.Width = winrect.right - winrect.left;
-	bar_rect.Height = winrect.bottom - winrect.top;
-
-	using namespace std::chrono;
-	int remaining = static_cast<int>(duration_cast<milliseconds>(*PendingMultiplayerSaveLoadTime - steady_clock::now()).count());
-	remaining = std::clamp(remaining, 0, LOAD_COUNTDOWN_MS);
-
-	/**
-	 *  The bar shrinks and goes from green to yellow to red as the
-	 *  countdown progresses.
-	 */
-	unsigned color = Drawing::RGB_To_Int(0, 200, 0);
-	const int elapsed = LOAD_COUNTDOWN_MS - remaining;
-	if (elapsed > LOAD_COUNTDOWN_MS * 2 / 5) {
-		color = Drawing::RGB_To_Int(200, 200, 0);
-		if (elapsed > LOAD_COUNTDOWN_MS * 4 / 5) {
-			color = Drawing::RGB_To_Int(200, 0, 0);
-		}
-	}
-
-	bar_rect.Width = std::max(6, bar_rect.Width * remaining / LOAD_COUNTDOWN_MS);
-
-	RectangleStruct surface_rect = DSurface::Alternate->GetRect();
-	DSurface::Alternate->FillRectEx(&surface_rect, &bar_rect, color);
-#endif
 }
 
 
@@ -1116,18 +923,6 @@ bool DesyncDialogClass::Handle_Global_Packet(const ExtGlobalPacketType* packet, 
 
 
 /**
- *  Checks if any multiplayer save that is actually loadable in the current
- *  session exists.
- *
- *  DISABLED: multiplayer save-load is further work; always reports none for now.
- */
-bool DesyncDialogClass::Any_Multiplayer_Save_Exists()
-{
-	return false;
-}
-
-
-/**
  *  The window procedure for both dialog variants.
  */
 BOOL CALLBACK DesyncDialogClass::Dialog_Proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam)
@@ -1180,7 +975,6 @@ BOOL CALLBACK DesyncDialogClass::Dialog_Proc(HWND window, UINT message, WPARAM w
 		case WM_COMMAND:
 			switch (LOWORD(wparam)) {
 
-				case IDC_DESYNC_LOAD:
 				case IDC_DESYNC_CONTINUE:
 				case IDC_DESYNC_QUIT:
 					DesyncDialog.Decision = LOWORD(wparam);

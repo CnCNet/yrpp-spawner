@@ -39,14 +39,13 @@ class IPXAddressClass;
 enum DesyncDialogOutcomeType
 {
 	DESYNC_OUTCOME_CONTINUE,    // Continue playing without the desynced players.
-	DESYNC_OUTCOME_LOAD,        // A multiplayer save load has been scheduled; let it happen.
 	DESYNC_OUTCOME_QUIT,        // The local player wants to exit the game.
 };
 
 /**
  *  Manages the modal "Synchronization Error" dialog that is shown when a
  *  multiplayer game goes out of sync. The game master gets a dialog with
- *  Load Game/Continue/Quit options; everyone else gets a dialog asking them
+ *  Continue/Quit options; everyone else gets a dialog asking them
  *  to wait for the master's decision. Both variants have a chat box.
  *
  *  While the dialog is open, game logic is halted, but the network is
@@ -103,11 +102,7 @@ private:
 	void Send_Continue();
 	void Send_Sign_Off();
 	void Check_Heartbeat_Timeouts();
-	void Start_Load_Countdown();
-	void Update_Countdown_Text();
-	void Draw_Countdown_Bar(HWND window);
 
-	static bool Any_Multiplayer_Save_Exists();
 	static BOOL CALLBACK Dialog_Proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
@@ -135,17 +130,6 @@ private:
 	 *  Is the chat edit box currently showing its hint text?
 	 */
 	bool ChatPlaceholderActive = false;
-
-	/**
-	 *  Is the 5-second countdown to a scheduled multiplayer save load running?
-	 */
-	bool LoadCountdownActive = false;
-
-	/**
-	 *  The whole-second value last shown in the countdown text, so we only
-	 *  refresh the label when it actually changes.
-	 */
-	int LastCountdownSecond = -1;
 
 	/**
 	 *  Players that have left the game while the dialog was open, by house ID.

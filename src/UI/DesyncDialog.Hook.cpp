@@ -119,7 +119,7 @@ DEFINE_HOOK(0x608D27, OwnerDraw_DesyncDialogSidebarButtons, 0x6)
 	GET(int, control_id, EAX);
 
 	if ((dialog_id == IDD_DESYNC_HOST || dialog_id == IDD_DESYNC_WAIT)
-		&& (control_id == IDC_DESYNC_LOAD || control_id == IDC_DESYNC_CONTINUE || control_id == IDC_DESYNC_QUIT)) {
+		&& (control_id == IDC_DESYNC_CONTINUE || control_id == IDC_DESYNC_QUIT)) {
 		return 0x608F34;
 	}
 
