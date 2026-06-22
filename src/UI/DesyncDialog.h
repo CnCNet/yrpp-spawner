@@ -17,7 +17,6 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 *
 *  Dialog shown to the players when a multiplayer game goes out of sync.
-*  Ported from Vinifera (Tiberian Sun) to Yuri's Revenge.
 */
 
 #pragma once

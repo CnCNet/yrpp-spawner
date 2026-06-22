@@ -17,9 +17,8 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Hooks that wire the desync dialog into the engine's networking.
-// Mirrors what Vinifera added to TS's IPX_Call_Back (0x462DC0); here the
-// equivalent function is Network_Call_Back (0x48D1E0).
+// Hooks that wire the desync dialog into the engine's networking, layout and
+// owner-draw, mainly around Network_Call_Back (0x48D1E0) and Execute_DoList.
 
 #include "DesyncDialog.h"
 #include "DesyncDialog.Resource.h"
@@ -153,8 +152,7 @@ DEFINE_HOOK(0x48DAC4, NetworkCallBack_DesyncPacket, 0x5)
  *  Sign-off -> player-left. On NET_SIGN_OFF the engine calls
  *  Destroy_Connection(id, 0) at 0x48D859; tell the dialog so the departing
  *  player shows as "Quit". (Heartbeat timeouts already notify from
- *  DesyncDialogClass::Check_Heartbeat_Timeouts. Mirrors Vinifera's sign-off
- *  path: Destroy_Connection -> Update_Master_After_Player_Removal -> notify.)
+ *  DesyncDialogClass::Check_Heartbeat_Timeouts.)
  *
  *  We perform the drop ourselves and jump past the original call so the notify
  *  runs *after* the connection is gone and the master reassigned: if the host
@@ -176,9 +174,8 @@ DEFINE_HOOK(0x48D859, NetworkCallBack_SignOff_NotifyPlayerLeft, 0x5)
 }
 
 /**
- *  Trigger (Hook A). Mirrors Vinifera replacing Execute_DoList: we detect
- *  per-player desync ourselves and run our dialog instead of the engine's
- *  stock "out of sync" message box + quit.
+ *  Trigger (Hook A). Detects per-player desync at Execute_DoList and runs our
+ *  dialog instead of the engine's stock "out of sync" message box + quit.
  *
  *  Returns 0 from Execute_DoList to the caller (Queue_AI_Multiplayer), whose
  *  failure path then stops the game. Execute_DoList cleans 3 stack args (0xC);

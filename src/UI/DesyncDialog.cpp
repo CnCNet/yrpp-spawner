@@ -16,23 +16,11 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 *
-*  Dialog shown to the players when a multiplayer game goes out of sync.
-*  Ported from Vinifera (Tiberian Sun) to Yuri's Revenge.
-*
-*  Porting notes (TS/Vinifera -> YR):
-*    - Owner-draw dialog API:  OwnerDraw::BeginDialog/SubclassDlg/EndDialog ->
-*      UI::BeginDialog/RegisterWindow/EndDialog; OwnerDraw::DrawItem ->
-*      OwnerDraw::DrawItem; OwnerDraw::DrawDialogBack -> OwnerDraw::Paint;
-*      WinDialogClass::Center_Window -> UI::CenterWindow.
-*    - Listbox cells:  OwnerDraw::CellData -> WWUIListBoxCell (strings are WIDE);
-*      OD_ADDCOLUMN/OD_SETCELL -> WW_LB_ADDCOLUMN/WW_LB_SETCELLTEXT.
-*    - Network transport mirrors the engine's own in-game global packets
-*      (beacons): IPXManagerClass::Send_Global_Message to each peer's address
-*      from SessionClass::Players, packet type ExtGlobalPacketType.
-*    - Master/host:  SessionClass::Am_I_Master / MasterPlayerID (native).
-*    - Per-player out-of-sync / chat scope:  re-created in SessionExt.
-*    - Save-load (Load button, countdown):  ported but DISABLED for now; the
-*      Load button is disabled and the load/countdown code is left under #if 0.
+*  Modal "Synchronization Error" dialog shown when a multiplayer game goes out
+*  of sync. The game master gets Continue/Quit; everyone else waits for the
+*  master's decision. Both variants have a chat box. Game logic is halted while
+*  the dialog is open, but the network is serviced so chat, sign-offs and the
+*  decision still flow.
 */
 
 #include "DesyncDialog.h"
@@ -207,7 +195,7 @@ DesyncDialogOutcomeType DesyncDialogClass::Run()
 
 		/**
 		 *  If the dialog could not be created for whatever reason, fall back
-		 *  to the old behavior of continuing without the desynced players.
+		 *  to continuing without the desynced players.
 		 */
 		Debug::Log("DesyncDialog: failed to create the dialog!\n");
 		outcome = DESYNC_OUTCOME_CONTINUE;
@@ -514,9 +502,8 @@ void DesyncDialogClass::Append_Chat_Line(const char* line)
 /**
  *  Sends the message currently in the chat edit box to the other players.
  *
- *  Vinifera reused the engine's native network chat here. While the game is
- *  frozen the in-game chat UI is not running, so the desync dialog carries its
- *  own chat over a dedicated global packet instead, and echoes it locally.
+ *  The in-game chat UI is not running while the game is frozen, so the dialog
+ *  carries its own chat over a dedicated global packet and echoes it locally.
  */
 void DesyncDialogClass::Send_Chat()
 {
@@ -544,7 +531,7 @@ void DesyncDialogClass::Send_Chat()
 	SendMessage(edit, WW_SETTEXTW, 0, reinterpret_cast<LPARAM>(L""));
 	SetFocus(edit);
 
-	SessionExt::IsChatToAllies = false; // broadcast scope (parity with Vinifera)
+	SessionExt::IsChatToAllies = false; // broadcast to everyone, not just allies
 
 	ExtGlobalPacketType packet {};
 	packet.Command = EXT_NET_DESYNC_CHAT;
@@ -690,10 +677,9 @@ void DesyncDialogClass::Send_Sign_Off()
  *  the game should stop (quit), false to resume.
  *
  *  Called from the Execute_DoList entry hook (which gates the engine's
- *  start-of-game CRC-skip window). Mirrors Vinifera's _Execute_DoList: detect
- *  per-player desync ourselves, show the dialog, and on "continue" drop the
- *  desynced players (whose events are then kept out of the frame by the
- *  out-of-sync skip hook), instead of the engine's stock message-box-and-quit.
+ *  start-of-game CRC-skip window). Replaces the engine's stock
+ *  message-box-and-quit: on "continue" the desynced players are dropped and
+ *  their events kept out of the frame by the out-of-sync skip hook.
  */
 bool DesyncDialogClass::Check_And_Handle_Desync()
 {

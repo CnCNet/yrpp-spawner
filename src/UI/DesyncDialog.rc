@@ -2,7 +2,7 @@
 
 #include "DesyncDialog.Resource.h"
 
-// Multiplayer "Synchronization Error" dialogs, ported from Vinifera.
+// Multiplayer "Synchronization Error" dialogs.
 // Both are full-screen owner-draw child dialogs (STYLE WS_CHILD) laid out like
 // the engine's own in-game dialogs (e.g. "waiting for players", res 234, and the
 // IPX options dialog, res 215): a 533x369 template that the owner-draw framework
