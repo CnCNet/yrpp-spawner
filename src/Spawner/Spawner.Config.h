@@ -124,6 +124,7 @@ public:
 	int PreCalcMaxAhead;
 	byte MaxLatencyLevel;
 	bool ForceMultiplayer;
+	bool Host; // True on the machine hosting the game; announces itself as the game master at start.
 
 	// Tunnel Options
 	int  TunnelId;
@@ -202,6 +203,7 @@ public:
 		, PreCalcMaxAhead { 0 }
 		, MaxLatencyLevel { 0xFF }
 		, ForceMultiplayer { false }
+		, Host { false }
 
 		// Tunnel Options
 		, TunnelId { 0 }

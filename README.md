@@ -38,6 +38,7 @@ Credits
   - Whole lot of desync fixes
 - **[ZivDero](https://github.com/ZivDero)**
   - Handicaps (difficulty & credits) support
+  - Multiplayer desync dialog
 - **[Starkku](https://github.com/Starkku)**
   - Allow customizing whether or not special house is ally to all players via spawn.ini option (#51)
 - **[RAZER](https://github.com/CnCRAZER)**

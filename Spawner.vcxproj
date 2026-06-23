@@ -19,6 +19,8 @@
     <!-- Root -->
     <ClCompile Include="src\UI\Dialogs.cpp" />
     <ClCompile Include="src\UI\Hooks.cpp" />
+    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.cpp" />
+    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.Hook.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -27,6 +29,7 @@
     <!-- Ext -->
     <ClCompile Include="$(ThisDir)\src\Ext\Event\Body.cpp" />
     <ClCompile Include="$(ThisDir)\src\Ext\INIClass\Body.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Ext\Session\Body.cpp" />
     <!-- CnCNetYR -->
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\AppIcon.cpp" />
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Misc.cpp" />
@@ -68,6 +71,7 @@
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
     <!-- Dialogs -->
     <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
+    <ResourceCompile Include="$(ThisDir)\src\UI\DesyncDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
@@ -78,12 +82,16 @@
     <!-- Ext -->
     <ClInclude Include="$(ThisDir)\src\Ext\Event\Body.h" />
     <ClInclude Include="$(ThisDir)\src\Ext\INIClass\Body.h" />
+    <ClInclude Include="$(ThisDir)\src\Ext\Session\Body.h" />
     <!-- CnCNetYR -->
     <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
     <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
+    <ClInclude Include="$(ThisDir)\src\UI\DesyncDialog.h" />
+    <ClInclude Include="$(ThisDir)\src\UI\DesyncDialog.Resource.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
+    <ClInclude Include="$(ThisDir)\src\Spawner\GlobalPacketExt.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
