@@ -742,6 +742,7 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 	 *  mark every player that diverged.
 	 */
 	bool newly_desynced = false;
+	EventClass* offending_event = nullptr;
 	const unsigned int current_frame = static_cast<unsigned int>(Unsorted::CurrentFrame);
 
 	for (int i = 0; i < EventClass::DoList.Count; i++) {
@@ -761,6 +762,9 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 		if (EventClass::LatestFramesCRC[index] != event.FrameInfo.CRC) {
 			SessionExt::Mark_Player_As_Out_of_Sync(id);
 			newly_desynced = true;
+			if (offending_event == nullptr) {
+				offending_event = &event;
+			}
 		}
 	}
 
@@ -769,6 +773,22 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 	}
 
 	Debug::Log("DesyncDialog: desync detected on frame %u.\n", current_frame);
+
+	/**
+	 *  Write the engine's sync-debug dump (SYNC*.TXT) for the offending event,
+	 *  exactly as the stock out-of-sync handler does (Execute_DoList @0x64CC68).
+	 *  Our entry hook intercepts before that handler runs, so reproduce it here
+	 *  or desyncs become impossible to diagnose.
+	 */
+	if (offending_event != nullptr) {
+		if (Game::EnableMPSyncDebug) {
+			for (int slot = 0; slot < 256; slot++) {
+				EventClass::Print_CRCs_All_Players(slot, offending_event);
+			}
+		} else {
+			EventClass::Print_CRCs_Current_Player(offending_event);
+		}
+	}
 
 	const DesyncDialogOutcomeType outcome = Run();
 
