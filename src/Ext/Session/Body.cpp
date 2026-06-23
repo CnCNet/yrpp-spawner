@@ -19,12 +19,10 @@
 
 #include "Body.h"
 
-#include <Spawner/Spawner.h>
 #include <Spawner/GlobalPacketExt.h>
 
 #include <SessionClass.h>
 #include <HouseClass.h>
-#include <Unsorted.h>
 #include <IPX.h>
 #include <IPXManagerClass.h>
 
@@ -33,8 +31,6 @@
 #include <cwchar>
 
 bool SessionExt::IsOutOfSync[SessionExt::MaxPlayers] = {};
-int SessionExt::OutOfSyncFrame = -1;
-bool SessionExt::IsChatToAllies = false;
 
 bool SessionExt::Is_Out_of_Sync(int house_id)
 {
@@ -50,22 +46,6 @@ void SessionExt::Mark_Player_As_Out_of_Sync(int house_id)
 		return;
 
 	IsOutOfSync[house_id] = true;
-
-	if (OutOfSyncFrame < 0)
-		OutOfSyncFrame = Unsorted::CurrentFrame;
-}
-
-void SessionExt::Clear_Out_Of_Sync_Data()
-{
-	for (bool& flag : IsOutOfSync)
-		flag = false;
-
-	OutOfSyncFrame = -1;
-}
-
-bool SessionExt::Is_Spawner_Session()
-{
-	return Spawner::Enabled;
 }
 
 void SessionExt::Set_Master(int house_id)

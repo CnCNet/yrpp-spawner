@@ -33,24 +33,12 @@ namespace SessionExt
 	constexpr int MaxPlayers = 8;
 
 	// --- Per-player out-of-sync tracking (the engine only has one global flag).
-	//     Populated by the desync-detection hook (to be wired in separately) and
-	//     read by the dialog to colour each player's status.
+	//     Set by the desync-detection hook and read by the dialog to colour each
+	//     player's status.
 	extern bool IsOutOfSync[MaxPlayers];
-
-	// Frame the game first went out of sync, or -1.
-	extern int OutOfSyncFrame;
-
-	// Scope flag for an outgoing chat message (true = allies only). Kept for
-	// parity with Vinifera; the desync dialog broadcasts to everyone.
-	extern bool IsChatToAllies;
 
 	bool Is_Out_of_Sync(int house_id);
 	void Mark_Player_As_Out_of_Sync(int house_id);
-	void Clear_Out_Of_Sync_Data();
-
-	// True when running under the spawner (the analog of Vinifera's
-	// SessionClassExtension::IsSpawnerSession).
-	bool Is_Spawner_Session();
 
 	// Assigns the game master/host, writing the engine's native MasterPlayerID
 	// and MasterPlayerName so SessionClass::Am_I_Master() agrees.

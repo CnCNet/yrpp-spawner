@@ -558,8 +558,6 @@ void DesyncDialogClass::Send_Chat()
 
 	SetFocus(edit);
 
-	SessionExt::IsChatToAllies = false; // broadcast to everyone, not just allies
-
 	ExtGlobalPacketType packet {};
 	packet.Command = EXT_NET_DESYNC_CHAT;
 	Local_Player_Name(packet.Name, sizeof(packet.Name));
@@ -789,7 +787,6 @@ bool DesyncDialogClass::Check_And_Handle_Desync()
 			}
 		}
 		SessionExt::Update_Master_After_Player_Removal();
-		SessionExt::OutOfSyncFrame = -1;
 		return false;
 
 	case DESYNC_OUTCOME_QUIT:
