@@ -26,10 +26,13 @@
 // passes over the cell(s) which later leads to pathfinding differences.
 
 #include <Utilities/Macro.h>
+#include <Utilities/Debug.h>
 #include <CellClass.h>
 #include <FootClass.h>
 #include <MapClass.h>
 #include <TechnoClass.h>
+
+#include <intrin.h>
 
 // CellClass::RecalcAttributes takes a cell level; -1 means "recalc but keep the
 // current level unchanged" (see CellClass.h).
@@ -351,3 +354,59 @@ DEFINE_HOOK(0x70F1E3, TechnoClass_DrawBehind_InvisibleDesyncFix, 0x8)
 // TODO: Remove when Phobos Release is greater than 0.4.0.2
 // as that has a better fix for this.
 DEFINE_PATCH(0x5C0E30, 0xB0, 0x01)
+
+// ============================================================
+// SSE FP-state (MXCSR) desync fix - renderer/GPU driver
+// ============================================================
+// On some machines the GPU driver corrupts the game thread's SSE control
+// register (MXCSR). Confirmed with Intel D3D9-on-D3D12 UMD (igd9trinity32.dll):
+// cnc-ddraw creates its D3D9 device synchronously on the game thread inside
+// IDirectDraw::SetDisplayMode, and the driver's CreateDevice returns with
+// MXCSR rounding control flipped from round-to-nearest (0x1F80) to
+// round-toward-zero (0x7FA0).
+//
+// The vanilla game is pure x87 and immune, but everything compiled with SSE
+// (this spawner, Phobos, Ares) then computes differently from every other
+// player: '100%' parses as 0.99999994f instead of 1.0f, that lands in
+// Ground.Cost -> movement speed -> desync as soon as a unit moves.
+//
+// Fixed:
+//  1. right after SetDisplayMode returns - kills the observed corruption at
+//     the source, before any INI parsing
+//  2. at Spawner::StartGame
+//  3. at the start of every logic frame - covers mid-game corruption
+
+namespace FPStateGuard
+{
+	static constexpr unsigned int DangerMask = 0xE040;
+	static constexpr unsigned int DefaultMxcsr = 0x1F80;
+
+	void Repair(const char* pSite)
+	{
+		const unsigned int mxcsr = _mm_getcsr();
+		if ((mxcsr & DangerMask) == 0)
+			return;
+
+		_mm_setcsr(DefaultMxcsr);
+
+		static int logged = 0;
+		if (logged < 10)
+		{
+			++logged;
+			Debug::Log("[Spawner] Repaired corrupted SSE FP state at %s: MXCSR %04X -> %04X (GPU driver bug, see cnc-ddraw#453)\n",
+				pSite, mxcsr & 0xFFFF, DefaultMxcsr);
+		}
+	}
+}
+
+DEFINE_HOOK(0x4A4420, SetVideoMode_RepairFPState, 0x9)
+{
+	FPStateGuard::Repair("SetDisplayMode");
+	return 0;
+}
+
+DEFINE_HOOK(0x55B4E1, LogicClass_Update_RepairFPState, 0x5)
+{
+	FPStateGuard::Repair("LogicFrameBegin");
+	return 0;
+}

@@ -81,6 +81,7 @@
     <!-- CnCNetYR -->
     <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
+    <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
     <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
