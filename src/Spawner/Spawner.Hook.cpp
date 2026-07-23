@@ -291,3 +291,64 @@ DEFINE_HOOK(0x65F57F, BriefingDialog_MissionININame, 0x6)
 
 	return 0;
 }
+
+// ============================================================================
+// Fix: Show score screen after cooperative campaign multiplayer game ends
+// ============================================================================
+// Problem: When GameMode is LAN/Internet and session is connected, the game
+// skips the score screen (sub_5C9720) and calls sub_52FEC0 instead.
+// This causes cooperative campaign multiplayer games to skip the score screen.
+//
+// Solution: Hook the call to sub_52FEC0 and check if the current MP game mode
+// is cooperative (MapFilter == "cooperative"). This supports multiple
+// cooperative mode indices defined in mpmodes.ini.
+// ============================================================================
+
+static bool IsCooperativeMode()
+{
+	if (!SessionClass::Instance.MPGameMode)
+		return false;
+
+	auto& mapFilter = SessionClass::Instance.MPGameMode->MapFilter;
+	return mapFilter.Contains("cooperative");
+}
+
+// Hook for sub_685670 (victory path)
+// Original code at 0x685865: call sub_52FEC0 (5 bytes)
+// This is called when GameMode is LAN/Internet and session is connected,
+// which skips the score screen.
+//
+// We hook this call and redirect to the score screen path when it's a
+// cooperative campaign game.
+DEFINE_HOOK(0x685865, Game_Ending_Victory_CooperativeScoreScreen, 0x5)
+{
+	enum
+	{
+		Show_Score_Screen = 0x68586C,  // Jump to show score screen
+	};
+
+	if (Spawner::Enabled && SessionClass::IsMultiplayer() && IsCooperativeMode())
+		return Show_Score_Screen;
+
+	return 0;
+}
+
+// Hook for sub_685DC0 (defeat path)
+// Original code at 0x685FAF: call sub_52FEC0 (5 bytes)
+// This is called when GameMode is LAN/Internet and session is connected,
+// which skips the score screen.
+//
+// We hook this call and redirect to the score screen path when it's a
+// cooperative campaign game.
+DEFINE_HOOK(0x685FAF, Game_Ending_Defeat_CooperativeScoreScreen, 0x5)
+{
+	enum
+	{
+		Show_Score_Screen = 0x685FB6,  // Jump to show score screen
+	};
+
+	if (Spawner::Enabled && SessionClass::IsMultiplayer() && IsCooperativeMode())
+		return Show_Score_Screen;
+
+	return 0;
+}
