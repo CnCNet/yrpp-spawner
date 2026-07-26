@@ -245,7 +245,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 	}
 
 	{ // Added Human Players
-		NetHack::PortHack = true;
+		NetHack::RequirePortMatch = false;
 		const char maxPlayers = Spawner::Config->IsCampaign ? 1 : (char)std::size(Spawner::Config->Players);
 		for (char playerIndex = 0; playerIndex < maxPlayers; playerIndex++)
 		{
@@ -281,7 +281,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 				ListAddress::Array[playerIndex - 1].Ip = Ip;
 				ListAddress::Array[playerIndex - 1].Port = Port;
 				if (Port != (u_short)Spawner::Config->ListenPort)
-					NetHack::PortHack = false;
+					NetHack::RequirePortMatch = true;
 			}
 		}
 
