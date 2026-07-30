@@ -20,6 +20,7 @@
 #include "Spawner.h"
 
 #include <CCFileClass.h>
+#include <FPSCounter.h>
 #include <HouseClass.h>
 #include <PacketClass.h>
 #include <ScenarioClass.h>
@@ -28,6 +29,10 @@
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
+#include <cstdio>
+#include <cstring>
+#include <Windows.h>
+
 bool __forceinline IsStatisticsEnabled()
 {
 	return Spawner::Active
@@ -35,7 +40,84 @@ bool __forceinline IsStatisticsEnabled()
 		&& !SessionClass::IsCampaign();
 }
 
-// Write stats.dmp
+static void WriteDTALog()
+{
+	if (!Spawner::Active)
+		return;
+
+	if (!Spawner::GetConfig()->GenerateStatistics)
+		return;
+
+	CreateDirectoryA("debug", nullptr);
+
+	CCFileClass file = CCFileClass("debug\\Statistic.log");
+	if (!file.Open(FileAccessMode::Write))
+		return;
+
+	using GetUnitCountFunc = int(__fastcall*)(void*);
+	const auto GetUnitCount = reinterpret_cast<GetUnitCountFunc>(0x49FB60);
+
+	const int count = HouseClass::Array.Count;
+
+	for (int i = 0; i < count; i++)
+	{
+		const auto pHouse = HouseClass::Array.GetItem(i);
+		if (!pHouse)
+			continue;
+
+		if (pHouse->Type && pHouse->Type->MultiplayPassive)
+			continue;
+
+		if (pHouse->IsInitiallyObserver())
+			continue;
+
+		char name[64] = { 0 };
+		if (pHouse->IsHumanPlayer)
+		{
+			WideCharToMultiByte(CP_UTF8, 0, pHouse->UIName, -1, name, sizeof(name), nullptr, nullptr);
+		}
+		else
+		{
+			strcpy_s(name, "Computer");
+		}
+
+		const char* result = pHouse->Defeated ? "Loser" : "Winner";
+
+		int lost = *reinterpret_cast<const int*>(
+			reinterpret_cast<const char*>(pHouse) + 21556)
+			+ *reinterpret_cast<const int*>(
+				reinterpret_cast<const char*>(pHouse) + 21640);
+
+		const int* k1 = reinterpret_cast<const int*>(
+			reinterpret_cast<const char*>(pHouse) + 21476);
+		const int* k2 = reinterpret_cast<const int*>(
+			reinterpret_cast<const char*>(pHouse) + 21560);
+		int kills = 0;
+		for (int j = 0; j < 20; ++j) kills += k1[j];
+		for (int j = 0; j < 20; ++j) kills += k2[j];
+
+		int built = GetUnitCount(reinterpret_cast<char*>(pHouse) + 21920)
+			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21940)
+			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21960)
+			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21980);
+
+		int score = *reinterpret_cast<const int*>(
+			reinterpret_cast<const char*>(pHouse) + 21736);
+
+		char buffer[256] = { 0 };
+		sprintf_s(buffer, "%s: %s\n Lost = %d\n Kills = %d\n Built = %d\n Score = %d\n",
+			name, result, lost, kills, built, score);
+		file.WriteBytes(buffer, static_cast<int>(strlen(buffer)));
+	}
+
+	char fpsBuffer[128] = { 0 };
+	sprintf_s(fpsBuffer, "Game loop finished. Average FPS = %d\n",
+		static_cast<int>(FPSCounter::GetAverageFrameRate()));
+	file.WriteBytes(fpsBuffer, static_cast<int>(strlen(fpsBuffer)));
+
+	file.Close();
+}
+
 DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 {
 	if (IsStatisticsEnabled())
@@ -50,12 +132,20 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 			statsFile.Close();
 		}
 
+		WriteDTALog();
+
 		bool& bStatisticsPacketSent = *reinterpret_cast<bool*>(0xA8F900);
 		bStatisticsPacketSent = true;
 
 		return 0x6C87B8;
 	}
 
+	return 0;
+}
+
+DEFINE_HOOK(0x5C9D47, MPScore_InitDialog_WriteDTALog, 0x6)
+{
+	WriteDTALog();
 	return 0;
 }
 
