@@ -54,9 +54,6 @@ static void WriteDTALog()
 	if (!file.Open(FileAccessMode::Write))
 		return;
 
-	using GetUnitCountFunc = int(__fastcall*)(void*);
-	const auto GetUnitCount = reinterpret_cast<GetUnitCountFunc>(0x49FB60);
-
 	const int count = HouseClass::Array.Count;
 
 	for (int i = 0; i < count; i++)
@@ -83,26 +80,19 @@ static void WriteDTALog()
 
 		const char* result = pHouse->Defeated ? "Loser" : "Winner";
 
-		int lost = *reinterpret_cast<const int*>(
-			reinterpret_cast<const char*>(pHouse) + 21556)
-			+ *reinterpret_cast<const int*>(
-				reinterpret_cast<const char*>(pHouse) + 21640);
 
-		const int* k1 = reinterpret_cast<const int*>(
-			reinterpret_cast<const char*>(pHouse) + 21476);
-		const int* k2 = reinterpret_cast<const int*>(
-			reinterpret_cast<const char*>(pHouse) + 21560);
+		int lost = pHouse->TotalKilledUnits + pHouse->TotalKilledBuildings;
+
 		int kills = 0;
-		for (int j = 0; j < 20; ++j) kills += k1[j];
-		for (int j = 0; j < 20; ++j) kills += k2[j];
+		for (int j = 0; j < 20; ++j) kills += pHouse->KilledUnitsOfHouses[j];
+		for (int j = 0; j < 20; ++j) kills += pHouse->KilledBuildingsOfHouses[j];
 
-		int built = GetUnitCount(reinterpret_cast<char*>(pHouse) + 21920)
-			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21940)
-			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21960)
-			+ GetUnitCount(reinterpret_cast<char*>(pHouse) + 21980);
+		int built = pHouse->FactoryProducedBuildingTypes.GetTotal()
+			+ pHouse->FactoryProducedUnitTypes.GetTotal()
+			+ pHouse->FactoryProducedInfantryTypes.GetTotal()
+			+ pHouse->FactoryProducedAircraftTypes.GetTotal();
 
-		int score = *reinterpret_cast<const int*>(
-			reinterpret_cast<const char*>(pHouse) + 21736);
+		int score = pHouse->PointTotal;
 
 		char buffer[256] = { 0 };
 		sprintf_s(buffer, "%s: %s\n Lost = %d\n Kills = %d\n Built = %d\n Score = %d\n",
