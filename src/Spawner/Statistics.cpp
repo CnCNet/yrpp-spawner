@@ -61,12 +61,30 @@ static void WriteDTALog()
 	// MPScore_InitDialog (0x5C9D42) calls sub_5C98A0.
 	const int count = SessionClass::MPScoreCount;
 
-	for (int i = 0; i < count; i++)
+	// Walk HouseClass::Array in the same order as sub_5C98A0 to map each
+	// MPScores entry back to its HouseClass, so we can tell human players
+	// from AI players. AI players are always named "Computer" regardless of
+	// the localised UIName the game copies into the score array.
+	int scoreIndex = 0;
+
+	for (auto pHouse : HouseClass::Array)
 	{
-		const auto& entry = SessionClass::MPScores[i];
+		// Same filter as sub_5C98A0: skip null, passive, and observer houses.
+		if (!pHouse
+			|| (pHouse->Type && pHouse->Type->MultiplayPassive)
+			|| pHouse->IsObserver())
+			continue;
+
+		if (scoreIndex >= count)
+			break;
+
+		const auto& entry = SessionClass::MPScores[scoreIndex];
+
+		const wchar_t* display_name = pHouse->IsHumanPlayer
+			? entry.Name : L"Computer";
 
 		char name[64] = { 0 };
-		WideCharToMultiByte(CP_UTF8, 0, entry.Name, -1, name, sizeof(name), nullptr, nullptr);
+		WideCharToMultiByte(CP_UTF8, 0, display_name, -1, name, sizeof(name), nullptr, nullptr);
 
 		const char* result = entry.Wins ? "Winner" : "Loser";
 
@@ -79,6 +97,8 @@ static void WriteDTALog()
 		sprintf_s(buffer, "%s: %s\n Lost = %d\n Kills = %d\n Built = %d\n Score = %d\n",
 			name, result, lost, kills, built, score);
 		file.WriteBytes(buffer, static_cast<int>(strlen(buffer)));
+
+		++scoreIndex;
 	}
 
 	char fpsBuffer[128] = { 0 };
