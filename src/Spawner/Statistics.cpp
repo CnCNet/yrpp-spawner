@@ -29,6 +29,31 @@
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
+
+// MP score global statistics array, populated by the original sub_5C98A0
+// during MPScore_InitDialog. The in-game score screen reads from the same
+// array, so reading it here guarantees DTA.LOG matches the in-game display
+// exactly (including Score's if(>0) filter and the winner bonus).
+// Each record is 112 bytes with 16-byte field spacing (Westwood-style align).
+struct MPScoreStatsEntry
+{
+	wchar_t Name[20];   // 0x00 Player name (copy of pHouse->UIName)
+	int    Scheme;      // 0x28 Scenario index
+	int    Winner;      // 0x2C 1=winner 0=loser
+	int    Lost;        // 0x30 Lost = TotalKilledUnits + TotalKilledBuildings
+	int    _pad0[3];    // 0x34
+	int    Kills;       // 0x40 Kills = sum(KilledUnitsOfHouses) + sum(KilledBuildingsOfHouses)
+	int    _pad1[3];    // 0x44
+	int    Built;       // 0x50 Built = sum of 4 FactoryProduced*Types.GetTotal()
+	int    _pad2[3];    // 0x54
+	int    Score;       // 0x60 Score (with if(>0) filter and winner bonus applied)
+	int    _pad3[3];    // 0x64
+};
+static_assert(sizeof(MPScoreStatsEntry) == 112, "MPScoreStatsEntry size mismatch");
+
+DEFINE_POINTER(MPScoreStatsEntry, MPScoreStatsArray, 0xA8D1FCu)
+DEFINE_POINTER(int, MPScoreStatsCount, 0xA8D580u)
+
 bool __forceinline IsStatisticsEnabled()
 {
 	return Spawner::Active
@@ -50,49 +75,23 @@ static void WriteDTALog()
 	if (!file.Open(FileAccessMode::Write))
 		return;
 
-	const int count = HouseClass::Array.Count;
+	// Read from the global array populated by sub_5C98A0, the same data
+	// source as the in-game score screen. The array is filled after
+	// MPScore_InitDialog (0x5C9D42) calls sub_5C98A0.
+	const int count = *MPScoreStatsCount;
 
 	for (int i = 0; i < count; i++)
 	{
-		const auto pHouse = HouseClass::Array.GetItem(i);
-		if (!pHouse)
-			continue;
-
-		if (pHouse->Type && pHouse->Type->MultiplayPassive)
-			continue;
-
-		if (pHouse->IsInitiallyObserver())
-			continue;
+		const auto& entry = MPScoreStatsArray[i];
 
 		char name[64] = { 0 };
-		if (pHouse->IsHumanPlayer)
-		{
-			WideCharToMultiByte(CP_UTF8, 0, pHouse->UIName, -1, name, sizeof(name), nullptr, nullptr);
-		}
-		else
-		{
-			strcpy_s(name, "Computer");
-		}
+		WideCharToMultiByte(CP_UTF8, 0, entry.Name, -1, name, sizeof(name), nullptr, nullptr);
 
-		const char* result = pHouse->Defeated ? "Loser" : "Winner";
-
-
-		int lost = pHouse->TotalKilledUnits + pHouse->TotalKilledBuildings;
-
-		int kills = 0;
-		for (int j = 0; j < 20; ++j) kills += pHouse->KilledUnitsOfHouses[j];
-		for (int j = 0; j < 20; ++j) kills += pHouse->KilledBuildingsOfHouses[j];
-
-		int built = pHouse->FactoryProducedBuildingTypes.GetTotal()
-			+ pHouse->FactoryProducedUnitTypes.GetTotal()
-			+ pHouse->FactoryProducedInfantryTypes.GetTotal()
-			+ pHouse->FactoryProducedAircraftTypes.GetTotal();
-
-		int score = pHouse->PointTotal;
+		const char* result = entry.Winner ? "Winner" : "Loser";
 
 		char buffer[256] = { 0 };
 		sprintf_s(buffer, "%s: %s\n Lost = %d\n Kills = %d\n Built = %d\n Score = %d\n",
-			name, result, lost, kills, built, score);
+			name, result, entry.Lost, entry.Kills, entry.Built, entry.Score);
 		file.WriteBytes(buffer, static_cast<int>(strlen(buffer)));
 	}
 
@@ -118,8 +117,6 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 			statsFile.Close();
 		}
 
-		WriteDTALog();
-
 		bool& bStatisticsPacketSent = *reinterpret_cast<bool*>(0xA8F900);
 		bStatisticsPacketSent = true;
 
@@ -131,6 +128,9 @@ DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 
 DEFINE_HOOK(0x5C9D47, MPScore_InitDialog_WriteDTALog, 0x6)
 {
+	// sub_5C98A0 has just finished (called at 0x5C9D42), so the global
+	// statistics array is now populated with the exact same Score shown
+	// in-game (including the if(>0) filter and the winner bonus).
 	WriteDTALog();
 	return 0;
 }
