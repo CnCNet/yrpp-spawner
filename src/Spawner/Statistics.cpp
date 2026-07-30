@@ -29,10 +29,6 @@
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
-#include <cstdio>
-#include <cstring>
-#include <Windows.h>
-
 bool __forceinline IsStatisticsEnabled()
 {
 	return Spawner::Active
