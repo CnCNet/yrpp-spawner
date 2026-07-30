@@ -103,6 +103,7 @@ static void WriteDTALog()
 	file.Close();
 }
 
+// Write stats.dmp
 DEFINE_HOOK(0x6C856C, SendStatisticsPacket_WriteStatisticsDump, 0x5)
 {
 	if (IsStatisticsEnabled())
