@@ -30,29 +30,10 @@
 #include <Utilities/Macro.h>
 
 
-// MP score global statistics array, populated by the original sub_5C98A0
-// during MPScore_InitDialog. The in-game score screen reads from the same
-// array, so reading it here guarantees DTA.LOG matches the in-game display
-// exactly (including Score's if(>0) filter and the winner bonus).
-// Each record is 112 bytes with 16-byte field spacing (Westwood-style align).
-struct MPScoreStatsEntry
-{
-	wchar_t Name[20];   // 0x00 Player name (copy of pHouse->UIName)
-	int    Scheme;      // 0x28 Scenario index
-	int    Winner;      // 0x2C 1=winner 0=loser
-	int    Lost;        // 0x30 Lost = TotalKilledUnits + TotalKilledBuildings
-	int    _pad0[3];    // 0x34
-	int    Kills;       // 0x40 Kills = sum(KilledUnitsOfHouses) + sum(KilledBuildingsOfHouses)
-	int    _pad1[3];    // 0x44
-	int    Built;       // 0x50 Built = sum of 4 FactoryProduced*Types.GetTotal()
-	int    _pad2[3];    // 0x54
-	int    Score;       // 0x60 Score (with if(>0) filter and winner bonus applied)
-	int    _pad3[3];    // 0x64
-};
-static_assert(sizeof(MPScoreStatsEntry) == 112, "MPScoreStatsEntry size mismatch");
-
-DEFINE_POINTER(MPScoreStatsEntry, MPScoreStatsArray, 0xA8D1FCu)
-DEFINE_POINTER(int, MPScoreStatsCount, 0xA8D580u)
+// MAX_MULTI_GAMES index used by the single-result MP score screen.
+// The array supports multi-game (tournament) accumulation, but in RA2/YR's
+// standard non-tournament MPScore dialog sub_5C98A0 only writes slot 0.
+static constexpr int ScoreGameSlot = 0;
 
 bool __forceinline IsStatisticsEnabled()
 {
@@ -75,23 +56,28 @@ static void WriteDTALog()
 	if (!file.Open(FileAccessMode::Write))
 		return;
 
-	// Read from the global array populated by sub_5C98A0, the same data
-	// source as the in-game score screen. The array is filled after
+	// Read from the SessionClass::MPScores array populated by sub_5C98A0, the
+	// same data source as the in-game score screen. The array is filled after
 	// MPScore_InitDialog (0x5C9D42) calls sub_5C98A0.
-	const int count = *MPScoreStatsCount;
+	const int count = SessionClass::MPScoreCount;
 
 	for (int i = 0; i < count; i++)
 	{
-		const auto& entry = MPScoreStatsArray[i];
+		const auto& entry = SessionClass::MPScores[i];
 
 		char name[64] = { 0 };
 		WideCharToMultiByte(CP_UTF8, 0, entry.Name, -1, name, sizeof(name), nullptr, nullptr);
 
-		const char* result = entry.Winner ? "Winner" : "Loser";
+		const char* result = entry.Wins ? "Winner" : "Loser";
+
+		const int lost  = entry.Lost[ScoreGameSlot];
+		const int kills = entry.Kills[ScoreGameSlot];
+		const int built = entry.Built[ScoreGameSlot];
+		const int score = entry.Score[ScoreGameSlot];
 
 		char buffer[256] = { 0 };
 		sprintf_s(buffer, "%s: %s\n Lost = %d\n Kills = %d\n Built = %d\n Score = %d\n",
-			name, result, entry.Lost, entry.Kills, entry.Built, entry.Score);
+			name, result, lost, kills, built, score);
 		file.WriteBytes(buffer, static_cast<int>(strlen(buffer)));
 	}
 
