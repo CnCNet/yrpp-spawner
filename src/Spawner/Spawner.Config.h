@@ -147,6 +147,7 @@ public:
 	bool ContinueWithoutHumans;
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
+	bool DisableSaveLoad;
 #ifdef IS_CNCNET_YR_VER
 	bool DisableChat;
 #endif
@@ -245,6 +246,7 @@ public:
 		, ContinueWithoutHumans { false }
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
+		, DisableSaveLoad { false }
 #ifdef IS_CNCNET_YR_VER
 		, DisableChat { false }
 #endif
