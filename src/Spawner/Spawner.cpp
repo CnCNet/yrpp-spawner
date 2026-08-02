@@ -24,6 +24,7 @@
 #include "ProtocolZero.LatencyLevel.h"
 #include <Utilities/Debug.h>
 #include <Utilities/DumperTypes.h>
+#include <Misc/Bugfixes.Desyncs.h>
 
 #include <GameOptionsClass.h>
 #include <GameStrings.h>
@@ -64,6 +65,8 @@ bool Spawner::StartGame()
 	Spawner::Active = true;
 	Game::IsActive = true;
 	Game::InitUIStuff();
+
+	FPStateGuard::Repair("Spawner::StartGame");
 
 	char* pScenarioName = Config->ScenarioName;
 
