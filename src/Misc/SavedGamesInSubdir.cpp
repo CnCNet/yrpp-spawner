@@ -343,3 +343,118 @@ DEFINE_HOOK(0x55DC85, MainLoop_SaveGame_SanitizeFilename, 0x7)
 
 	return 0x55DC90;
 }
+
+#pragma region nosaveload
+#include <WWMessageBox.h>
+#include <LoadProgressManager.h>
+#include <array>
+
+const wchar_t* Fetch_CSF_Text(const char* label, const wchar_t* defaultText)
+{
+	std::wstring_view msg = StringTable::LoadString(label);
+	if (msg.empty() || msg.starts_with(L"MISSING"))
+		return defaultText;
+	return msg.data();
+}
+
+DEFINE_HOOK(0x686089, DoLose_RetryDialogForCampaigns, 0x7)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	WWMessageBox::Instance.Process(
+		Fetch_CSF_Text("TXT_HARDCORE_FAILURE", L"GG"),
+		StringTable::LoadString("TXT_OK"), nullptr, nullptr);
+
+	return 0x6860EE;
+}
+
+// disable load, save and delete buttons on the ingame menu
+
+void PatchDialog181()
+{
+	auto h = Game::hInstance;
+	auto r = FindResourceA(h, MAKEINTRESOURCE(181), RT_DIALOG);
+	if (!r) return;
+
+	auto sz = SizeofResource(h, r);
+	auto p = (BYTE*)LockResource(LoadResource(h, r));
+	if (!p) return;
+
+	DWORD old;
+	VirtualProtect(p, sz, PAGE_READWRITE, &old);
+	using namespace std::literals;
+	for (DWORD i = 0; i < sz; i += 2)
+		for (auto [f, t] : { std::pair{L"GUI:SaveGame"sv, L"GUI:CantSave"sv},
+							{L"GUI:LoadGame"sv, L"GUI:CantLoad"sv} })
+		{
+			if (!wcsncmp((wchar_t*)(p + i), f.data(), f.size()))
+			{
+				memcpy(p + i, t.data(), t.size() * 2);
+				memset(p + i + t.size() * 2, 0, (f.size() - t.size()) * 2);
+			}
+		}
+	VirtualProtect(p, sz, old, &old);
+}
+
+DEFINE_HOOK(0x4F17F6, sub_4F1720_DisableSaves, 0x6)
+{
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+	GET(HWND, hDlg, EBP);
+
+	enum { LoadGameButton = 1310, DeleteGameButton = 1312 };
+
+	for (int item = LoadGameButton; item <= DeleteGameButton; ++item)
+	{
+		if (HWND hItem = GetDlgItem(hDlg, item))
+			EnableWindow(hItem, FALSE);
+	}
+
+	return 0x4F1834;
+}
+std::wstring HardCoreText {};
+DEFINE_HOOK(0x553076, LoadProgressMgr_Draw_ExtraText, 0x5)
+{
+	GET(LoadProgressManager*, self, EBP);
+	if (!Spawner::GetConfig()->DisableSaveLoad) return 0;
+
+	Point2D pos
+	{
+		self->TitleBarRect.X + self->TitleBarRect.Width - 100,
+		self->TitleBarRect.Y + 10
+	};
+	if (HardCoreText.empty())
+		HardCoreText = Fetch_CSF_Text("TXT_HARDCORE_MODE", L"HardCore");
+	LEA_STACK(RectangleStruct*, pBnd, STACK_OFFSET(0x1268, -0x1204));
+	if (auto logo = FileSystem::LoadSHPFile("hardcorelogo.shp"))
+	{
+		self->ProgressSurface->DrawSHP(FileSystem::PALETTE_PAL, logo, 0, &pos, pBnd, BlitterFlags::bf_400, 0, 0, ZGradient::Ground, 1000, 0, nullptr, 0, 0, 0);
+	}
+	else
+	{
+		self->ProgressSurface->DrawText(HardCoreText.c_str(), &pos, COLOR_RED);
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x683C14, ScenarioClass_StartScenario_IntroMovie, 0x8)
+{
+	GET_STACK(DWORD const, caller, 0xFC);
+	if (caller == 0x686501 || caller == 0x68629B)
+		return 0x683CF7;
+	return 0;
+}
+
+DEFINE_HOOK(0x6D0E20, TabClass_Draw_ccb, 0x6)
+{
+	if (HardCoreText.empty()) return 0;
+	auto rect = DSurface::Temp->GetRect();
+	auto wanted = Drawing::GetTextDimensions(HardCoreText.c_str(), { 0,0 }, 0);
+	Point2D pt {
+		rect.Width - wanted.Width - 40,
+		rect.Height - 24
+	};
+	DSurface::Temp->DrawText(HardCoreText.c_str(), &pt, COLOR_WHITE);
+	return 0;
+}
+#pragma endregion
