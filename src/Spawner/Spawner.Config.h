@@ -123,6 +123,7 @@ public:
 	int MaxAhead;
 	int PreCalcMaxAhead;
 	byte MaxLatencyLevel;
+	bool FrameAwareGate;
 	bool ForceMultiplayer;
 
 	// Tunnel Options
@@ -201,6 +202,7 @@ public:
 		, MaxAhead { -1 }
 		, PreCalcMaxAhead { 0 }
 		, MaxLatencyLevel { 0xFF }
+		, FrameAwareGate { true }
 		, ForceMultiplayer { false }
 
 		// Tunnel Options
