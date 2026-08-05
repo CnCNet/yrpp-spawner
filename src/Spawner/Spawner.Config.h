@@ -123,6 +123,8 @@ public:
 	int MaxAhead;
 	int PreCalcMaxAhead;
 	byte MaxLatencyLevel;
+	bool FastRetransmit;
+	bool RetransmitBackoff;
 	bool PacketRedundancy;
 	int  RedundancyCopies;
 	bool AdaptiveRedundancy;
@@ -204,6 +206,8 @@ public:
 		, MaxAhead { -1 }
 		, PreCalcMaxAhead { 0 }
 		, MaxLatencyLevel { 0xFF }
+		, FastRetransmit { true }
+		, RetransmitBackoff { true }
 		, PacketRedundancy { true }
 		, RedundancyCopies { 2 }
 		, AdaptiveRedundancy { true }
