@@ -123,6 +123,9 @@ public:
 	int MaxAhead;
 	int PreCalcMaxAhead;
 	byte MaxLatencyLevel;
+	bool PacketRedundancy;
+	int  RedundancyCopies;
+	bool AdaptiveRedundancy;
 	bool ForceMultiplayer;
 
 	// Tunnel Options
@@ -201,6 +204,9 @@ public:
 		, MaxAhead { -1 }
 		, PreCalcMaxAhead { 0 }
 		, MaxLatencyLevel { 0xFF }
+		, PacketRedundancy { true }
+		, RedundancyCopies { 2 }
+		, AdaptiveRedundancy { true }
 		, ForceMultiplayer { false }
 
 		// Tunnel Options

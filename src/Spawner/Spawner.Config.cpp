@@ -85,6 +85,9 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		MaxAhead         = pINI->ReadInteger(pSettingsSection, "MaxAhead", MaxAhead);
 		PreCalcMaxAhead  = pINI->ReadInteger(pSettingsSection, "PreCalcMaxAhead", PreCalcMaxAhead);
 		MaxLatencyLevel  = (byte)pINI->ReadInteger(pSettingsSection, "MaxLatencyLevel", (int)MaxLatencyLevel);
+		PacketRedundancy = pINI->ReadBool(pSettingsSection, "PacketRedundancy", PacketRedundancy);
+		RedundancyCopies = pINI->ReadInteger(pSettingsSection, "RedundancyCopies", RedundancyCopies);
+		AdaptiveRedundancy = pINI->ReadBool(pSettingsSection, "AdaptiveRedundancy", AdaptiveRedundancy);
 		ForceMultiplayer = pINI->ReadBool(pSettingsSection, "ForceMultiplayer", ForceMultiplayer);
 	}
 
