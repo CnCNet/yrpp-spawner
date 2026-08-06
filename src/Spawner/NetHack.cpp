@@ -16,6 +16,7 @@
 
 #include "NetHack.h"
 #include "Spawner.h"
+#include "PacketRedundancy.h"
 
 #include <windows.h>
 #include <stdint.h>
@@ -52,7 +53,12 @@ int WINAPI NetHack::SendTo(
 	tempDest.sin_port = player.Port;
 	tempDest.sin_addr.S_un.S_addr = player.Ip;
 
-	return Tunnel::SendTo(sockfd, buf, len, flags, &tempDest, addrlen);
+	const int copies = PacketRedundancy::CopiesFor(buf, len, index);
+
+	int ret = Tunnel::SendTo(sockfd, buf, len, flags, &tempDest, addrlen);
+	for (int i = 1; i < copies; ++i)
+		PacketRedundancy::NoteExtraSend(Tunnel::SendTo(sockfd, buf, len, flags, &tempDest, addrlen));
+	return ret;
 }
 
 int WINAPI NetHack::RecvFrom(
@@ -116,10 +122,11 @@ int WINAPI Tunnel::SendTo(
 	*BufFrom = Tunnel::Id;
 	*BufTo = dest_addr->sin_port;
 
-	dest_addr->sin_port = Tunnel::Port;
-	dest_addr->sin_addr.S_un.S_addr = Tunnel::Ip;
+	sockaddr_in sendDest = *dest_addr;
+	sendDest.sin_port = Tunnel::Port;
+	sendDest.sin_addr.S_un.S_addr = Tunnel::Ip;
 
-	return sendto(sockfd, TempBuf, len + 4, flags, (struct sockaddr*)dest_addr, addrlen);
+	return sendto(sockfd, TempBuf, len + 4, flags, (struct sockaddr*)&sendDest, addrlen);
 }
 
 int WINAPI Tunnel::RecvFrom(
