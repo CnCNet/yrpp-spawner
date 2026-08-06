@@ -43,8 +43,6 @@ namespace
 
 	int  lateDataLogged = 0;
 
-	constexpr unsigned TheirBase = 0xAFA358;
-
 	void ClearWatermarks()
 	{
 		for (int i = 0; i < FrameGate::MaxPeers; ++i)
@@ -129,10 +127,16 @@ bool FrameGate::AllCommandsSatisfied(TheirSync* peers, int* gapIndex)
 void FrameGate::OnReceive(unsigned int theirEntry, const unsigned char* evBytes)
 {
 	InitOnce();
-	if (!Enabled || !evBytes || theirEntry < TheirBase)
+	if (!Enabled || !evBytes)
 		return;
 
-	const unsigned offset = theirEntry - TheirBase;
+	// Derive the array base from the YRpp binding rather than repeating its
+	// address, so the two cannot drift apart.
+	const auto theirBase = reinterpret_cast<unsigned>(Peers());
+	if (theirEntry < theirBase)
+		return;
+
+	const unsigned offset = theirEntry - theirBase;
 	if ((offset % sizeof(TheirSync)) != 0)
 		return;
 
