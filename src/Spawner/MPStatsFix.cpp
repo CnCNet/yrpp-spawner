@@ -42,6 +42,8 @@
 // Skips the write entirely if no peer is actually behind.
 DEFINE_HOOK(0x6497DC, WaitForPlayers_CommandStallStat_Fix, 0x7)
 {
+	enum { Continue = 0x6497E3 };
+
 	int nconn = static_cast<int>(IPXManagerClass::Instance.NumConnections);
 	if (nconn > FrameGate::MaxPeers)
 		nconn = FrameGate::MaxPeers;
@@ -61,5 +63,5 @@ DEFINE_HOOK(0x6497DC, WaitForPlayers_CommandStallStat_Fix, 0x7)
 	if (culprit >= 0)
 		++SessionClass::Instance.MPStats[culprit].CommandCoundStalls;
 
-	return 0x6497E3;
+	return Continue;
 }

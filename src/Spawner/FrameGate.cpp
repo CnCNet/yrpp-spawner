@@ -172,25 +172,31 @@ void FrameGate::OnReceive(unsigned int theirEntry, const unsigned char* evBytes)
 // recv>=sent test) with FrameGate::AllCommandsSatisfied.
 DEFINE_HOOK(0x6495D5, WaitForPlayers_FrameAwareGate, 0x7)
 {
+	enum { Satisfied = 0x6495F9, Gapped = 0x649610 };
+
 	const GameMode gm = SessionClass::Instance.GameMode;
 	if (gm != GameMode::LAN && gm != GameMode::Internet)
 		return 0;
 	if (!FrameGate::Enabled)
 		return 0;
 
+	GET_STACK(TheirSync*, peers, 0x748);
+
 	int gap = -1;
-	auto peers = reinterpret_cast<TheirSync*>(R->Stack<DWORD>(0x748));
 	if (FrameGate::AllCommandsSatisfied(peers, &gap))
-		return 0x6495F9;
+		return Satisfied;
 
 	R->ESI(gap);
-	return 0x649610;
+	return Gapped;
 }
 
 // Feeds every received data/framesync packet to FrameGate::OnReceive so
 // SafeThrough stays current.
 DEFINE_HOOK(0x64A3F9, ProcessReceivePacket_FrameGateRecord, 0x9)
 {
-	FrameGate::OnReceive(R->EBP(), reinterpret_cast<const unsigned char*>(R->EDI()));
+	GET(unsigned int, theirEntry, EBP);
+	GET(const unsigned char*, evBytes, EDI);
+
+	FrameGate::OnReceive(theirEntry, evBytes);
 	return 0;
 }
