@@ -25,6 +25,7 @@
 #include <GeneralDefinitions.h>
 #include <IPXManagerClass.h>
 #include <ConnectionClass.h>
+#include <IPXConnClass.h>
 #include <Utilities/Debug.h>
 
 bool FastRetransmit::Enabled = true;
@@ -80,7 +81,7 @@ namespace
 		if (nconn > arraySize) nconn = arraySize;
 
 		for (int i = 0; i < nconn; ++i)
-			if (reinterpret_cast<const ConnectionClass*>(IPXManagerClass::Instance.Connection[i]) == connection)
+			if (IPXManagerClass::Instance.Connection[i] == connection)
 				return true;
 		return false;
 	}

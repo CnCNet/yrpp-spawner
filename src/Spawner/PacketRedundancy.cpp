@@ -22,6 +22,7 @@
 #include <windows.h>
 #include <IPXManagerClass.h>
 #include <ConnectionClass.h>
+#include <IPXConnClass.h>
 #include <Utilities/Debug.h>
 
 bool PacketRedundancy::Enabled  = true;
@@ -74,6 +75,8 @@ namespace
 			g_gauge[peer] = GaugeCap;
 	}
 
+	// Maps a connection to the peer index CopiesFor() is keyed by - the
+	// ListAddress slot, i.e. the spawn.ini player index minus one.
 	int PeerIndexForConnection(const ConnectionClass* connection)
 	{
 		if (!connection)
@@ -84,8 +87,17 @@ namespace
 		if (nconn > arraySize) nconn = arraySize;
 
 		for (int i = 0; i < nconn; ++i)
-			if (reinterpret_cast<const ConnectionClass*>(IPXManagerClass::Instance.Connection[i]) == connection)
-				return i;
+		{
+			const IPXConnClass* conn = IPXManagerClass::Instance.Connection[i];
+			if (conn != connection)
+				continue;
+
+			DWORD slot = 0;
+			memcpy(&slot, conn->Address.NodeAddress, sizeof(slot));
+
+			const int peer = static_cast<int>(slot) - 1;
+			return ValidPeer(peer) ? peer : -1;
+		}
 
 		return -1;
 	}
@@ -116,8 +128,6 @@ void PacketRedundancy::NoteResend(const ConnectionClass* connection)
 		return;
 	}
 
-	// Shouldn't happen (connection always belongs to one of the live slots),
-	// but fall back to bumping everyone rather than silently dropping the signal.
 	for (int i = 0; i < MaxPeers; ++i)
 		BumpGauge(i);
 }
