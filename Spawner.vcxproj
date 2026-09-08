@@ -53,7 +53,9 @@
     <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
     <!-- Spawner -->
     <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\FastRetransmit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Spawner\PacketRedundancy.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.cpp" />
@@ -84,7 +86,9 @@
     <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
     <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Spawner -->
+    <ClInclude Include="$(ThisDir)\src\Spawner\FastRetransmit.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
+    <ClInclude Include="$(ThisDir)\src\Spawner\PacketRedundancy.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
