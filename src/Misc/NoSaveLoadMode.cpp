@@ -82,21 +82,23 @@ DEFINE_HOOK(0x6D0E20, TabClass_Draw_ccb, 0x6)
 	return 0;
 }
 
-DEFINE_HOOK(0x68A107, ScenarioCass_ReadMapINI_eog, 0x6)
+DEFINE_HOOK(0x68A1BD, ScenarioCass_ReadMapINI_eog, 0x6)
 {
 	if (!Spawner::GetConfig()->DisableSaveLoad && Spawner::GetConfig()->CustomMissionID == 0)
 		return 0;
 	GET(ScenarioClass*, sce, ESI);
 	sce->EndOfGame = true;
-	return 0x68A125;
+	sce->SkipScore = false;
+	return 0x68A1DB;
 }
 
-DEFINE_HOOK(0x6C9357, MissionEndDlg_HardCoreExitText, 0x5)
+DEFINE_HOOK(0x6C9357, MissionEndDlg_ExitText, 0x5)
 {
-	if (!Spawner::GetConfig()->DisableSaveLoad && Spawner::GetConfig()->CustomMissionID == 0)
-		return 0;
-	GET(HWND, hdlg, EBX);
-	auto btnCtn = GetDlgItem(hdlg, 1059);
-	SendMessageA(btnCtn, 1202, 0, (LPARAM)StringTable::LoadString("GUI:ExitGame"));
+	if (ScenarioClass::Instance->EndOfGame)
+	{
+		GET(HWND, hdlg, EBX);
+		auto btnCtn = GetDlgItem(hdlg, 1059);
+		SendMessageA(btnCtn, 1202, 0, (LPARAM)StringTable::LoadString("GUI:ExitGame"));
+	}
 	return 0;
 }
