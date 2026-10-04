@@ -33,7 +33,6 @@
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ClampTacticalPos.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.OpenTopCloak.cpp" />
@@ -50,6 +49,9 @@
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
+    <!-- Misc/Blowfish -->
+    <ClCompile Include="$(ThisDir)\src\Misc\Blowfish\blowfish.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Blowfish\Hooks.Blowfish.cpp" />
     <!-- Spawner -->
     <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
@@ -82,6 +84,8 @@
     <!-- Misc -->
     <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
     <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
+    <!-- Misc/Blowfish -->
+    <ClInclude Include="$(ThisDir)\src\Misc\Blowfish\blowfish.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.h" />
