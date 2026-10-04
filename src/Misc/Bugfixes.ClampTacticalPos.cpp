@@ -21,6 +21,7 @@
 #include <Spawner/Spawner.h>
 #include <DisplayClass.h>
 #include <TacticalClass.h>
+#include <RadarClass.h>
 
 // Fixes glitches if the map size is smaller than the screen resolution.
 // Author: Belonit, ZivDero
@@ -40,8 +41,7 @@ static void Tactical_PositionLimits(Point2D& minimum, Point2D& maximum)
 	maximum.X = minimum.X + Unsorted::CellWidthInPixels * visibleRect.Width - view.Width;
 
 	minimum.Y = view.Height / 2 + (Unsorted::CellHeightInPixels / 2) * (visibleRect.Y * 2 + mapRect.Width - int(paddingTopInCell));
-	maximum.Y = minimum.Y + Unsorted::CellHeightInPixels * visibleRect.Height - view.Height
-		+ int(Unsorted::CellHeightInPixels * paddingBottomInCell);
+	maximum.Y = minimum.Y + Unsorted::CellHeightInPixels * visibleRect.Height - view.Height + int(Unsorted::CellHeightInPixels * paddingBottomInCell);
 }
 
 bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* tacticalPos)
@@ -99,6 +99,21 @@ DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 		RectangleStruct rect = { view.X, bottom, view.Width, view.Y + view.Height - bottom };
 		DSurface::Composite->FillRect(&rect, COLOR_BLACK);
 	}
+
+	return 0;
+}
+
+// Keep the tactical view frame inside the radar map when the screen exceeds the map size.
+DEFINE_HOOK(0x657134, RadarClass_RenderRadar_ClampViewRect, 0x6)
+{
+	GET(RadarClass*, pThis, ESI);
+
+	const auto& radarRect = pThis->RadarRect;
+	auto& viewRect = pThis->RadarViewRect;
+	viewRect.Width = Math::min(viewRect.Width, radarRect.Width);
+	viewRect.Height = Math::min(viewRect.Height, radarRect.Height);
+	viewRect.X = Math::max(radarRect.X, Math::min(viewRect.X, radarRect.X + radarRect.Width - viewRect.Width));
+	viewRect.Y = Math::max(radarRect.Y, Math::min(viewRect.Y, radarRect.Y + radarRect.Height - viewRect.Height));
 
 	return 0;
 }
