@@ -20,7 +20,7 @@ DEFINE_HOOK(0x4F11D6, MultiplayerGameOptionsDialog_AddSaveButton, 0x6)
 
 	GET(UINT, message, EBX);
 	GET(HWND, hDialog, ESI);
-	GET(const WORD*, initData, EDI);
+	GET(const WORD*, initData, EBP);
 
 	if (message != WM_INITDIALOG || !initData || *initData != MultiplayerGameOptionsDialog)
 		return 0;
