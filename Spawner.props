@@ -154,4 +154,23 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Target Name="ResolveGitCommit" BeforeTargets="PrepareForBuild" Condition="'$(GitCommit)' == '' and '$(DesignTimeBuild)' != 'true'">
+    <Exec Command="git rev-parse --short=8 HEAD" WorkingDirectory="$(ThisDir)" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardErrorImportance="Low">
+      <Output TaskParameter="ConsoleOutput" ItemName="ResolvedGitCommit" />
+      <Output TaskParameter="ExitCode" PropertyName="GitCommitExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <LocalGitCommit Condition="'$(GitCommitExitCode)' == '0'">@(ResolvedGitCommit)</LocalGitCommit>
+      <LocalGitCommit Condition="'$(LocalGitCommit)' == ''">unknown</LocalGitCommit>
+    </PropertyGroup>
+    <Warning Condition="'$(LocalGitCommit)' == 'unknown'" Text="Unable to resolve Git commit. Install Git or pass /p:GitCommit=&lt;commit-id&gt;." />
+    <ItemGroup>
+      <ClCompile>
+        <AdditionalOptions>/DGIT_COMMIT="$(LocalGitCommit)" %(ClCompile.AdditionalOptions)</AdditionalOptions>
+      </ClCompile>
+      <ResourceCompile>
+        <AdditionalOptions>/DGIT_COMMIT="$(LocalGitCommit)" %(ResourceCompile.AdditionalOptions)</AdditionalOptions>
+      </ResourceCompile>
+    </ItemGroup>
+  </Target>
 </Project>
