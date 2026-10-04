@@ -41,6 +41,7 @@ public:
 	bool ForceMultiplayer;
 	bool MPDebug;
 	bool MPDebugShow;
+	bool SkipCreateAppMutex;
 	bool WriteStatistics;
 
 	// Other
@@ -68,6 +69,7 @@ public:
 		, ForceMultiplayer { false }
 		, MPDebug { false }
 		, MPDebugShow { true }
+		, SkipCreateAppMutex { false }
 		, WriteStatistics { false }
 
 		// Other

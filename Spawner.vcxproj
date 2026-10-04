@@ -49,6 +49,7 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\QuickExit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\SkipCreateAppMutex.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
     <!-- Spawner -->

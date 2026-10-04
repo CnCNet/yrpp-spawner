@@ -62,6 +62,7 @@ void MainConfig::LoadFromINIFile()
 		this->ForceMultiplayer   = pINI->ReadBool(pDebugSection, "ForceMultiplayer", this->ForceMultiplayer);
 		this->MPDebug            = pINI->ReadBool(pDebugSection, "MPDebug", this->MPDebug);
 		this->MPDebugShow        = pINI->ReadBool(pDebugSection, "MPDebug.Show", this->MPDebugShow);
+		this->SkipCreateAppMutex = pINI->ReadBool(pDebugSection, "SkipCreateAppMutex", this->SkipCreateAppMutex);
 		this->WriteStatistics    = pINI->ReadBool(pDebugSection, "WriteStatistics", this->WriteStatistics);
 	}
 }
