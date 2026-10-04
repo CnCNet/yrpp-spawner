@@ -148,9 +148,7 @@ public:
 	bool ContinueWithoutHumans;
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
-#ifdef IS_CNCNET_YR_VER
 	bool DisableChat;
-#endif
 
 	SpawnerConfig() // default values
 		// Game Mode Options
@@ -247,9 +245,7 @@ public:
 		, ContinueWithoutHumans { false }
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
-#ifdef IS_CNCNET_YR_VER
 		, DisableChat { false }
-#endif
 	{ }
 
 	void LoadFromINIFile(CCINIClass* pINI);

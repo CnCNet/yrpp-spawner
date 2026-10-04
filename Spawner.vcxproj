@@ -28,12 +28,12 @@
     <!-- CnCNetYR -->
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\AppIcon.cpp" />
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Misc.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\OpenTopCloak.cpp" />
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ClampTacticalPos.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.OpenTopCloak.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CommonCrashes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
