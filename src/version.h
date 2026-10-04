@@ -23,6 +23,7 @@
 #ifndef GIT_COMMIT
 	#define GIT_COMMIT unknown
 #endif
+
 #define STR_GIT_COMMIT _STR(GIT_COMMIT)
 #ifdef GIT_BRANCH
 	#define STR_GIT_BRANCH _STR(GIT_BRANCH)
@@ -32,20 +33,23 @@
 	#if defined(VERSION_MAJOR) && defined(VERSION_MINOR) && defined(VERSION_REVISION) && defined(VERSION_PATCH)
 		#define FILE_VERSION_STR _STR(VERSION_MAJOR) "." _STR(VERSION_MINOR) "." _STR(VERSION_REVISION) "." _STR(VERSION_PATCH)
 		#define FILE_VERSION VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH
-	#else // Local release build without a CI-supplied tag version
+	#else // Local Release builds use a placeholder unless ReleaseVersion is supplied explicitly.
 		#define FILE_VERSION_STR "x.x.x.x"
 		#define FILE_VERSION 0,0,0,0
 	#endif
 	#define PRODUCT_VERSION "Release Build " FILE_VERSION_STR
-#elif defined(GIT_BRANCH) // Nightly devbuild metadata
-
+#elif defined(IS_NIGHTLY_VER) // Nightly build metadata
 	#define FILE_VERSION_STR "Commit " STR_GIT_COMMIT
 	#define FILE_VERSION 0,0,0,0
-	#define PRODUCT_VERSION "Nightly Build " STR_GIT_COMMIT " @ " STR_GIT_BRANCH
-#else // Regular devbuild metadata
+	#ifdef GIT_BRANCH
+		#define PRODUCT_VERSION "Nightly Build " STR_GIT_COMMIT " @ " STR_GIT_BRANCH
+	#else // Local Nightly builds show the commit ID without a CI-supplied branch.
+		#define PRODUCT_VERSION "Nightly Build " STR_GIT_COMMIT
+	#endif
+#else // Local Debug builds keep the commit ID in FileVersion; ProductVersion is simply "Debug Build ".
 	#define FILE_VERSION_STR "Commit " STR_GIT_COMMIT
 	#define FILE_VERSION 0,0,0,0
-	#define PRODUCT_VERSION "Development Build " STR_GIT_COMMIT
+	#define PRODUCT_VERSION "Debug Build "
 #endif
 
 #endif // VERSION_H

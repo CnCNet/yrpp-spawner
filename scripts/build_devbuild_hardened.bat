@@ -1,8 +1,8 @@
 @if not defined _echo echo off
 
-rem Builds YRpp-Spawner DevBuild-Hardened.
+rem Builds YRpp-Spawner Nightly-Hardened.
 
 rem Ensure we're in correct directory.
 cd /D "%~dp0"
 
-call build DevBuild-Hardened
+call build Nightly-Hardened
