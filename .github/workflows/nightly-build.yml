@@ -18,24 +18,54 @@ jobs:
         build-type: [Nightly]  # [Debug, Nightly, Release]
         is-cncnet-yr: ['', -CnCNetYR]
         is-hardened: ['', -Hardened]
-        # this dimension is only needed to check whether we're in CnCNet repo
-        # and exclude hardened build because we may have no access to it
+        # Only trusted branch pushes may build with private sources.
         has-private-access:
-          - ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'CnCNet' || github.event_name == 'push' && github.repository_owner == 'CnCNet' }}
+          - ${{ github.event_name == 'push' && github.repository_owner == 'CnCNet' }}
         exclude:
           - is-hardened: -Hardened
             has-private-access: false
 
     steps:
-      - uses: Metadorius/checkout@d1a22c1aff33852a0154ff5262e4eab45178154c # fixed SpecificSubmodule branch
+      - id: source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Read submodule revisions
+        id: revisions
+        shell: pwsh
+        run: |
+          $yrpp = git rev-parse HEAD:YRpp
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $private = git rev-parse HEAD:Private
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "yrpp=$yrpp" >> $env:GITHUB_OUTPUT
+          "private=$private" >> $env:GITHUB_OUTPUT
+
+      - name: Checkout YRpp
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: Phobos-developers/YRpp
+          ref: ${{ steps.revisions.outputs.yrpp }}
+          path: YRpp
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout private sources
+        if: ${{ matrix.is-hardened == '-Hardened' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: CnCNet/yrpp-spawner-private
+          ref: ${{ steps.revisions.outputs.private }}
+          path: Private
+          fetch-depth: 1
           ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
-          submodule-directories: |
-            YRpp
-            ${{ matrix.has-private-access && 'Private' || '' }}
+          persist-credentials: false
 
       - name: Build
         uses: ./.github/actions/build
         with:
           build-config: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
-          artifact-name: spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.sha }}
+          artifact-name: spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ steps.source.outputs.commit }}

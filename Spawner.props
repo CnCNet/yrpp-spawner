@@ -112,10 +112,14 @@
     <ItemDefinitionGroup Condition="$(Configuration.Contains('Hardened'))">
     <ClCompile>
       <PreprocessorDefinitions>IS_HARDENED_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DiagnosticsFormat>Classic</DiagnosticsFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>IS_HARDENED_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release')) Or $(Configuration.StartsWith('Nightly'))">
     <ClCompile>
