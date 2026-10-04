@@ -26,7 +26,6 @@ public:
 	bool AllowTaunts;
 	bool DDrawHandlesClose;
 	bool DisableEdgeScrolling;
-	bool MPDebug;
 	bool QuickExit;
 	bool SingleProcAffinity;
 	bool SkipScoreScreen;
@@ -37,8 +36,14 @@ public:
 	bool WindowedMode;
 	int DDrawTargetFPS;
 
-	// Other
+	// Debug
 	bool DumpTypes;
+	bool ForceMultiplayer;
+	bool MPDebug;
+	bool MPDebugShow;
+	bool WriteStatistics;
+
+	// Other
 	bool NoCD;
 	int RA2ModeSaveID;
 
@@ -48,7 +53,6 @@ public:
 		, AllowTaunts { true }
 		, DDrawHandlesClose { false }
 		, DisableEdgeScrolling { false }
-		, MPDebug { false }
 		, QuickExit { false }
 		, SingleProcAffinity { true }
 		, SkipScoreScreen { false }
@@ -59,8 +63,14 @@ public:
 		, NoWindowFrame { false }
 		, WindowedMode { false }
 
-		// Other
+		// Debug
 		, DumpTypes { false }
+		, ForceMultiplayer { false }
+		, MPDebug { false }
+		, MPDebugShow { true }
+		, WriteStatistics { false }
+
+		// Other
 		, NoCD { false }
 		, RA2ModeSaveID { 0 }
 	{ }
