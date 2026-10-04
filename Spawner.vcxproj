@@ -17,8 +17,6 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
-    <ClCompile Include="src\UI\Dialogs.cpp" />
-    <ClCompile Include="src\UI\Hooks.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -65,11 +63,11 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
+    <!-- UI -->
+    <ClCompile Include="$(ThisDir)\src\UI\Hooks.SaveButton.cpp" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
-    <!-- Dialogs -->
-    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
@@ -84,7 +82,6 @@
     <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
     <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
-    <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Misc/Blowfish -->
     <ClInclude Include="$(ThisDir)\src\Misc\Blowfish\blowfish.h" />
     <!-- Spawner -->
