@@ -6,15 +6,6 @@
 #define _STR(x) _STR_(x)
 #define _STR_(x) #x
 
-// Indicates project maturity and completeness
-#define VERSION_MAJOR 0
-// Indicates major changes and significant additions, like new logics
-#define VERSION_MINOR 0
-// Indicates minor changes, like vanilla bugfixes, unhardcodings or hacks
-#define VERSION_REVISION 0
-// Indicates YRpp-Spawner-related bugfixes only
-#define VERSION_PATCH 16
-
 #if defined(IS_CNCNET_YR_VER) && defined(IS_HARDENED_VER)
 	#define PRODUCT_TYPE "(CnCNet YR, hardened)"
 #elif defined(IS_CNCNET_YR_VER)
@@ -38,8 +29,13 @@
 #endif
 
 #ifdef IS_RELEASE_VER // Release build metadata
-	#define FILE_VERSION_STR _STR(VERSION_MAJOR) "." _STR(VERSION_MINOR) "." _STR(VERSION_REVISION) "." _STR(VERSION_PATCH)
-	#define FILE_VERSION VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH
+	#if defined(VERSION_MAJOR) && defined(VERSION_MINOR) && defined(VERSION_REVISION) && defined(VERSION_PATCH)
+		#define FILE_VERSION_STR _STR(VERSION_MAJOR) "." _STR(VERSION_MINOR) "." _STR(VERSION_REVISION) "." _STR(VERSION_PATCH)
+		#define FILE_VERSION VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH
+	#else // Local release build without a CI-supplied tag version
+		#define FILE_VERSION_STR "x.x.x.x"
+		#define FILE_VERSION 0,0,0,0
+	#endif
 	#define PRODUCT_VERSION "Release Build " FILE_VERSION_STR
 #elif defined(GIT_BRANCH) // Nightly devbuild metadata
 

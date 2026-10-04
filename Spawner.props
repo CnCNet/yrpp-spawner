@@ -152,6 +152,21 @@
       <AdditionalOptions>/DGIT_BRANCH="$(GitBranch)" %(AdditionalOptions)</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(ReleaseVersion)' != ''">
+    <ReleaseVersionMajor>$([System.Version]::Parse('$(ReleaseVersion)').Major)</ReleaseVersionMajor>
+    <ReleaseVersionMinor>$([System.Version]::Parse('$(ReleaseVersion)').Minor)</ReleaseVersionMinor>
+    <ReleaseVersionRevision>$([System.Version]::Parse('$(ReleaseVersion)').Build)</ReleaseVersionRevision>
+    <ReleaseVersionPatch>$([System.Version]::Parse('$(ReleaseVersion)').Revision)</ReleaseVersionPatch>
+    <ReleaseVersionDefinitions>VERSION_MAJOR=$(ReleaseVersionMajor);VERSION_MINOR=$(ReleaseVersionMinor);VERSION_REVISION=$(ReleaseVersionRevision);VERSION_PATCH=$(ReleaseVersionPatch)</ReleaseVersionDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(ReleaseVersion)' != ''">
+    <ClCompile>
+      <PreprocessorDefinitions>$(ReleaseVersionDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>$(ReleaseVersionDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <Target Name="ResolveGitCommit" BeforeTargets="PrepareForBuild" Condition="'$(GitCommit)' == '' and '$(DesignTimeBuild)' != 'true'">
