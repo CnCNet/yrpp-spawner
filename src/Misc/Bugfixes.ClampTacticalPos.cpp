@@ -20,104 +20,84 @@
 #include <Utilities/Macro.h>
 #include <Spawner/Spawner.h>
 #include <DisplayClass.h>
-class TacticalClass;
+#include <TacticalClass.h>
 
-// Fixes glitches if the map size is smaller than the screen resolution
-// Author: Belonit
+// Fixes glitches if the map size is smaller than the screen resolution.
+// Author: Belonit, ZivDero
 static constexpr float paddingTopInCell = 5;
 static constexpr float paddingBottomInCell = 4.5;
 
+// Keep the raw limits for drawing the map edges.
+// On a small map, maximum is below minimum.
+// The camera uses their midpoint.
+static void Tactical_PositionLimits(Point2D& minimum, Point2D& maximum)
+{
+	const auto& mapRect = MapClass::Instance.MapRect;
+	const auto& visibleRect = MapClass::Instance.VisibleRect;
+	const auto& view = DSurface::ViewBounds;
+
+	minimum.X = view.Width / 2 + (Unsorted::CellWidthInPixels / 2) * (visibleRect.X * 2 - mapRect.Width);
+	maximum.X = minimum.X + Unsorted::CellWidthInPixels * visibleRect.Width - view.Width;
+
+	minimum.Y = view.Height / 2 + (Unsorted::CellHeightInPixels / 2) * (visibleRect.Y * 2 + mapRect.Width - int(paddingTopInCell));
+	maximum.Y = minimum.Y + Unsorted::CellHeightInPixels * visibleRect.Height - view.Height
+		+ int(Unsorted::CellHeightInPixels * paddingBottomInCell);
+}
+
 bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* tacticalPos)
 {
-	bool isUpdated = false;
+	Point2D minimum;
+	Point2D maximum;
+	Tactical_PositionLimits(minimum, maximum);
 
-	const auto pMapRect = &MapClass::Instance.MapRect;
-	const auto pMapVisibleRect = &MapClass::Instance.VisibleRect;
-	const auto pSurfaceViewBounds = &DSurface::ViewBounds;
+	if (maximum.X < minimum.X)
+		minimum.X = maximum.X = (minimum.X + maximum.X) / 2;
 
-	{
-		const int xMin = (pSurfaceViewBounds->Width / 2) + (Unsorted::CellWidthInPixels / 2) * (pMapVisibleRect->X * 2 - pMapRect->Width);
-		if (tacticalPos->X < xMin)
-		{
-			tacticalPos->X = xMin;
-			isUpdated = true;
-		}
-		else
-		{
-			const int xMax = Math::max(
-				xMin,
-				xMin + (Unsorted::CellWidthInPixels * pMapVisibleRect->Width) - pSurfaceViewBounds->Width
-			);
+	if (maximum.Y < minimum.Y)
+		minimum.Y = maximum.Y = (minimum.Y + maximum.Y) / 2;
 
-			if (tacticalPos->X > xMax)
-			{
-				tacticalPos->X = xMax;
-				isUpdated = true;
-			}
-		}
-	}
-
-	{
-		const int yMin = (pSurfaceViewBounds->Height / 2) + (Unsorted::CellHeightInPixels / 2) * (pMapVisibleRect->Y * 2 + pMapRect->Width - int(paddingTopInCell));
-		if (tacticalPos->Y < yMin)
-		{
-			tacticalPos->Y = yMin;
-			isUpdated = true;
-		}
-		else
-		{
-			const int yMax = Math::max(
-				yMin,
-				yMin + (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - pSurfaceViewBounds->Height + int(Unsorted::CellHeightInPixels * paddingBottomInCell)
-			);
-
-			if (tacticalPos->Y > yMax)
-			{
-				tacticalPos->Y = yMax;
-				isUpdated = true;
-			}
-		}
-	}
-
-	return isUpdated;
+	const auto previous = *tacticalPos;
+	tacticalPos->X = Math::max(minimum.X, Math::min(tacticalPos->X, maximum.X));
+	tacticalPos->Y = Math::max(minimum.Y, Math::min(tacticalPos->Y, maximum.Y));
+	return tacticalPos->X != previous.X || tacticalPos->Y != previous.Y;
 }
 DEFINE_FUNCTION_JUMP(LJMP, 0x6D8640, Tactical_ClampTacticalPos)
 
 DEFINE_HOOK(0x6D4934, Tactical_Render_OverlapForeignMap, 0x6)
 {
-	auto pMapVisibleRect = &MapClass::Instance.VisibleRect;
-	auto pSurfaceViewBounds = &DSurface::ViewBounds;
+	Point2D minimum;
+	Point2D maximum;
+	Tactical_PositionLimits(minimum, maximum);
 
+	const auto& view = DSurface::ViewBounds;
+	const auto& position = TacticalClass::Instance->TacticalPos;
+	const int left = view.X + minimum.X - view.Width / 2 - position.X;
+	const int right = view.X + maximum.X + (view.Width - view.Width / 2) - position.X;
+	const int top = view.Y + minimum.Y - view.Height / 2 - position.Y;
+	const int bottom = view.Y + maximum.Y + (view.Height - view.Height / 2) - position.Y;
+
+	if (left > view.X)
 	{
-		const int maxWidth = pSurfaceViewBounds->Width - pMapVisibleRect->Width * Unsorted::CellWidthInPixels;
-
-		if (maxWidth > 0)
-		{
-			RectangleStruct rect = {
-				pSurfaceViewBounds->Width - maxWidth,
-				0,
-				maxWidth,
-				pSurfaceViewBounds->Height
-			};
-
-			DSurface::Composite->FillRect(&rect, COLOR_BLACK);
-		}
+		RectangleStruct rect = { view.X, view.Y, left - view.X, view.Height };
+		DSurface::Composite->FillRect(&rect, COLOR_BLACK);
 	}
 
+	if (right < view.X + view.Width)
 	{
-		const int maxHeight = pSurfaceViewBounds->Height - (Unsorted::CellHeightInPixels * pMapVisibleRect->Height) - int(Unsorted::CellHeightInPixels * paddingBottomInCell);
+		RectangleStruct rect = { right, view.Y, view.X + view.Width - right, view.Height };
+		DSurface::Composite->FillRect(&rect, COLOR_BLACK);
+	}
 
-		if (maxHeight > 0)
-		{
-			RectangleStruct rect = {
-				0,
-				pSurfaceViewBounds->Height - maxHeight,
-				pSurfaceViewBounds->Width,
-				maxHeight
-			};
+	if (top > view.Y)
+	{
+		RectangleStruct rect = { view.X, view.Y, view.Width, top - view.Y };
+		DSurface::Composite->FillRect(&rect, COLOR_BLACK);
+	}
 
-			DSurface::Composite->FillRect(&rect, COLOR_BLACK);
-		}
+	if (bottom < view.Y + view.Height)
+	{
+		RectangleStruct rect = { view.X, bottom, view.Width, view.Y + view.Height - bottom };
+		DSurface::Composite->FillRect(&rect, COLOR_BLACK);
 	}
 
 	return 0;
