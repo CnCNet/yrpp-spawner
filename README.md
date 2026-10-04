@@ -42,6 +42,8 @@ Please note that you can build the hardened version only if you have access to i
   - Game speed slider toggle
   - Revert of Battle Fortress cloak changes for CnCNet YR
   - Ability to disable ingame chat
+- **[Noble Fish](https://github.com/DeathFishAtEase)**
+  - Improve QuickExit so that the normal exit process also has the speed of <kbd>Alt</kbd>+<kbd>F4</kbd>
 - **[TaranDahl](https://github.com/TaranDahl)**
   - Porting of multiplayer save/load
   - Porting of autosaves

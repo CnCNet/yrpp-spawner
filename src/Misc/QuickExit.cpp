@@ -50,3 +50,19 @@ DEFINE_HOOK(0x623125, OwnerDrawLoop_HandleRageQuit, 0x5)
 		? 0x623157
 		: 0;
 }
+
+DEFINE_HOOK(0x6BE091, WinMain_AfterGameLoop_HandleQuickExit, 0x6)
+{
+	if (Main::GetConfig()->QuickExit)
+		ExitProcess(0);
+
+	return 0;
+}
+
+DEFINE_HOOK(0x686570, DisconnectGracefully_HandleQuickExit, 0x5)
+{
+	if (Main::GetConfig()->QuickExit)
+		ExitProcess(0);
+
+	return 0;
+}
