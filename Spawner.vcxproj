@@ -65,6 +65,8 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
+    <!-- UI -->
+    <ClCompile Include="$(ThisDir)\src\UI\MPDebugLayout.cpp" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
