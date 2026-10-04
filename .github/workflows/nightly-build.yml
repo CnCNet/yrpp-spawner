@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: [DevBuild]  # [Debug, DevBuild, Release]
+        build-type: [Nightly]  # [Debug, Nightly, Release]
         is-cncnet-yr: ['', -CnCNetYR]
         is-hardened: ['', -Hardened]
         # this dimension is only needed to check whether we're in CnCNet repo

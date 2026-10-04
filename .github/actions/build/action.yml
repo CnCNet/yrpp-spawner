@@ -27,8 +27,28 @@ runs:
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} /v:q ${{inputs.sln-path}}
-      shell: cmd
+      env:
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+        BUILD_CONFIG: ${{ inputs.build-config }}
+        BUILD_SOLUTION: ${{ inputs.sln-path }}
+        BUILD_COMMIT: ${{ github.sha }}
+        BUILD_BRANCH: ${{ github.ref }}
+      run: |
+        $buildArgs = @('/m', "/p:Configuration=$env:BUILD_CONFIG", "/p:GitCommit=$env:BUILD_COMMIT", "/p:GitBranch=$env:BUILD_BRANCH", '/v:q', $env:BUILD_SOLUTION)
+        if ($env:RELEASE_TAG) {
+          if ($env:RELEASE_TAG -notmatch '^v?(\d+)\.(\d+)\.(\d+)\.(\d+)$') {
+            throw "Release tag must have the format vMAJOR.MINOR.REVISION.PATCH."
+          }
+          $parts = 1..4 | ForEach-Object {
+            $part = [int]$Matches[$_]
+            if ($part -gt 65535) { throw "Version components must be between 0 and 65535." }
+            $part
+          }
+          $buildArgs += "/p:ReleaseVersion=$($parts -join '.')"
+        }
+        & msbuild @buildArgs
+        exit $LASTEXITCODE
+      shell: pwsh
 
     - name: Upload artifact
       if: ${{ success() && inputs.artifact-name != '' }}

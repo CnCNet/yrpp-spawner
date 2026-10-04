@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        build-type: [Release] # [Debug, DevBuild, Release]
+        build-type: [Release] # [Debug, Nightly, Release]
         is-cncnet-yr: ["", -CnCNetYR]
         is-hardened: ["", -Hardened]
 
