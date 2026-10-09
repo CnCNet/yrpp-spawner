@@ -103,6 +103,7 @@ public:
 	int AutoSaveCount;
 	int AutoSaveInterval;
 	int NextAutoSaveNumber;
+	bool ShowSaveGameButton;
 
 	// Scenario Options
 	int  Seed;
@@ -179,6 +180,7 @@ public:
 		, AutoSaveCount { 5 }
 		, AutoSaveInterval { 7200 }
 		, NextAutoSaveNumber { 0 }
+		, ShowSaveGameButton { true }
 
 		// Scenario Options
 		, Seed { 0 }

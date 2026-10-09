@@ -57,10 +57,11 @@ void SpawnerConfig::LoadFromINIFile(CCINIClass* pINI)
 		LoadSaveGame       = pINI->ReadBool(pSettingsSection, "LoadSaveGame", LoadSaveGame);
 		/* SavedGameDir   */ pINI->ReadString(pSettingsSection, "SavedGameDir", SavedGameDir, SavedGameDir, sizeof(SavedGameDir));
 		/* SaveGameName   */ pINI->ReadString(pSettingsSection, "SaveGameName", SaveGameName, SaveGameName, sizeof(SaveGameName));
-		CustomMissionID  = pINI->ReadInteger(pSettingsSection, "CustomMissionID", 0);
+		CustomMissionID    = pINI->ReadInteger(pSettingsSection, "CustomMissionID", 0);
 		AutoSaveCount      = pINI->ReadInteger(pSettingsSection, "AutoSaveCount", AutoSaveCount);
 		AutoSaveInterval   = pINI->ReadInteger(pSettingsSection, "AutoSaveInterval", AutoSaveInterval);
 		NextAutoSaveNumber = pINI->ReadInteger(pSettingsSection, "NextAutoSaveNumber", NextAutoSaveNumber);
+		ShowSaveGameButton = pINI->ReadBool(pSettingsSection, "ShowSaveGameButton", ShowSaveGameButton);
 	}
 
 	{ // Scenario Options

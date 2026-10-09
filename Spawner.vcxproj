@@ -64,9 +64,7 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
     <!-- UI -->
-    <ClCompile Include="$(ThisDir)\src\UI\Dialogs.cpp" />
-    <ClCompile Include="$(ThisDir)\src\UI\Hooks.cpp" />
-    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
+    <ClCompile Include="$(ThisDir)\src\UI\Hooks.SaveButton.cpp" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
@@ -92,8 +90,6 @@
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
-    <!-- UI -->
-    <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <!-- Utilities -->
     <ClInclude Include="$(ThisDir)\src\Utilities\Debug.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />
