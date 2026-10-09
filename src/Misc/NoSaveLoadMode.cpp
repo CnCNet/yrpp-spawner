@@ -3,9 +3,14 @@
 #include <WWMessageBox.h>
 #include <LoadProgressManager.h>
 
+static bool IsDisableSaveLoadEnabled()
+{
+	return Spawner::Enabled && Spawner::GetConfig()->DisableSaveLoad;
+}
+
 DEFINE_HOOK(0x686089, DoLose_NoSaveLoadModeRetryDialog, 0x7)
 {
-	if (!Spawner::GetConfig()->DisableSaveLoad)
+	if (!IsDisableSaveLoadEnabled())
 		return 0;
 
 	enum { Restart = 0x6860F6, Leave = 0x6860EE };
@@ -24,7 +29,7 @@ DEFINE_HOOK(0x686089, DoLose_NoSaveLoadModeRetryDialog, 0x7)
 // disable load, save and delete buttons on the ingame menu
 DEFINE_HOOK(0x4F17F6, GameOptionsDialog_DisableSaveLoadButtons, 0x6)
 {
-	if (!Spawner::GetConfig()->DisableSaveLoad)
+	if (!IsDisableSaveLoadEnabled())
 		return 0;
 
 	GET(HWND, hDialog, EBP);
@@ -47,7 +52,7 @@ DEFINE_HOOK(0x4F17F6, GameOptionsDialog_DisableSaveLoadButtons, 0x6)
 std::wstring NoSaveLoadModeText { };
 DEFINE_HOOK(0x553076, LoadProgressManager_Draw_NoSaveLoadModeIndicator, 0x5)
 {
-	if (!Spawner::GetConfig()->DisableSaveLoad)
+	if (!IsDisableSaveLoadEnabled())
 		return 0;
 
 	GET(LoadProgressManager*, pLoadProgressManager, EBP);
@@ -87,7 +92,7 @@ DEFINE_HOOK(0x6D0E20, TabClass_Draw_NoSaveLoadModeText, 0x6)
 
 DEFINE_HOOK(0x68A1BD, ScenarioClass_ReadMapINI_SetEndOfGame, 0x6)
 {
-	if (!Spawner::GetConfig()->DisableSaveLoad && Spawner::GetConfig()->CustomMissionID == 0)
+	if (!Spawner::Enabled || (!Spawner::GetConfig()->DisableSaveLoad && Spawner::GetConfig()->CustomMissionID == 0))
 		return 0;
 
 	GET(ScenarioClass*, pScenario, ESI);
