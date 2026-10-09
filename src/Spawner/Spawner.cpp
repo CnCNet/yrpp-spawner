@@ -397,8 +397,7 @@ void Spawner::InitNetwork()
 	Tunnel::Ip = inet_addr(pSpawnerConfig->TunnelIp);
 	Tunnel::Port = htons((u_short)pSpawnerConfig->TunnelPort);
 
-	auto& ListenPort = *reinterpret_cast<u_short*>(0x841F30u);
-	ListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
+	UDPInterfaceClass::UDPListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
 
 	UDPInterfaceClass::Instance = GameCreate<UDPInterfaceClass>();
 	UDPInterfaceClass::Instance->Init();
