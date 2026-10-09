@@ -3,14 +3,6 @@
 #include <WWMessageBox.h>
 #include <LoadProgressManager.h>
 
-const wchar_t* Fetch_CSF_Text(const char* label, const wchar_t* defaultText)
-{
-	std::wstring_view msg = StringTable::LoadString(label);
-	if (msg.empty() || msg.starts_with(L"MISSING:"))
-		return defaultText;
-	return msg.data();
-}
-
 DEFINE_HOOK(0x686089, DoLose_NoSaveLoadModeRetryDialog, 0x7)
 {
 	if (!Spawner::GetConfig()->DisableSaveLoad)
@@ -19,7 +11,7 @@ DEFINE_HOOK(0x686089, DoLose_NoSaveLoadModeRetryDialog, 0x7)
 	enum { Restart = 0x6860F6, Leave = 0x6860EE };
 
 	const auto result = WWMessageBox::Instance.Process(
-		Fetch_CSF_Text("TXT_HARDCORE_FAILURE", L"GG"),
+		StringTable::TryFetchString("TXT_HARDCORE_FAILURE", L"GG"),
 		StringTable::LoadString("GUI:Restart"),
 		StringTable::LoadString("GUI:Leave"), nullptr);
 
@@ -38,11 +30,11 @@ DEFINE_HOOK(0x4F17F6, GameOptionsDialog_DisableSaveLoadButtons, 0x6)
 	GET(HWND, hDialog, EBP);
 
 	HWND hLoadButton = GetDlgItem(hDialog, 1310);
-	SendMessageA(hLoadButton, 1202, 0, (LPARAM)Fetch_CSF_Text("GUI:CantLoad", L"Cannot Load"));
+	SendMessageA(hLoadButton, 1202, 0, (LPARAM)StringTable::TryFetchString("GUI:CantLoad", L"Cannot Load"));
 	EnableWindow(hLoadButton, FALSE);
 
 	HWND hSaveButton = GetDlgItem(hDialog, 1311);
-	SendMessageA(hSaveButton, 1202, 0, (LPARAM)Fetch_CSF_Text("GUI:CantSave", L"Cannot Save"));
+	SendMessageA(hSaveButton, 1202, 0, (LPARAM)StringTable::TryFetchString("GUI:CantSave", L"Cannot Save"));
 	EnableWindow(hSaveButton, FALSE);
 
 	HWND hDeleteButton = GetDlgItem(hDialog, 1312);
@@ -60,7 +52,7 @@ DEFINE_HOOK(0x553076, LoadProgressManager_Draw_NoSaveLoadModeIndicator, 0x5)
 
 	GET(LoadProgressManager*, pLoadProgressManager, EBP);
 	if (NoSaveLoadModeText.empty())
-		NoSaveLoadModeText = Fetch_CSF_Text("TXT_HARDCORE_MODE", L"HardCore");
+		NoSaveLoadModeText = StringTable::TryFetchString("TXT_HARDCORE_MODE", L"HardCore");
 
 	Point2D position
 	{
