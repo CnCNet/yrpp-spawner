@@ -43,6 +43,11 @@ void MainConfig::LoadFromINIFile()
 		this->SkipScoreScreen      = pINI->ReadBool(pOptionsSection, "SkipScoreScreen", this->SkipScoreScreen);
 		this->SpeedControl         = pINI->ReadBool(pOptionsSection, "SpeedControl", this->SpeedControl);
 
+		this->ObserverOverlay         = pINI->ReadBool(pOptionsSection, "ObserverOverlay", this->ObserverOverlay);
+		this->ObserverOverlayInterval = pINI->ReadInteger(pOptionsSection, "ObserverOverlay.Interval", this->ObserverOverlayInterval);
+		if (this->ObserverOverlayInterval < 1)
+			this->ObserverOverlayInterval = 1;
+
 		// Keep the legacy [Options] MPDEBUG setting for compatibility; [Debug] MPDebug takes precedence.
 		this->MPDebug              = pINI->ReadBool(pOptionsSection, "MPDEBUG", this->MPDebug);
 	}

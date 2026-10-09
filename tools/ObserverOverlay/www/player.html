@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CnCNet Observer Overlay - Player</title>
+	<link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+	<!-- One player's panel, for positioning players separately in OBS: player.html?slot=0 ... slot=7 -->
+	<main id="players" class="players single waiting"></main>
+	<script src="overlay.js"></script>
+	<script>
+		const slot = Math.max(0, parseInt(new URLSearchParams(location.search).get("slot") || "0", 10) || 0);
+		ObserverOverlay.start({ container: document.getElementById("players"), slot: slot });
+	</script>
+</body>
+</html>

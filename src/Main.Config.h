@@ -31,6 +31,10 @@ public:
 	bool SkipScoreScreen;
 	bool SpeedControl;
 
+	// Observer overlay for streamers, see src/Misc/ObserverOverlay/Export.cpp
+	bool ObserverOverlay;
+	int ObserverOverlayInterval;
+
 	// Video
 	bool NoWindowFrame;
 	bool WindowedMode;
@@ -58,6 +62,10 @@ public:
 		, SingleProcAffinity { true }
 		, SkipScoreScreen { false }
 		, SpeedControl { false }
+
+		// Observer overlay
+		, ObserverOverlay { false }
+		, ObserverOverlayInterval { 15 }
 
 		// Video
 		, DDrawTargetFPS { -1 }

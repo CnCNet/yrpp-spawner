@@ -1,0 +1,143 @@
+/* Transparent background so the overlay can sit on top of the game capture in OBS. */
+html,
+body {
+	margin: 0;
+	background: transparent;
+	color: #f2f2f2;
+	font-family: "Segoe UI", Tahoma, sans-serif;
+	font-size: 15px;
+}
+
+.players {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px;
+}
+
+.players.single {
+	padding: 0;
+}
+
+.player {
+	--player-color: #888888;
+	min-width: 240px;
+	max-width: 320px;
+	background: rgba(12, 14, 18, 0.82);
+	border-left: 6px solid var(--player-color);
+	border-radius: 4px;
+	padding: 6px 10px 8px;
+}
+
+.player.defeated {
+	opacity: 0.45;
+}
+
+.player-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.player-name {
+	font-weight: 700;
+	font-size: 17px;
+	color: var(--player-color);
+	text-shadow: 0 1px 2px #000;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.player-country {
+	font-size: 12px;
+	opacity: 0.75;
+}
+
+.player-stats {
+	display: flex;
+	justify-content: space-between;
+	margin: 4px 0 6px;
+	font-variant-numeric: tabular-nums;
+}
+
+.credits {
+	color: #ffd34d;
+	font-weight: 600;
+}
+
+.power.low {
+	color: #ff5c5c;
+}
+
+.production,
+.counts {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.factory {
+	display: grid;
+	grid-template-columns: 70px 1fr 60px;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	margin-bottom: 3px;
+}
+
+.factory-category {
+	opacity: 0.7;
+}
+
+.factory-item {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.factory-queue {
+	grid-column: 2 / 4;
+	font-size: 12px;
+	opacity: 0.75;
+}
+
+.progress {
+	height: 6px;
+	background: rgba(255, 255, 255, 0.15);
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.progress-fill {
+	display: block;
+	height: 100%;
+	background: var(--player-color);
+}
+
+.factory.on-hold .progress-fill {
+	background: #9a9a9a;
+}
+
+.factory.done .progress-fill {
+	background: #5cff7a;
+}
+
+.counts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+	margin-top: 6px;
+	font-size: 13px;
+}
+
+.count-value {
+	font-weight: 700;
+	margin-right: 3px;
+	font-variant-numeric: tabular-nums;
+}
+
+.count.buildings .count-value {
+	color: #8fd3ff;
+}

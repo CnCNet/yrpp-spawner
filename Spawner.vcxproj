@@ -43,6 +43,8 @@
     <ClCompile Include="$(ThisDir)\src\Misc\NoCD.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\ObserverOverlay\Export.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\ObserverOverlay\Snapshot.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\QuickExit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipCreateAppMutex.cpp" />
@@ -84,6 +86,7 @@
     <ClInclude Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.h" />
     <!-- Misc -->
     <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
+    <ClInclude Include="$(ThisDir)\src\Misc\ObserverOverlay\Snapshot.h" />
     <!-- Misc/Blowfish -->
     <ClInclude Include="$(ThisDir)\src\Misc\Blowfish\blowfish.h" />
     <!-- Spawner -->

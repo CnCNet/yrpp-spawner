@@ -1,0 +1,34 @@
+{
+  "comment": "Units and buildings shown as counters on the overlay, in display order. IDs are rules(md).ini IDs. 'label' is optional and overrides the in-game name. Edit freely; mods can use their own IDs.",
+  "units": [
+    { "id": "HARV", "label": "War Miner" },
+    { "id": "CMIN", "label": "Chrono Miner" },
+    { "id": "SMIN", "label": "Slave Miner" },
+    { "id": "HTNK", "label": "Rhino" },
+    { "id": "MTNK", "label": "Grizzly" },
+    { "id": "LTNK", "label": "Lasher" },
+    { "id": "FV", "label": "IFV" },
+    { "id": "HTK", "label": "Flak Track" },
+    { "id": "TNKD", "label": "Tank Destroyer" },
+    { "id": "YTNK", "label": "Gattling Tank" },
+    { "id": "SREF", "label": "Prism Tank" },
+    { "id": "MGTK", "label": "Mirage Tank" },
+    { "id": "TTNK", "label": "Tesla Tank" },
+    { "id": "APOC", "label": "Apocalypse" },
+    { "id": "V3", "label": "V3" },
+    { "id": "TELE", "label": "Magnetron" },
+    { "id": "MIND", "label": "Mastermind" },
+    { "id": "CAOS", "label": "Chaos Drone" }
+  ],
+  "buildings": [
+    { "id": "GAWEAP", "label": "War Factory" },
+    { "id": "NAWEAP", "label": "War Factory" },
+    { "id": "YAWEAP", "label": "War Factory" },
+    { "id": "GATECH", "label": "Battle Lab" },
+    { "id": "NATECH", "label": "Battle Lab" },
+    { "id": "YATECH", "label": "Battle Lab" },
+    { "id": "GAREFN", "label": "Refinery" },
+    { "id": "NAREFN", "label": "Refinery" },
+    { "id": "YAREFN", "label": "Refinery" }
+  ]
+}

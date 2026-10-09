@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CnCNet Observer Overlay</title>
+	<link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+	<main id="players" class="players waiting"></main>
+	<script src="overlay.js"></script>
+	<script>
+		ObserverOverlay.start({ container: document.getElementById("players") });
+	</script>
+</body>
+</html>

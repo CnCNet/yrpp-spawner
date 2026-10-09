@@ -50,6 +50,8 @@ Please note that you can build the hardened version only if you have access to i
   - Porting of autosaves
 - **[Rampastring](https://github.com/Rampastring)**
   - Original event verification checks
+- **[woahwhattheheck](https://github.com/woahwhattheheck)**
+  - Observer overlay export and OBS overlay for streamers
 - **[Vinifera](https://github.com/Vinifera-Developers/Vinifera) Contributors and [TS Patches](https://github.com/CnCNet/ts-patches) Contributors**
   - Original TS implementation of multiplayer save/load
   - Original TS implementation of autosaves
