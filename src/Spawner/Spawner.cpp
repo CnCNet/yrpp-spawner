@@ -500,7 +500,11 @@ bool Spawner::Reconcile_Players()
 		}
 
 		if (!found)
+		{
+			Debug::Log("Reconcile_Players: player %d ('%ls') could not be matched to a saved house.\n",
+				i, players.Items[i]->Name);
 			return false;
+		}
 	}
 
 	/**
@@ -556,7 +560,14 @@ bool Spawner::Reconcile_Players()
 	 *  If all went well, our Session.NumPlayers value should now equal the value
 	 *  from the saved game, minus any players we removed.
 	 */
-	return SessionClass::Instance.MPlayerCount == players.Count;
+	if (SessionClass::Instance.MPlayerCount != players.Count)
+	{
+		Debug::Log("Reconcile_Players: player count mismatch (saved houses: %d, connected players: %d).\n",
+			SessionClass::Instance.MPlayerCount, players.Count);
+		return false;
+	}
+
+	return true;
 }
 
 void Spawner::LoadSidesStuff()
