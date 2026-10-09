@@ -30,7 +30,7 @@ public:
 #else
 	static bool Enabled;
 #endif
-	static bool Active;
+	static bool Started;
 	static bool DoSave;
 	static int NextAutoSaveFrame;
 	static int NextAutoSaveNumber;

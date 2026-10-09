@@ -17,6 +17,8 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef IS_CNCNET_YR_VER
+
 #include <CnCNetYR/Ra2Mode.h>
 
 #include <Utilities/Macro.h>
@@ -53,3 +55,5 @@ DEFINE_HOOK(0x6BD7DC, InitBootstrapMixFiles_CustomMixes, 0x5)
 
 	return 0;
 }
+
+#endif

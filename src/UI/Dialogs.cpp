@@ -45,6 +45,9 @@
 //4A3B4B, 9 - NOTE: This overrides a call, but it's absolute, so don't worry.
 DEFINE_HOOK(0x4A3B4B, FetchResource, 0x9)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	HMODULE hModule = static_cast<HMODULE>(Main::hInstance); //hModule and hInstance are technically the same...
 	GET(LPCTSTR, lpName, ECX);
 	GET(LPCTSTR, lpType, EDX);
