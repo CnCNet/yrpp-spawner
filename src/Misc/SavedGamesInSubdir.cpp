@@ -239,6 +239,9 @@ namespace SavedGames
 
 DEFINE_HOOK(0x559921, LoadOptionsClass_FillList_FilterFiles, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	GET(FileEntryClass*, pEntry, EBP);
 	enum { NullThisEntry = 0x559959 };
 	/*
@@ -277,6 +280,9 @@ DEFINE_HOOK(0x559921, LoadOptionsClass_FillList_FilterFiles, 0x6)
 // Write : A la fin
 DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	GET_STACK(IStorage*, pStorage, STACK_OFFSET(0x4A0, -0x490));
 	using namespace SavedGames;
 
@@ -292,6 +298,9 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 // Read : Au debut
 DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	LEA_STACK(const wchar_t*, filename, STACK_OFFSET(0x518, -0x4F4));
 	IStoragePtr pStorage = nullptr;
 	using namespace SavedGames;

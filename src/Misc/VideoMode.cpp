@@ -106,7 +106,7 @@ DEFINE_HOOK(0x60C43B, EnumChildProc_60C0C0, 0x5)
 // Disable buttons animation on score screen and game load menu
 DEFINE_HOOK(0x6076A4, ScoreScreen_Draw__SkipAnim, 0x7)
 {
-	if (!Spawner::Active)
+	if (!Spawner::Started)
 		return 0;
 
 	if (SessionClass::IsCampaign() && !HouseClass::CurrentPlayer->IsLoser)

@@ -1,11 +1,15 @@
 
 #include "Dialogs.h"
+#include <Spawner/Spawner.h>
 
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
 DEFINE_HOOK(0x609299, UI_IsStaticAndOrOwnerDraw_MultiplayerGameOptionsDialog, 0x5)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	enum { RetFalse = 0x609664, RetTrue = 0x609693 };
 
 	GET(int, dlgCtrlID, EAX);
