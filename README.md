@@ -35,6 +35,7 @@ Please note that you can build the hardened version only if you have access to i
   - Whole lot of desync fixes
   - Event verification checks
 - **[ZivDero](https://github.com/ZivDero)**
+  - Internal Blowfish integration from Phobos, replacing the external DLL dependency
   - Handicaps (difficulty & credits) support
 - **[Starkku](https://github.com/Starkku)**
   - Allow customizing whether or not special house is ally to all players via spawn.ini option (#51)
@@ -42,6 +43,8 @@ Please note that you can build the hardened version only if you have access to i
   - Game speed slider toggle
   - Revert of Battle Fortress cloak changes for CnCNet YR
   - Ability to disable ingame chat
+- **[Noble Fish](https://github.com/DeathFishAtEase)**
+  - Improve QuickExit so that the normal exit process also has the speed of <kbd>Alt</kbd>+<kbd>F4</kbd>
 - **[TaranDahl](https://github.com/TaranDahl)**
   - Porting of multiplayer save/load
   - Porting of autosaves

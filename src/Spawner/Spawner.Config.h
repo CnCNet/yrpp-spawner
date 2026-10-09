@@ -147,10 +147,8 @@ public:
 	bool ContinueWithoutHumans;
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
-	bool DisableSaveLoad;
-#ifdef IS_CNCNET_YR_VER
 	bool DisableChat;
-#endif
+	bool DisableSaveLoad;
 
 	SpawnerConfig() // default values
 		// Game Mode Options
@@ -246,10 +244,8 @@ public:
 		, ContinueWithoutHumans { false }
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
-		, DisableSaveLoad { false }
-#ifdef IS_CNCNET_YR_VER
 		, DisableChat { false }
-#endif
+		, DisableSaveLoad { false }
 	{ }
 
 	void LoadFromINIFile(CCINIClass* pINI);

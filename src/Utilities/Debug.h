@@ -22,6 +22,10 @@
 
 class Debug
 {
+private:
+	static char DeferredStringBuffer[0x1000];
+	static size_t CurrentBufferSize;
+
 public:
 	enum class ExitCode : int
 	{
@@ -33,6 +37,8 @@ public:
 	static char FinalStringBuffer[0x1000];
 
 	static void Log(const char* pFormat, ...);
+	static void LogDeferred(const char* pFormat, ...);
+	static void LogDeferredFinalize();
 	static void LogGame(const char* pFormat, ...);
 	static void LogAndMessage(const char* pFormat, ...);
 	static void LogWithVArgs(const char* pFormat, va_list args);

@@ -294,7 +294,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 	{ // Set SessionType
 		if (Spawner::Config->IsCampaign)
 			pSession->GameMode = GameMode::Campaign;
-		else if (Game::PlayerCount > 1 || Spawner::Config->ForceMultiplayer)
+		else if (Game::PlayerCount > 1 || Main::GetConfig()->ForceMultiplayer || Spawner::Config->ForceMultiplayer)
 			pSession->GameMode = GameMode::Internet; // HACK: will be set to LAN later
 		else
 			pSession->GameMode = GameMode::Skirmish;
@@ -397,8 +397,7 @@ void Spawner::InitNetwork()
 	Tunnel::Ip = inet_addr(pSpawnerConfig->TunnelIp);
 	Tunnel::Port = htons((u_short)pSpawnerConfig->TunnelPort);
 
-	auto& ListenPort = *reinterpret_cast<u_short*>(0x841F30u);
-	ListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
+	UDPInterfaceClass::UDPListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
 
 	UDPInterfaceClass::Instance = GameCreate<UDPInterfaceClass>();
 	UDPInterfaceClass::Instance->Init();

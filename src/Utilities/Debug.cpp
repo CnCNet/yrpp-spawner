@@ -18,6 +18,7 @@
 */
 
 #include "Debug.h"
+#include <version.h>
 
 #include <Syringe.h>
 #include <cassert>
@@ -27,6 +28,8 @@
 
 char Debug::StringBuffer[0x1000];
 char Debug::FinalStringBuffer[0x1000];
+char Debug::DeferredStringBuffer[0x1000];
+size_t Debug::CurrentBufferSize = 0;
 
 void Debug::Log(const char* pFormat, ...)
 {
@@ -35,6 +38,33 @@ void Debug::Log(const char* pFormat, ...)
 	vsprintf_s(FinalStringBuffer, pFormat, args);
 	LogGame("%s %s", "[Spawner]", FinalStringBuffer);
 	va_end(args);
+}
+
+void Debug::LogDeferred(const char* pFormat, ...)
+{
+	const size_t remaining = sizeof(DeferredStringBuffer) - CurrentBufferSize;
+	if (remaining <= 1)
+		return;
+
+	va_list args;
+	va_start(args, pFormat);
+	const int written = _vsnprintf_s(DeferredStringBuffer + CurrentBufferSize, remaining, _TRUNCATE, pFormat, args);
+	va_end(args);
+
+	if (written >= 0)
+		CurrentBufferSize += written;
+	else
+		CurrentBufferSize += strlen(DeferredStringBuffer + CurrentBufferSize);
+}
+
+void Debug::LogDeferredFinalize()
+{
+	if (CurrentBufferSize == 0)
+		return;
+
+	Log("%s", DeferredStringBuffer);
+	CurrentBufferSize = 0;
+	DeferredStringBuffer[0] = '\0';
 }
 
 void Debug::LogGame(const char* pFormat, ...)
@@ -86,6 +116,14 @@ void Debug::FatalErrorAndExit(ExitCode nExitCode, const char* pFormat, ...)
 	Debug::LogWithVArgs(pFormat, args);
 	va_end(args);
 	FatalExit(static_cast<int>(nExitCode));
+}
+
+DEFINE_HOOK(0x52F639, LogStartupMessages, 0x5)
+{
+	Debug::LogDeferredFinalize();
+	Debug::Log("Initialized " PRODUCT_NAME " " PRODUCT_VERSION "\n");
+
+	return 0;
 }
 
 DEFINE_PATCH( // Add new line after "Init Secondary MixFiles....."

@@ -10,19 +10,54 @@ jobs:
 
     strategy:
       matrix:
-        build-type: [Release] # [Debug, DevBuild, Release]
+        build-type: [Release] # [Debug, Nightly, Release]
         is-cncnet-yr: ["", -CnCNetYR]
         is-hardened: ["", -Hardened]
+        has-private-access:
+          - ${{ github.repository_owner == 'CnCNet' }}
+        exclude:
+          - is-hardened: -Hardened
+            has-private-access: false
 
     env:
       BUILD_CONFIG: ${{ matrix.build-type }}${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}
       ARCHIVE_NAME: CnCNet-Spawner${{ matrix.is-cncnet-yr }}${{ matrix.is-hardened }}-${{ github.ref_name }}.zip
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          submodules: recursive
+          persist-credentials: false
+
+      - name: Read submodule revisions
+        id: revisions
+        shell: pwsh
+        run: |
+          $yrpp = git rev-parse HEAD:YRpp
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $private = git rev-parse HEAD:Private
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "yrpp=$yrpp" >> $env:GITHUB_OUTPUT
+          "private=$private" >> $env:GITHUB_OUTPUT
+
+      - name: Checkout YRpp
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: Phobos-developers/YRpp
+          ref: ${{ steps.revisions.outputs.yrpp }}
+          path: YRpp
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout private sources
+        if: ${{ matrix.is-hardened == '-Hardened' }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: CnCNet/yrpp-spawner-private
+          ref: ${{ steps.revisions.outputs.private }}
+          path: Private
+          fetch-depth: 1
           ssh-key: ${{ secrets.CNCNET_CI_SSH_PRIVATEKEY }}
+          persist-credentials: false
 
       - name: Build
         uses: ./.github/actions/build
@@ -37,7 +72,7 @@ jobs:
           ${{!contains(env.BUILD_CONFIG, 'Hardened') && format('./{0}/CnCNet-Spawner.pdb', env.BUILD_CONFIG) || ''}}
 
       - name: Upload Files to the Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           append_body: true
           files: ${{ env.ARCHIVE_NAME }}
