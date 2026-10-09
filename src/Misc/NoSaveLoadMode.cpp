@@ -1,4 +1,5 @@
 #include <Utilities/Macro.h>
+#include <Utilities/Debug.h>
 #include <Spawner/Spawner.h>
 #include <WWMessageBox.h>
 #include <LoadProgressManager.h>
@@ -6,6 +7,25 @@
 static bool IsDisableSaveLoadEnabled()
 {
 	return Spawner::Enabled && Spawner::GetConfig()->DisableSaveLoad;
+}
+
+DEFINE_HOOK(0x6BD7CB, WinMain_InitNoSaveLoadMode, 0x5)
+{
+	if (IsDisableSaveLoadEnabled())
+	{
+		Patch::Apply_LJMP(0x55DBCD, 0x55DC99);                // Skip the initial save, including the Phobos autosave hook.
+		Patch::Apply_TYPED(0x83D560, { (DWORD)std::rand() }); // Invalidate the save game magic.
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x67CEF0, ScenarioClass_SaveGame_NoSaveLoadMode, 0x6)
+{
+	if (IsDisableSaveLoadEnabled())
+		Debug::FatalErrorAndExit(Debug::ExitCode::SLFail, "Save attempted with DisableSaveLoad enabled. Terminating the game.\n");
+
+	return 0;
 }
 
 DEFINE_HOOK(0x686089, DoLose_NoSaveLoadModeRetryDialog, 0x7)
