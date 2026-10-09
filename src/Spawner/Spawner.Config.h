@@ -148,6 +148,7 @@ public:
 	bool DefeatedBecomesObserver;
 	bool Observer_ShowAIOnSidebar;
 	bool DisableChat;
+	bool DisableSaveLoad;
 
 	SpawnerConfig() // default values
 		// Game Mode Options
@@ -244,6 +245,7 @@ public:
 		, DefeatedBecomesObserver { false }
 		, Observer_ShowAIOnSidebar { false }
 		, DisableChat { false }
+		, DisableSaveLoad { false }
 	{ }
 
 	void LoadFromINIFile(CCINIClass* pINI);
