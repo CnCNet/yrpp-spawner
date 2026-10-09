@@ -608,7 +608,8 @@ void Spawner::After_Main_Loop()
 		&& SessionClass::Instance.GameMode == GameMode::LAN
 		&& pConfig->AutoSaveInterval > 0;
 
-	const bool isAutoSaving = (doSaveSP || doSaveMP)
+	const bool isAutoSaving = !pConfig->DisableSaveLoad
+		&& (doSaveSP || doSaveMP)
 		&& Unsorted::CurrentFrame == Spawner::NextAutoSaveFrame;
 
 	// Schedule to make a save if it's time to autosave.
