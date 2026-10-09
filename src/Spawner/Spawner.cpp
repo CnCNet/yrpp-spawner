@@ -489,15 +489,8 @@ bool Spawner::Reconcile_Players()
 			if (!pHouse)
 				continue;
 
-			for (wchar_t c : players.Items[i]->Name)
-				Debug::LogAndMessage("%c", (char)c);
-
-			Debug::LogAndMessage("\n");
-
-			for (wchar_t c : pHouse->UIName)
-				Debug::LogAndMessage("%c", (char)c);
-
-			Debug::LogAndMessage("\n");
+			Debug::LogAndMessage("%ls\n", players.Items[i]->Name);
+			Debug::LogAndMessage("%ls\n", pHouse->UIName);
 
 			if (!wcscmp(players.Items[i]->Name, pHouse->UIName))
 			{
