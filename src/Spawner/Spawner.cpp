@@ -291,10 +291,13 @@ bool Spawner::StartScenario(const char* pScenarioName)
 		Game::PlayerCount = NodeNameType::Array.Count;
 	}
 
+	const bool forceMultiplayer = Main::GetConfig()->ForceMultiplayer || Config->ForceMultiplayer;
+	const bool deferForceMultiplayer = Config->LoadSaveGame && Game::PlayerCount <= 1 && forceMultiplayer;
+
 	{ // Set SessionType
 		if (Spawner::Config->IsCampaign)
 			pSession->GameMode = GameMode::Campaign;
-		else if (Game::PlayerCount > 1 || Main::GetConfig()->ForceMultiplayer || Spawner::Config->ForceMultiplayer)
+		else if (Game::PlayerCount > 1 || (forceMultiplayer && !deferForceMultiplayer))
 			pSession->GameMode = GameMode::Internet; // HACK: will be set to LAN later
 		else
 			pSession->GameMode = GameMode::Skirmish;
@@ -323,7 +326,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		return result;
 	}
-	else if (SessionClass::IsSkirmish())
+	else if (SessionClass::IsSkirmish() && !deferForceMultiplayer)
 	{
 		return Config->LoadSaveGame
 			? Spawner::LoadSavedGame(Config->SaveGameName)
@@ -341,7 +344,25 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		pSession->GameMode = GameMode::LAN;
 
-		if (Config->LoadSaveGame && !Spawner::Reconcile_Players())
+		if (deferForceMultiplayer)
+		{
+			// A Skirmish save already identifies the local house; player names may differ.
+			if (pSession->StartSpots.Count != 1 || !HouseClass::CurrentPlayer)
+			{
+				Debug::Log("Cannot apply ForceMultiplayer: expected one player and a loaded local house.\n");
+				return false;
+			}
+
+			const auto pPlayer = pSession->StartSpots.Items[0];
+			const auto pHouse = HouseClass::CurrentPlayer;
+			pPlayer->HouseIndex = pHouse->ArrayIndex;
+			wcscpy_s(pHouse->UIName, pPlayer->Name);
+
+			// SessionClass stores the host name in a wchar_t[21] buffer.
+			constexpr size_t MasterPlayerNameCapacity = 21;
+			wcscpy_s(pSession->MasterPlayerName(), MasterPlayerNameCapacity, pPlayer->Name);
+		}
+		else if (Config->LoadSaveGame && !Spawner::Reconcile_Players())
 			return false;
 
 		if (!pSession->CreateConnections())
