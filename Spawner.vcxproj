@@ -17,8 +17,6 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
-    <ClCompile Include="src\UI\Dialogs.cpp" />
-    <ClCompile Include="src\UI\Hooks.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.Hook.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
@@ -33,17 +31,16 @@
     <!-- CnCNetYR -->
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\AppIcon.cpp" />
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Misc.cpp" />
+    <ClCompile Include="$(ThisDir)\src\CnCNetYR\OpenTopCloak.cpp" />
     <ClCompile Include="$(ThisDir)\src\CnCNetYR\Ra2Mode.cpp" />
     <!-- Misc -->
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Blowfish.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ClampTacticalPos.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.OpenTopCloak.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.CommonCrashes.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.ExceptionCatch.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.IsoMapPack5Limit.cpp" />
-    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.Perf.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Bugfixes.LocalInterfaces.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
@@ -52,8 +49,12 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\QuickExit.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\SkipCreateAppMutex.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipScoreScreen.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\VideoMode.cpp" />
+    <!-- Misc/Blowfish -->
+    <ClCompile Include="$(ThisDir)\src\Misc\Blowfish\blowfish.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Blowfish\Hooks.Blowfish.cpp" />
     <!-- Spawner -->
     <ClCompile Include="$(ThisDir)\src\Spawner\CustomMixes.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\NetHack.cpp" />
@@ -66,11 +67,14 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
+    <!-- UI -->
+    <ClCompile Include="$(ThisDir)\src\UI\Dialogs.cpp" />
+    <ClCompile Include="$(ThisDir)\src\UI\Hooks.cpp" />
+    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
     <!-- Dialogs -->
-    <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
     <ResourceCompile Include="$(ThisDir)\src\UI\DesyncDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
@@ -89,6 +93,9 @@
     <ClInclude Include="$(ThisDir)\src\UI\Dialogs.h" />
     <ClInclude Include="$(ThisDir)\src\UI\DesyncDialog.h" />
     <ClInclude Include="$(ThisDir)\src\UI\DesyncDialog.Resource.h" />
+    <ClInclude Include="$(ThisDir)\src\Misc\Bugfixes.Desyncs.h" />
+    <!-- Misc/Blowfish -->
+    <ClInclude Include="$(ThisDir)\src\Misc\Blowfish\blowfish.h" />
     <!-- Spawner -->
     <ClInclude Include="$(ThisDir)\src\Spawner\NetHack.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\GlobalPacketExt.h" />
@@ -96,6 +103,7 @@
     <ClInclude Include="$(ThisDir)\src\Spawner\ProtocolZero.LatencyLevel.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.Config.h" />
     <ClInclude Include="$(ThisDir)\src\Spawner\Spawner.h" />
+    <!-- UI -->
     <!-- Utilities -->
     <ClInclude Include="$(ThisDir)\src\Utilities\Debug.h" />
     <ClInclude Include="$(ThisDir)\src\Utilities\DumperTypes.h" />

@@ -18,6 +18,7 @@
 */
 
 #include "Main.Config.h"
+#include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
 
 #include <CCINIClass.h>
@@ -37,11 +38,13 @@ void MainConfig::LoadFromINIFile()
 		this->AllowTaunts          = pINI->ReadBool(pOptionsSection, "AllowTaunts", this->AllowTaunts);
 		this->DDrawHandlesClose    = pINI->ReadBool(pOptionsSection, "DDrawHandlesClose", this->DDrawHandlesClose);
 		this->DisableEdgeScrolling = pINI->ReadBool(pOptionsSection, "DisableEdgeScrolling", this->DisableEdgeScrolling);
-		this->MPDebug              = pINI->ReadBool(pOptionsSection, "MPDEBUG", this->MPDebug);
 		this->QuickExit            = pINI->ReadBool(pOptionsSection, "QuickExit", this->QuickExit);
 		this->SingleProcAffinity   = pINI->ReadBool(pOptionsSection, "SingleProcAffinity", this->SingleProcAffinity);
 		this->SkipScoreScreen      = pINI->ReadBool(pOptionsSection, "SkipScoreScreen", this->SkipScoreScreen);
 		this->SpeedControl         = pINI->ReadBool(pOptionsSection, "SpeedControl", this->SpeedControl);
+
+		// Keep the legacy [Options] MPDEBUG setting for compatibility; [Debug] MPDebug takes precedence.
+		this->MPDebug              = pINI->ReadBool(pOptionsSection, "MPDEBUG", this->MPDebug);
 	}
 
 	const char* pVideoSection = "Video";
@@ -51,6 +54,17 @@ void MainConfig::LoadFromINIFile()
 		this->NoWindowFrame  = pINI->ReadBool(pVideoSection, "NoWindowFrame", this->NoWindowFrame);
 		this->WindowedMode   = pINI->ReadBool(pVideoSection, "Video.Windowed", this->WindowedMode);
 	}
+
+	const char* pDebugSection = "Debug";
+	if (pINI->GetSection(pDebugSection))
+	{
+		this->DumpTypes          = this->DumpTypes || pINI->ReadBool(pDebugSection, "DumpTypes", this->DumpTypes);
+		this->ForceMultiplayer   = pINI->ReadBool(pDebugSection, "ForceMultiplayer", this->ForceMultiplayer);
+		this->MPDebug            = pINI->ReadBool(pDebugSection, "MPDebug", this->MPDebug);
+		this->MPDebugShow        = pINI->ReadBool(pDebugSection, "MPDebug.Show", this->MPDebugShow);
+		this->SkipCreateAppMutex = pINI->ReadBool(pDebugSection, "SkipCreateAppMutex", this->SkipCreateAppMutex);
+		this->WriteStatistics    = pINI->ReadBool(pDebugSection, "WriteStatistics", this->WriteStatistics);
+	}
 }
 
 void MainConfig::ApplyStaticOptions()
@@ -58,8 +72,8 @@ void MainConfig::ApplyStaticOptions()
 	if (this->MPDebug)
 	{
 		Game::EnableMPDebug     = true;
-		Game::DrawMPDebugStats  = true;
 		Game::EnableMPSyncDebug = true;
+		Game::DrawMPDebugStats  = this->MPDebugShow;
 
 		// Fixes text layout in the MPDebug panel
 		Patch::Apply_TYPED<DWORD>(0x542A19, { 312 });

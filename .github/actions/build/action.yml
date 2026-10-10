@@ -1,4 +1,5 @@
 name: "Build"
+description: "Build the spawner and upload selected artifacts"
 
 inputs:
   sln-path:
@@ -17,22 +18,61 @@ runs:
   using: "composite"
   steps:
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
       with:
         vs-version: '[16.0, )'
 
-    - uses: ammaraskar/msvc-problem-matcher@master
+    - uses: ammaraskar/msvc-problem-matcher@47189a176388253d16c6f0b79eee6274512b761a
 
     - name: Build
       working-directory: ${{ env.GITHUB_WORKSPACE }}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{inputs.build-config}} /p:GitCommit=${{github.sha}} /p:GitBranch=${{github.ref}} /v:q ${{inputs.sln-path}}
-      shell: cmd
+      env:
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+        BUILD_CONFIG: ${{ inputs.build-config }}
+        BUILD_SOLUTION: ${{ inputs.sln-path }}
+        BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
+      run: |
+        $checkedOutCommit = git rev-parse HEAD
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        if ($checkedOutCommit -ne $env:BUILD_COMMIT) {
+          throw 'The checked-out commit does not match the build version commit.'
+        }
+        $buildArgs = @('/m', "/p:Configuration=$env:BUILD_CONFIG", "/p:GitCommit=$env:BUILD_COMMIT", "/p:GitBranch=$env:BUILD_BRANCH", '/v:q', $env:BUILD_SOLUTION)
+        if ($env:RELEASE_TAG) {
+          if ($env:RELEASE_TAG -notmatch '^v?(\d+)\.(\d+)\.(\d+)\.(\d+)$') {
+            throw "Release tag must have the format vMAJOR.MINOR.REVISION.PATCH."
+          }
+          $parts = 1..4 | ForEach-Object {
+            $part = [int]$Matches[$_]
+            if ($part -gt 65535) { throw "Version components must be between 0 and 65535." }
+            $part
+          }
+          $buildArgs += "/p:ReleaseVersion=$($parts -join '.')"
+        }
+        if ($env:BUILD_CONFIG.Contains('Hardened')) {
+          # Compiler diagnostics may contain private source text, including on failure.
+          $buildLog = Join-Path $env:RUNNER_TEMP ([guid]::NewGuid().ToString() + '.log')
+          try {
+            & msbuild @buildArgs *> $buildLog
+            $buildExitCode = $LASTEXITCODE
+          } finally {
+            Remove-Item $buildLog -Force -ErrorAction SilentlyContinue
+          }
+          if ($buildExitCode -ne 0) {
+            Write-Host '::error::Hardened build failed. Reproduce locally to inspect private diagnostics.'
+          }
+          exit $buildExitCode
+        }
+        & msbuild @buildArgs
+        exit $LASTEXITCODE
+      shell: pwsh
 
     - name: Upload artifact
       if: ${{ success() && inputs.artifact-name != '' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
       with:
         name: ${{ inputs.artifact-name }}
         path: |

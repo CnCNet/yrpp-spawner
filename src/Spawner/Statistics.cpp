@@ -30,9 +30,10 @@
 
 bool __forceinline IsStatisticsEnabled()
 {
-	return Spawner::Active
-		&& Spawner::GetConfig()->WriteStatistics
-		&& !SessionClass::IsCampaign();
+	if (Spawner::Active && !SessionClass::IsCampaign())
+		return Main::GetConfig()->WriteStatistics || Spawner::GetConfig()->WriteStatistics;
+
+	return false;
 }
 
 // Write stats.dmp

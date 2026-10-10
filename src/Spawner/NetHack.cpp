@@ -24,7 +24,7 @@
 
 ListAddress ListAddress::Array[8] = {};
 
-bool NetHack::PortHack = true;
+bool NetHack::RequirePortMatch = false;
 
 u_short Tunnel::Id = 0;
 u_long  Tunnel::Ip = 0;
@@ -80,7 +80,7 @@ int WINAPI NetHack::RecvFrom(
 			continue;
 
 		// compare port
-		if (!NetHack::PortHack && src_addr->sin_port != player.Port)
+		if (NetHack::RequirePortMatch && src_addr->sin_port != player.Port)
 			continue;
 
 		// found it, set this index to source addr

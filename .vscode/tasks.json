@@ -68,7 +68,7 @@
           "value": "Debug"
         },
         {
-          "value": "DevBuild"
+          "value": "Nightly"
         },
         {
           "value": "Release"

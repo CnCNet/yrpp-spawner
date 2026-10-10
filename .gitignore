@@ -1,14 +1,14 @@
 yrpp-spawner-private/
 Release/**
 Release-Hardened/**
-DevBuild/**
-DevBuild-Hardened/**
+Nightly/**
+Nightly-Hardened/**
 Debug/**
 Debug-Hardened/**
 Release-CnCNetYR/**
 Release-CnCNetYR-Hardened/**
-DevBuild-CnCNetYR/**
-DevBuild-CnCNetYR-Hardened/**
+Nightly-CnCNetYR/**
+Nightly-CnCNetYR-Hardened/**
 Debug-CnCNetYR/**
 Debug-CnCNetYR-Hardened/**
 
