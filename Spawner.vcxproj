@@ -67,6 +67,7 @@
     <!-- UI -->
     <ClCompile Include="$(ThisDir)\src\UI\Dialogs.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\Hooks.cpp" />
+    <ClCompile Include="$(ThisDir)\src\UI\MPDebugLayout.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
