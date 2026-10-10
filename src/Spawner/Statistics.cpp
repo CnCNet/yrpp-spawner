@@ -30,7 +30,7 @@
 
 bool __forceinline IsStatisticsEnabled()
 {
-	if (Spawner::Active && !SessionClass::IsCampaign())
+	if (Spawner::Enabled && !SessionClass::IsCampaign())
 		return Main::GetConfig()->WriteStatistics || Spawner::GetConfig()->WriteStatistics;
 
 	return false;

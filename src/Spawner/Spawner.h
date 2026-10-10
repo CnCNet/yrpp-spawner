@@ -26,7 +26,7 @@ class Spawner
 {
 public:
 	static bool Enabled;
-	static bool Active;
+	static bool Started; // Set on entry to StartGame to prevent repeated startup attempts.
 	static bool DoSave;
 	static int NextAutoSaveFrame;
 	static int NextAutoSaveNumber;
