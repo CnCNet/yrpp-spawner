@@ -22,10 +22,8 @@
 #include <HouseClass.h>
 #include <Unsorted.h>
 
-#ifdef IS_CNCNET_YR_VER
 #include <MessageListClass.h>
 #include <Windows.h>
-#endif
 
 // This corrects the processing of Unicode player names
 // and prohibits incoming messages from players with whom chat is disabled
@@ -46,7 +44,6 @@ struct GlobalPacket_NetMessage
 
 #pragma pack(pop)
 
-#ifdef IS_CNCNET_YR_VER
 static bool inline IsDisableChatEnabled()
 {
 	return Spawner::Enabled && Spawner::GetConfig()->DisableChat;
@@ -130,7 +127,6 @@ DEFINE_HOOK(0x55DDA5, MainLoop_AfterRender_DisableChat, 0x5)
 
 	return 0x55DDAA;
 }
-#endif
 
 DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 {
@@ -139,10 +135,8 @@ DEFINE_HOOK(0x48D92B, NetworkCallBack_NetMessage_Print, 0x5)
 
 	enum { SkipMessage = 0x48DAD3, PrintMessage = 0x48D937 };
 
-#ifdef IS_CNCNET_YR_VER
 	if (IsDisableChatEnabled())
 		return SkipMessage;
-#endif
 
 	const int houseIndex = GlobalPacket_NetMessage::Instance.HouseIndex;
 
