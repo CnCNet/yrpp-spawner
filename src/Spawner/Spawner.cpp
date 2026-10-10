@@ -291,10 +291,13 @@ bool Spawner::StartScenario(const char* pScenarioName)
 		Game::PlayerCount = NodeNameType::Array.Count;
 	}
 
+	const bool forceMultiplayer = Main::GetConfig()->ForceMultiplayer || Config->ForceMultiplayer;
+	const bool deferForceMultiplayer = Config->LoadSaveGame && Game::PlayerCount <= 1 && forceMultiplayer;
+
 	{ // Set SessionType
 		if (Spawner::Config->IsCampaign)
 			pSession->GameMode = GameMode::Campaign;
-		else if (Game::PlayerCount > 1 || Main::GetConfig()->ForceMultiplayer || Spawner::Config->ForceMultiplayer)
+		else if (Game::PlayerCount > 1 || (forceMultiplayer && !deferForceMultiplayer))
 			pSession->GameMode = GameMode::Internet; // HACK: will be set to LAN later
 		else
 			pSession->GameMode = GameMode::Skirmish;
@@ -323,7 +326,7 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		return result;
 	}
-	else if (SessionClass::IsSkirmish())
+	else if (SessionClass::IsSkirmish() && !deferForceMultiplayer)
 	{
 		return Config->LoadSaveGame
 			? Spawner::LoadSavedGame(Config->SaveGameName)
@@ -341,7 +344,25 @@ bool Spawner::StartScenario(const char* pScenarioName)
 
 		pSession->GameMode = GameMode::LAN;
 
-		if (Config->LoadSaveGame && !Spawner::Reconcile_Players())
+		if (deferForceMultiplayer)
+		{
+			// A Skirmish save already identifies the local house; player names may differ.
+			if (pSession->StartSpots.Count != 1 || !HouseClass::CurrentPlayer)
+			{
+				Debug::Log("Cannot apply ForceMultiplayer: expected one player and a loaded local house.\n");
+				return false;
+			}
+
+			const auto pPlayer = pSession->StartSpots.Items[0];
+			const auto pHouse = HouseClass::CurrentPlayer;
+			pPlayer->HouseIndex = pHouse->ArrayIndex;
+			wcscpy_s(pHouse->UIName, pPlayer->Name);
+
+			// SessionClass stores the host name in a wchar_t[21] buffer.
+			constexpr size_t MasterPlayerNameCapacity = 21;
+			wcscpy_s(pSession->MasterPlayerName(), MasterPlayerNameCapacity, pPlayer->Name);
+		}
+		else if (Config->LoadSaveGame && !Spawner::Reconcile_Players())
 			return false;
 
 		if (!pSession->CreateConnections())
@@ -397,8 +418,7 @@ void Spawner::InitNetwork()
 	Tunnel::Ip = inet_addr(pSpawnerConfig->TunnelIp);
 	Tunnel::Port = htons((u_short)pSpawnerConfig->TunnelPort);
 
-	auto& ListenPort = *reinterpret_cast<u_short*>(0x841F30u);
-	ListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
+	UDPInterfaceClass::UDPListenPort = Tunnel::Port ? 0 : (u_short)pSpawnerConfig->ListenPort;
 
 	UDPInterfaceClass::Instance = GameCreate<UDPInterfaceClass>();
 	UDPInterfaceClass::Instance->Init();
@@ -490,15 +510,8 @@ bool Spawner::Reconcile_Players()
 			if (!pHouse)
 				continue;
 
-			for (wchar_t c : players.Items[i]->Name)
-				Debug::LogAndMessage("%c", (char)c);
-
-			Debug::LogAndMessage("\n");
-
-			for (wchar_t c : pHouse->UIName)
-				Debug::LogAndMessage("%c", (char)c);
-
-			Debug::LogAndMessage("\n");
+			Debug::LogAndMessage("%ls\n", players.Items[i]->Name);
+			Debug::LogAndMessage("%ls\n", pHouse->UIName);
 
 			if (!wcscmp(players.Items[i]->Name, pHouse->UIName))
 			{
@@ -508,7 +521,11 @@ bool Spawner::Reconcile_Players()
 		}
 
 		if (!found)
+		{
+			Debug::Log("Reconcile_Players: player %d ('%ls') could not be matched to a saved house.\n",
+				i, players.Items[i]->Name);
 			return false;
+		}
 	}
 
 	/**
@@ -564,7 +581,14 @@ bool Spawner::Reconcile_Players()
 	 *  If all went well, our Session.NumPlayers value should now equal the value
 	 *  from the saved game, minus any players we removed.
 	 */
-	return SessionClass::Instance.MPlayerCount == players.Count;
+	if (SessionClass::Instance.MPlayerCount != players.Count)
+	{
+		Debug::Log("Reconcile_Players: player count mismatch (saved houses: %d, connected players: %d).\n",
+			SessionClass::Instance.MPlayerCount, players.Count);
+		return false;
+	}
+
+	return true;
 }
 
 void Spawner::LoadSidesStuff()
