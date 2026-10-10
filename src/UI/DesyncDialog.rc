@@ -1,0 +1,61 @@
+#include <windows.h>
+
+#include "DesyncDialog.Resource.h"
+
+// Multiplayer "Synchronization Error" dialogs.
+// Both are full-screen owner-draw child dialogs (STYLE WS_CHILD) laid out like
+// the engine's own in-game dialogs (e.g. "waiting for players", res 234, and the
+// IPX options dialog, res 215): a 533x369 template that the owner-draw framework
+// moves full-screen and scales onto the in-game background (BKGD*.SHP + sidebar).
+// Action buttons sit in the right-hand column (x=425, 108x23); content fills the
+// left/centre. The host variant offers Continue/Quit; the wait variant only
+// lets a non-host player Quit.
+//
+// Control captions are CSF labels ("GUI:..."); the owner-draw framework resolves
+// them through the string table when the dialog is initialised.
+
+IDD_DESYNC_HOST DIALOG DISCARDABLE  0, 0, 533, 369
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "GUI:DesyncTitle",IDC_DESYNC_HEADER,63,14,300,14,NOT WS_GROUP
+    LTEXT           "GUI:DesyncPlayers",-1,63,44,150,12,NOT WS_GROUP
+    LISTBOX         IDC_DESYNC_PLAYER_LIST,63,58,150,120,NOT LBS_NOTIFY |
+                    LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
+    LTEXT           "GUI:DesyncOutOfSync",-1,220,58,143,12,NOT WS_GROUP
+    LTEXT           "GUI:DesyncHostInfo",-1,220,72,143,110,NOT WS_GROUP
+    LISTBOX         IDC_DESYNC_CHAT_LIST,63,188,300,110,NOT LBS_NOTIFY |
+                    LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
+    EDITTEXT        IDC_DESYNC_CHAT_EDIT,63,302,230,14,ES_AUTOHSCROLL | NOT WS_BORDER
+    CONTROL         "GUI:DesyncSendButton",IDC_DESYNC_CHAT_SEND,"Button",BS_OWNERDRAW |
+                    WS_TABSTOP,297,301,66,16
+    CONTROL         "GUI:DesyncContinueButton",IDC_DESYNC_CONTINUE,"Button",BS_OWNERDRAW |
+                    WS_TABSTOP,425,122,108,23
+    CONTROL         "GUI:DesyncQuitButton",IDC_DESYNC_QUIT,"Button",BS_OWNERDRAW |
+                    WS_TABSTOP,425,149,108,23
+    CONTROL         "",1685,"Static",SS_LEFT | SS_CENTERIMAGE,2,355,303,12
+END
+
+IDD_DESYNC_WAIT DIALOG DISCARDABLE  0, 0, 533, 369
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "GUI:DesyncTitle",IDC_DESYNC_HEADER,63,14,300,14,NOT WS_GROUP
+    LTEXT           "GUI:DesyncPlayers",-1,63,44,150,12,NOT WS_GROUP
+    LISTBOX         IDC_DESYNC_PLAYER_LIST,63,58,150,120,NOT LBS_NOTIFY |
+                    LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
+    LTEXT           "GUI:DesyncOutOfSync",-1,220,58,143,12,NOT WS_GROUP
+    LTEXT           "GUI:DesyncWaitInfo",-1,220,72,143,110,NOT WS_GROUP
+    LISTBOX         IDC_DESYNC_CHAT_LIST,63,188,300,110,NOT LBS_NOTIFY |
+                    LBS_OWNERDRAWFIXED | LBS_HASSTRINGS |
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | NOT WS_BORDER
+    EDITTEXT        IDC_DESYNC_CHAT_EDIT,63,302,230,14,ES_AUTOHSCROLL | NOT WS_BORDER
+    CONTROL         "GUI:DesyncSendButton",IDC_DESYNC_CHAT_SEND,"Button",BS_OWNERDRAW |
+                    WS_TABSTOP,297,301,66,16
+    CONTROL         "GUI:DesyncQuitButton",IDC_DESYNC_QUIT,"Button",BS_OWNERDRAW |
+                    WS_TABSTOP | WS_DISABLED,425,122,108,23
+    CONTROL         "",1685,"Static",SS_LEFT | SS_CENTERIMAGE,2,355,303,12
+END
