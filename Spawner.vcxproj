@@ -17,8 +17,6 @@
   <!-- Compiled files -->
   <ItemGroup>
     <!-- Root -->
-    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.cpp" />
-    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.Hook.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\version.rc" />
     <ClCompile Include="$(ThisDir)\src\Main.cpp" />
     <ClCompile Include="$(ThisDir)\src\Main.Config.cpp" />
@@ -68,14 +66,15 @@
     <ClCompile Include="$(ThisDir)\src\Spawner\Spawner.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\Spawner\Statistics.cpp" />
     <!-- UI -->
+    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.cpp" />
+    <ClCompile Include="$(ThisDir)\src\UI\DesyncDialog.Hook.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\Dialogs.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\Hooks.cpp" />
+    <ResourceCompile Include="$(ThisDir)\src\UI\DesyncDialog.rc" />
     <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Utilities\Patch.cpp" />
-    <!-- Dialogs -->
-    <ResourceCompile Include="$(ThisDir)\src\UI\DesyncDialog.rc" />
   </ItemGroup>
   <!-- Header files -->
   <ItemGroup>
