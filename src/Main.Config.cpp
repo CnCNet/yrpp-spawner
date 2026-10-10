@@ -17,6 +17,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <SessionClass.h>
 #include "Main.Config.h"
 #include <Utilities/Debug.h>
 #include <Utilities/Macro.h>
@@ -111,8 +112,7 @@ void MainConfig::ApplyStaticOptions()
 		speedControl = true;
 	}
 
-	auto& LANTaunts = *reinterpret_cast<bool*>(0xA8D110u);
-	LANTaunts = this->AllowTaunts;
+	SessionClass::Instance.LANTaunts = this->AllowTaunts;
 
 	// Set 3rd party ddraw.dll options
 	if (HMODULE hDDraw = LoadLibraryA("ddraw.dll"))
