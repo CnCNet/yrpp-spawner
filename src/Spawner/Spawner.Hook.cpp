@@ -211,15 +211,13 @@ DEFINE_HOOK_AGAIN(0x60D407, SomeFunc_InterceptMainLoop, 0x5);
 DEFINE_HOOK_AGAIN(0x608206, SomeFunc_InterceptMainLoop, 0x5);
 DEFINE_HOOK(0x48CE8A, SomeFunc_InterceptMainLoop, 0x5)
 {
-	/**
-	 *  Main loop.
-	 */
+	//  Main loop.
 	Game::MainLoop();
 
-	/**
-	 *  After loop.
-	 */
-	Spawner::After_Main_Loop();
+	// After loop.
+	if (Spawner::Enabled)
+		Spawner::After_Main_Loop();
+
 	return R->Origin() + 0x5;
 }
 
@@ -233,6 +231,9 @@ DEFINE_HOOK(0x52DAEF, Game_Start_ResetGlobal, 0x5)
 
 DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	/**
 	 *  Schedule the next autosave.
 	 */
@@ -245,6 +246,9 @@ DEFINE_HOOK(0x686B20, INIClass_ReadScenario_AutoSave, 0x6)
 // and reading the comments in Spawner::After_Main_Loop
 DEFINE_HOOK(0x4C7A14, EventClass_RespondToEvent_SaveGame, 0x5)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	Spawner::RespondToSaveGame();
 	return 0x4C7B42;
 }
@@ -260,6 +264,9 @@ DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit, 0x6)
 
 DEFINE_HOOK(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	if (Spawner::GetConfig()->SpecialHouseIsAlly)
 		return 0;
 
@@ -268,6 +275,9 @@ DEFINE_HOOK(0x686A9E, ReadScenario_InitSomeThings_SpecialHouseIsAlly, 0x6)
 
 DEFINE_HOOK(0x686D46, ReadScenarioINI_MissionININame, 0x5)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	LEA_STACK(CCFileClass*, pFile, STACK_OFFSET(0x174, -0xF0));
 
 	if (Spawner::GetConfig()->ReadMissionSection)
@@ -281,6 +291,9 @@ DEFINE_HOOK(0x686D46, ReadScenarioINI_MissionININame, 0x5)
 
 DEFINE_HOOK(0x65F57F, BriefingDialog_MissionININame, 0x6)
 {
+	if (!Spawner::Enabled)
+		return 0;
+
 	LEA_STACK(CCFileClass*, pFile, STACK_OFFSET(0x1D4, -0x16C));
 
 	if (Spawner::GetConfig()->ReadMissionSection)

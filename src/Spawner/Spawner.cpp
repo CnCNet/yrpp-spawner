@@ -44,7 +44,7 @@
 #if !defined(IS_HARDENED_VER) && !defined(IS_CNCNET_YR_VER)
 bool Spawner::Enabled = false;
 #endif
-bool Spawner::Active = false;
+bool Spawner::Started = false;
 std::unique_ptr<SpawnerConfig> Spawner::Config = nullptr;
 bool Spawner::DoSave = false;
 int Spawner::NextAutoSaveFrame = -1;
@@ -61,10 +61,10 @@ void Spawner::Init()
 
 bool Spawner::StartGame()
 {
-	if (Spawner::Active)
+	if (Spawner::Started)
 		return false;
 
-	Spawner::Active = true;
+	Spawner::Started = true;
 	Game::IsActive = true;
 	Game::InitUIStuff();
 
@@ -623,6 +623,9 @@ void Spawner::RespondToSaveGame()
  */
 void Spawner::After_Main_Loop()
 {
+	if (!Spawner::Enabled)
+		return;
+
 	auto pConfig = Spawner::GetConfig();
 
 	const bool doSaveSP =
@@ -631,8 +634,7 @@ void Spawner::After_Main_Loop()
 		&& pConfig->AutoSaveInterval > 0;
 
 	const bool doSaveMP =
-		Spawner::Active
-		&& SessionClass::Instance.GameMode == GameMode::LAN
+		SessionClass::Instance.GameMode == GameMode::LAN
 		&& pConfig->AutoSaveInterval > 0;
 
 	const bool isAutoSaving = (doSaveSP || doSaveMP)
