@@ -37,6 +37,7 @@ Please note that you can build the hardened version only if you have access to i
 - **[ZivDero](https://github.com/ZivDero)**
   - Internal Blowfish integration from Phobos, replacing the external DLL dependency
   - Handicaps (difficulty & credits) support
+  - Multiplayer desync dialog
 - **[Starkku](https://github.com/Starkku)**
   - Allow customizing whether or not special house is ally to all players via spawn.ini option (#51)
 - **[RAZER](https://github.com/CnCRAZER)**
