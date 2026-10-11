@@ -41,6 +41,7 @@
     <ClCompile Include="$(ThisDir)\src\Misc\CopyProtection.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\DisableEdgeScrolling.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\InGameChat.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\MPDebug.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\NoCD.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
@@ -67,7 +68,6 @@
     <!-- UI -->
     <ClCompile Include="$(ThisDir)\src\UI\Dialogs.cpp" />
     <ClCompile Include="$(ThisDir)\src\UI\Hooks.cpp" />
-    <ClCompile Include="$(ThisDir)\src\UI\MPDebugLayout.cpp" />
     <ResourceCompile Include="$(ThisDir)\src\UI\MultiplayerGameOptionsDialog.rc" />
     <!-- Utilities -->
     <ClCompile Include="$(ThisDir)\src\Utilities\Debug.cpp" />
