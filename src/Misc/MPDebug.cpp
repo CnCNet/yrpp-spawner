@@ -50,7 +50,7 @@ DEFINE_HOOK(0x55F1F8, MPDebugPrint_CheckDrawFlag, 0x8)
 DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
 {
 	GET(DSurface*, pSurface, ESI);
-	LEA_STACK(RectangleStruct*, pRect, 0x18);
+	LEA_STACK(RectangleStruct*, pRect, STACK_OFFSET(0x230, -0x218));
 
 	ColorStruct color { 0, 0, 0 };
 	pSurface->FillRectTrans(pRect, &color, 80);
@@ -58,3 +58,15 @@ DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
 	return 0;
 }
 DEFINE_PATCH(0x55F2E2, 0x83, 0xC4, 0x08) // Replace the original FillRect call with ADD ESP, 8 to discard its two arguments.
+
+// Restore the stall indicator area from the composite instead of filling it black.
+DEFINE_HOOK(0x649C7D, MPDebug_RestoreStallIndicatorBackground, 0x7)
+{
+	GET_STACK(DSurface*, pSurface, STACK_OFFSET(0x730, -0x6E4));
+	LEA_STACK(RectangleStruct*, pRect, STACK_OFFSET(0x730, -0x6AC));
+
+	pSurface->CopyFromPart(pRect, DSurface::Composite, pRect, false, true);
+
+	return 0;
+}
+DEFINE_PATCH(0x649C7A, 0x83, 0xC4, 0x08) // Replace FillRect with ADD ESP, 8 to discard its two arguments.
