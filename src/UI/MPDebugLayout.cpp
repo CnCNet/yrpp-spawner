@@ -19,6 +19,7 @@
 
 #include <Utilities/Macro.h>
 #include <Unsorted.h>
+#include <Surface.h>
 
 // Fixes text layout in the MPDebug panel
 DEFINE_PATCH_TYPED(DWORD, 0x542A19, 312 /* 311 */); // average response time
@@ -44,3 +45,16 @@ DEFINE_HOOK(0x55F1F8, MPDebugPrint_CheckDrawFlag, 0x8)
 		? 0
 		: SkipEventQueueDelay;
 }
+
+// Blend the panel background with the map at 80% opacity.
+DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
+{
+	GET(DSurface*, pSurface, ESI);
+	LEA_STACK(RectangleStruct*, pRect, 0x18);
+
+	ColorStruct color { 0, 0, 0 };
+	pSurface->FillRectTrans(pRect, &color, 80);
+
+	return 0;
+}
+DEFINE_PATCH(0x55F2E2, 0x83, 0xC4, 0x08) // Replace the original FillRect call with ADD ESP, 8 to discard its two arguments.
