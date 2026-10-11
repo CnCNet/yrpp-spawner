@@ -59,6 +59,7 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 	const auto previous = *tacticalPos;
 	tacticalPos->X = Math::max(minimum.X, Math::min(tacticalPos->X, maximum.X));
 	tacticalPos->Y = Math::max(minimum.Y, Math::min(tacticalPos->Y, maximum.Y));
+
 	return tacticalPos->X != previous.X || tacticalPos->Y != previous.Y;
 }
 DEFINE_FUNCTION_JUMP(LJMP, 0x6D8640, Tactical_ClampTacticalPos)
