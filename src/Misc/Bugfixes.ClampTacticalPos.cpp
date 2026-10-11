@@ -23,6 +23,8 @@
 #include <TacticalClass.h>
 #include <RadarClass.h>
 
+#include <algorithm>
+
 // Fixes glitches if the map size is smaller than the screen resolution.
 // Author: Belonit, ZivDero
 static constexpr float paddingTopInCell = 5;
@@ -57,8 +59,8 @@ bool __fastcall Tactical_ClampTacticalPos(TacticalClass* pThis, void*, Point2D* 
 		minimum.Y = maximum.Y = (minimum.Y + maximum.Y) / 2;
 
 	const auto previous = *tacticalPos;
-	tacticalPos->X = Math::max(minimum.X, Math::min(tacticalPos->X, maximum.X));
-	tacticalPos->Y = Math::max(minimum.Y, Math::min(tacticalPos->Y, maximum.Y));
+	tacticalPos->X = std::clamp(tacticalPos->X, minimum.X, maximum.X);
+	tacticalPos->Y = std::clamp(tacticalPos->Y, minimum.Y, maximum.Y);
 
 	return tacticalPos->X != previous.X || tacticalPos->Y != previous.Y;
 }
@@ -111,10 +113,10 @@ DEFINE_HOOK(0x657134, RadarClass_RenderRadar_ClampViewRect, 0x6)
 
 	const auto& radarRect = pThis->RadarRect;
 	auto& viewRect = pThis->RadarViewRect;
-	viewRect.Width = Math::min(viewRect.Width, radarRect.Width);
-	viewRect.Height = Math::min(viewRect.Height, radarRect.Height);
-	viewRect.X = Math::max(radarRect.X, Math::min(viewRect.X, radarRect.X + radarRect.Width - viewRect.Width));
-	viewRect.Y = Math::max(radarRect.Y, Math::min(viewRect.Y, radarRect.Y + radarRect.Height - viewRect.Height));
+	viewRect.Width = std::min(viewRect.Width, radarRect.Width);
+	viewRect.Height = std::min(viewRect.Height, radarRect.Height);
+	viewRect.X = std::clamp(viewRect.X, radarRect.X, radarRect.X + radarRect.Width - viewRect.Width);
+	viewRect.Y = std::clamp(viewRect.Y, radarRect.Y, radarRect.Y + radarRect.Height - viewRect.Height);
 
 	return 0;
 }
