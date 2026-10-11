@@ -41,7 +41,9 @@
 
 #include <cassert>
 
+#if !defined(IS_HARDENED_VER) && !defined(IS_CNCNET_YR_VER)
 bool Spawner::Enabled = false;
+#endif
 bool Spawner::Active = false;
 std::unique_ptr<SpawnerConfig> Spawner::Config = nullptr;
 bool Spawner::DoSave = false;

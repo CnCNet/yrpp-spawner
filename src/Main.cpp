@@ -37,6 +37,8 @@ void Main::ExeRun()
 
 void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 {
+	bool hasSpawnArgument = false;
+
 	// > 1 because the exe path itself counts as an argument, too!
 	for (int i = 1; i < nNumArgs; ++i)
 	{
@@ -48,7 +50,7 @@ void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 		}
 		else if (0 == _stricmp(pArg, "-SPAWN"))
 		{
-			Spawner::Enabled = true;
+			hasSpawnArgument = true;
 		}
 		else if (0 == _stricmp(pArg, "-DumpTypes"))
 		{
@@ -59,4 +61,17 @@ void Main::CmdLineParse(char** ppArgs, int nNumArgs)
 			Main::Config->RA2ModeSaveID = strtoul(pArg - 1 + sizeof("-RA2ModeSaveID="), 0, 0);
 		}
 	}
+
+#if defined(IS_HARDENED_VER) || defined(IS_CNCNET_YR_VER)
+	if (!hasSpawnArgument)
+	{
+		MessageBoxW(nullptr,
+			L"This build requires the -SPAWN command-line argument.\n\n"
+			L"Please launch the game through the CnCNet client or add -SPAWN to your launch command.",
+			L"CnCNet Spawner - Launch Error", MB_OK | MB_ICONERROR);
+		ExitProcess(ERROR_BAD_ARGUMENTS);
+	}
+#else
+	Spawner::Enabled = hasSpawnArgument;
+#endif
 }
