@@ -20,6 +20,7 @@
 #include <Utilities/Macro.h>
 #include <Unsorted.h>
 #include <Surface.h>
+#include <ColorScheme.h>
 
 // Fixes text layout in the MPDebug panel
 DEFINE_PATCH_TYPED(DWORD, 0x542A19, 312 /* 311 */); // average response time
@@ -32,19 +33,33 @@ DEFINE_PATCH_TYPED(DWORD, 0x542CF7, 372 /* 359 */); // player frame number
 DEFINE_PATCH_TYPED(DWORD, 0x542D5E, 382 /* 367 */); // send/receive queue lengths
 DEFINE_PATCH_TYPED(DWORD, 0x542DC2, 392 /* 375 */); // missed overall/magic packets
 DEFINE_PATCH_TYPED(DWORD, 0x542E52, 402 /* 383 */); // routed response time (WOL)
+
 DEFINE_PATCH_TYPED(DWORD, 0x649699, 420 /* 400 */); // frame stall (yellow)
 DEFINE_PATCH_TYPED(DWORD, 0x64975D, 420 /* 400 */); // command count stall (red)
 DEFINE_PATCH_TYPED(DWORD, 0x649C60, 420 /* 400 */); // clear stall indicators
 
-// Hide the event queue delay together with the multiplayer debug statistics.
-DEFINE_HOOK(0x55F1F8, MPDebugPrint_CheckDrawFlag, 0x8)
-{
-	enum { SkipEventQueueDelay = 0x55F280 };
+DEFINE_PATCH_TYPED(DWORD, 0x54267C, 432 /* 402 */); // retry delta
+DEFINE_PATCH_TYPED(DWORD, 0x5426F2, 442 /* 412 */); // retry timeout
+DEFINE_PATCH_TYPED(DWORD, 0x542754, 452 /* 422 */); // latency fudge
+DEFINE_PATCH_TYPED(DWORD, 0x542810, 462 /* 432 */); // frame sync packets per second
 
-	return Game::DrawMPDebugStats
-		? 0
-		: SkipEventQueueDelay;
+
+DEFINE_HOOK(0x55F667, MPDebugPrint_DrawEventQueueDelay, 0x5)
+{
+	const auto delay = *reinterpret_cast<const int*>(0x8373A0);
+	if (delay == -1)
+		return 0;
+
+	Point2D result;
+	const Point2D location { 0, 392 };
+	const auto bounds = DSurface::Composite->GetRect();
+	Fancy_Text_Print_Wide(result, L"Queue delay: %.2f", DSurface::Composite, bounds,
+		location, ColorScheme::Array[ColorScheme::Grey], nullptr,
+		TextPrintType::Efnt | TextPrintType::NoShadow, delay / 1000.0);
+
+	return 0;
 }
+DEFINE_JUMP(LJMP, 0x55F1F8, 0x55F280); // Draw the event queue delay inside the panel, after its background and LNFT.
 
 // Blend the panel background with the map at 80% opacity.
 DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
