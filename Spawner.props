@@ -101,6 +101,12 @@
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Hardened')) Or $(Configuration.Contains('CnCNetYR'))">
+    <ClCompile>
+      <!-- Spawner::Enabled is always true in these builds. -->
+      <DisableSpecificWarnings>4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.Contains('CnCNetYR'))">
     <ClCompile>
       <PreprocessorDefinitions>IS_CNCNET_YR_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
