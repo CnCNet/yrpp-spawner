@@ -393,7 +393,7 @@ namespace FPStateGuard
 		if (logged < 10)
 		{
 			++logged;
-			Debug::Log("[Spawner] Repaired corrupted SSE FP state at %s: MXCSR %04X -> %04X (GPU driver bug, see cnc-ddraw#453)\n",
+			Debug::Log("Repaired corrupted SSE FP state at %s: MXCSR %04X -> %04X (GPU driver bug, see cnc-ddraw#453)\n",
 				pSite, mxcsr & 0xFFFF, DefaultMxcsr);
 		}
 	}
