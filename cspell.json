@@ -354,6 +354,7 @@
     "NOINTERFACE",
     "NOMINMAX",
     "NOWINDOWCHANGES",
+    "NOZORDER",
     "ntdll",
     "ntfnce",
     "NTRLMD",
