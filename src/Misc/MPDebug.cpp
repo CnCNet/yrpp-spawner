@@ -36,7 +36,6 @@ DEFINE_PATCH_TYPED(DWORD, 0x542E52, 402 /* 383 */); // routed response time (WOL
 
 DEFINE_PATCH_TYPED(DWORD, 0x649699, 420 /* 400 */); // frame stall (yellow)
 DEFINE_PATCH_TYPED(DWORD, 0x64975D, 420 /* 400 */); // command count stall (red)
-DEFINE_PATCH_TYPED(DWORD, 0x649C60, 420 /* 400 */); // clear stall indicators
 
 DEFINE_PATCH_TYPED(DWORD, 0x54267C, 432 /* 402 */); // retry delta
 DEFINE_PATCH_TYPED(DWORD, 0x5426F2, 442 /* 412 */); // retry timeout
@@ -75,13 +74,11 @@ DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
 DEFINE_PATCH(0x55F2E2, 0x83, 0xC4, 0x08) // Replace the original FillRect call with ADD ESP, 8 to discard its two arguments.
 
 // Restore the stall indicator area from the composite instead of filling it black.
-DEFINE_HOOK(0x649C7D, MPDebug_RestoreStallIndicatorBackground, 0x7)
+DEFINE_HOOK(0x649C43, MPDebug_RestoreStallIndicatorBackground, 0x7)
 {
-	GET_STACK(DSurface*, pSurface, STACK_OFFSET(0x730, -0x6E4));
-	LEA_STACK(RectangleStruct*, pRect, STACK_OFFSET(0x730, -0x6AC));
+	GET(DSurface*, pSurface, ECX);
+	RectangleStruct rect { 100, 420 /* 400 */, 540, 4 };
+	pSurface->CopyFromPart(&rect, DSurface::Composite, &rect, false, true);
 
-	pSurface->CopyFromPart(pRect, DSurface::Composite, pRect, false, true);
-
-	return 0;
+	return 0x649C7D;
 }
-DEFINE_PATCH(0x649C7A, 0x83, 0xC4, 0x08) // Replace FillRect with ADD ESP, 8 to discard its two arguments.
