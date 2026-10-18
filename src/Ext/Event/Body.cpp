@@ -49,6 +49,17 @@ size_t EventExt::GetDataSize(EventTypeExt type)
 	return 0;
 }
 
+const char* EventExt::GetName(EventTypeExt type)
+{
+	switch (type)
+	{
+	case EventTypeExt::ResponseTime2:
+		return "RESPONSE_TIME2";
+	}
+
+	return nullptr;
+}
+
 bool EventExt::IsValidType(EventTypeExt type)
 {
 	return (type >= EventTypeExt::FIRST && type <= EventTypeExt::LAST);
@@ -112,6 +123,20 @@ DEFINE_HOOK(0x64C30E, sub_64BDD0_GetEventSize2, 0x6)
 		R->ECX(eventSize);
 		R->EBP(eventSize);
 		return 0x64C321;
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK_AGAIN(0x65208B, EventClass_GetEventName, 0x7)
+DEFINE_HOOK(0x64C5C7, EventClass_GetEventName, 0x7)
+{
+	GET(EventTypeExt, eventType, EAX);
+
+	if (auto name = EventExt::GetName(eventType))
+	{
+		R->ECX(name);
+		return R->Origin() + 0x7;
 	}
 
 	return 0;

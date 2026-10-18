@@ -54,6 +54,7 @@ public:
 	bool AddEvent();
 	void RespondEvent();
 
+	static const char* GetName(EventTypeExt type);
 	static size_t GetDataSize(EventTypeExt type);
 	static bool IsValidType(EventTypeExt type);
 };
