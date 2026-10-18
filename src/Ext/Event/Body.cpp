@@ -80,7 +80,7 @@ DEFINE_HOOK(0x4C6CC8, Networking_RespondToEvent, 0x5)
 
 DEFINE_HOOK(0x64B6FE, sub_64B660_GetEventSize, 0x6)
 {
-	const auto eventType = static_cast<EventTypeExt>(R->EDI() & 0xFF);
+	GET(EventTypeExt, eventType, EDI);
 
 	if (EventExt::IsValidType(eventType))
 	{
@@ -96,7 +96,7 @@ DEFINE_HOOK(0x64B6FE, sub_64B660_GetEventSize, 0x6)
 
 DEFINE_HOOK(0x64BE7D, sub_64BDD0_GetEventSize1, 0x6)
 {
-	const auto eventType = static_cast<EventTypeExt>(R->EDI() & 0xFF);
+	GET(EventTypeExt, eventType, EDI);
 
 	if (EventExt::IsValidType(eventType))
 	{
@@ -114,7 +114,7 @@ DEFINE_HOOK(0x64BE7D, sub_64BDD0_GetEventSize1, 0x6)
 
 DEFINE_HOOK(0x64C30E, sub_64BDD0_GetEventSize2, 0x6)
 {
-	const auto eventType = static_cast<EventTypeExt>(R->ESI() & 0xFF);
+	GET(EventTypeExt, eventType, ESI);
 
 	if (EventExt::IsValidType(eventType))
 	{
