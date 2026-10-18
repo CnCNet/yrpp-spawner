@@ -80,18 +80,20 @@ DEFINE_HOOK(0x4C8011, EventClassExecute__ProtocolZero, 0x8)
 
 DEFINE_HOOK(0x64C598, ExecuteDoList__ProtocolZero, 0x6)
 {
+	enum { ContinueEventProcessing = 0x64C63D };
+	GET(EventType, eventType, EDX);
+	GET(EventTypeExt, eventTypeExt, EDX);
+
 	if (ProtocolZero::Enable)
 	{
-		auto dl = (uint8_t)R->DL();
+		if (eventType == EventType::Empty)
+			return ContinueEventProcessing;
 
-		if (dl == (uint8_t)EventType::Empty)
-			return 0x64C63D;
+		if (eventType == EventType::ProcessTime)
+			return ContinueEventProcessing;
 
-		if (dl == (uint8_t)EventType::ProcessTime)
-			return 0x64C63D;
-
-		if (dl == (uint8_t)EventTypeExt::ResponseTime2)
-			return 0x64C63D;
+		if (eventTypeExt == EventTypeExt::ResponseTime2)
+			return ContinueEventProcessing;
 	}
 
 	return 0;
