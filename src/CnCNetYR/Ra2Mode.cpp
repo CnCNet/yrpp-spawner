@@ -179,21 +179,40 @@ bool Ra2Mode::CheckSaveGameID(const char* saveGameName)
 	return false;
 }
 
-// Allow allies to repair on service depot
-DEFINE_HOOK(0x700594, TechnoClass_WhatAction__AllowAlliesRepair, 0x5)
+// Allow RA2 units to use allied service depots without relaxing TechnoClass's general owner check.
+// Restore Select only for repair buildings, then let UnitClass check docking and choose Enter/Repair.
+DEFINE_HOOK(0x73FD67, UnitClass_WhatAction_AllowAlliedServiceDepot, 0x5)
 {
 	if (!Ra2Mode::IsEnabled())
 		return 0;
 
-	GET(TechnoClass*, pThis, ESI);
-	GET(ObjectClass*, pObject, EDI);
+	GET(Action, action, EAX);
+	GET(UnitClass*, pThis, ESI);
+	GET(ObjectClass*, pTargetObject, EDI);
 
-	auto const pBuilding = abstract_cast<BuildingClass* const>(pObject);
-	auto const pBuildingOwner = pBuilding ? pBuilding->Owner : nullptr;
+	if (action != Action::None)
+		return 0;
 
-	return (pBuildingOwner && pBuildingOwner->IsAlliedWith(pThis))
-		? 0x70059D
-		: 0x7005E6;
+	if (const auto pBuilding = abstract_cast<BuildingClass*>(pTargetObject))
+	{
+		if (!pBuilding->Type->UnitRepair)
+			return 0;
+
+		const auto pUnitOwner = pThis->Owner;
+		const auto pBuildingOwner = pBuilding->Owner;
+		const bool isPlayerControlled = pUnitOwner && pUnitOwner->IsControlledByCurrentPlayer();
+		const bool isAlliedBuilding = pUnitOwner && pBuildingOwner && pUnitOwner != pBuildingOwner && pBuildingOwner->IsAlliedWith(pThis);
+		if (!isPlayerControlled || !isAlliedBuilding)
+			return 0;
+
+		// Preserve the base function's remaining selection restrictions after the owner check.
+		const bool isPlayerOwnedLoaner = pThis->IsALoaner && pThis->IsOwnedByCurrentPlayer;
+		const bool canSelectBuilding = pBuilding->CanBeSelected() && !pBuilding->IsSelected && !pBuilding->IsBeingWarpedOut();
+		if (!isPlayerOwnedLoaner && canSelectBuilding)
+			R->EAX(Action::Select);
+	}
+
+	return 0;
 }
 
 // Allow to repair the BlackHawk Transport on service depot
