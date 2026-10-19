@@ -21,6 +21,8 @@
 #include <Unsorted.h>
 #include <Surface.h>
 #include <ColorScheme.h>
+#include <IPXManagerClass.h>
+#include <algorithm>
 
 // Fixes text layout in the MPDebug panel
 DEFINE_PATCH_TYPED(DWORD, 0x542A19, 312 /* 311 */); // average response time
@@ -65,6 +67,10 @@ DEFINE_HOOK(0x55F2E5, MPDebugPrint_TranslucentBackground, 0x6)
 {
 	GET(DSurface*, pSurface, ESI);
 	LEA_STACK(RectangleStruct*, pRect, STACK_OFFSET(0x230, -0x218));
+
+	// Up to 8 columns (7 remote players + 1 general statistics column), 100 pixels each.
+	const int columnCount = 1 + IPXManagerClass::Instance.NumConnections;
+	pRect->Width = std::min(pSurface->GetWidth(), 100 * std::max(2, columnCount));
 
 	ColorStruct color { 0, 0, 0 };
 	pSurface->FillRectTrans(pRect, &color, 80);
