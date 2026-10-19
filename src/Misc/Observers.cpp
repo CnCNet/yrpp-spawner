@@ -75,6 +75,33 @@ DEFINE_HOOK(0x658473, RadarClass__658330_SetObserverFlag, 0x5)
 
 #pragma region Curent player is Observer
 
+// For initial observers, finish activation on the next animation tick.
+// The game already holds the final frame in EDI, so no frame count is hardcoded here.
+DEFINE_HOOK(0x653282, RadarClass_DrawIt_SkipInitialObserverActivation, 0x6)
+{
+	if (!Spawner::Enabled || !HouseClass::IsCurrentPlayerObserver())
+		return 0;
+
+	enum { CompleteActivation = 0x65328C };
+	if (HouseClass::CurrentPlayer->IsInitiallyObserver())
+		return CompleteActivation;
+
+	return 0;
+}
+
+// Skip the RadarOn sound for initial observers while keeping the normal activation logic.
+DEFINE_HOOK(0x656C1B, RadarClass_ChangeState_SkipInitialObserverActivationSound, 0x5)
+{
+	if (!Spawner::Enabled || !HouseClass::IsCurrentPlayerObserver())
+		return 0;
+
+	enum { SkipActivationSound = 0x656C37 };
+	if (HouseClass::CurrentPlayer->IsInitiallyObserver())
+		return SkipActivationSound;
+
+	return 0;
+}
+
 DEFINE_HOOK(0x5533E0, LoadProgressMgr__Draw_SetBackground, 0x5)
 {
 	return Game::ObserverMode
