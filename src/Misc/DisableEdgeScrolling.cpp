@@ -20,23 +20,12 @@
 #include <Main.h>
 #include <Helpers/Macro.h>
 
-DEFINE_HOOK(0x692DD8, ScrollClass_DisableEdgeScrolling1, 0x7)
+// Skip edge scrolling without changing the state stored in the game or save files.
+DEFINE_HOOK(0x693034, ScrollClass_AI_DisableEdgeScrolling, 0x6)
 {
-	return Main::GetConfig()->DisableEdgeScrolling
-		? 0x692E07
-		: 0;
-}
+	enum { SkipEdgeScrolling = 0x693053 };
 
-DEFINE_HOOK(0x692DFA, ScrollClass_DisableEdgeScrolling2, 0x5)
-{
 	return Main::GetConfig()->DisableEdgeScrolling
-		? 0x692EA2
-		: 0;
-}
-
-DEFINE_HOOK(0x692E34, ScrollClass_DisableEdgeScrolling3, 0x6)
-{
-	return Main::GetConfig()->DisableEdgeScrolling
-		? 0x692E40
+		? SkipEdgeScrolling
 		: 0;
 }
