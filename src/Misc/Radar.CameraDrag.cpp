@@ -1,31 +1,19 @@
 #include <Utilities/Macro.h>
 #include <GadgetClass.h>
+#include <TacticalClass.h>
 
 // Allow right-button camera dragging on the radar using the game's normal camera positioning.
 namespace
 {
+	constexpr auto leftButtonActions = GadgetFlag::LeftPress | GadgetFlag::LeftHeld | GadgetFlag::LeftRelease;
+	constexpr auto resetDragFlags = GadgetFlag::RightPress | GadgetFlag::RightRelease | GadgetFlag::RightUp;
+
 	bool IsDraggingCamera = false;
 
-	bool ShouldContinueCameraDrag(GadgetFlag flags)
+	bool __forceinline ShouldContinueCameraDrag(GadgetFlag flags)
 	{
-		return IsDraggingCamera && (flags & GadgetFlag::RightHeld);
+		return IsDraggingCamera && (flags & GadgetFlag::RightHeld) && !(flags & leftButtonActions);
 	}
-}
-
-// End the previous gesture before dispatching input, even when the cursor is outside the radar.
-DEFINE_HOOK(0x4E1822, GadgetClass_Input_ResetRadarCameraDrag, 0x6)
-{
-	const auto resetDragFlags = GadgetFlag::RightPress
-		| GadgetFlag::RightRelease
-		| GadgetFlag::RightUp
-		| GadgetFlag::LeftPress
-		| GadgetFlag::LeftHeld;
-
-	GET(GadgetFlag, flags, EDI);
-	if (flags & resetDragFlags)
-		IsDraggingCamera = false;
-
-	return 0;
 }
 
 // Let an ongoing camera drag pass the radar's filter for held mouse buttons.
@@ -40,8 +28,9 @@ DEFINE_HOOK(0x6539D8, RadarClass_RTacticalClass_Action_AllowCameraDrag, 0x8)
 		pRadarButton->Flags |= GadgetFlag::RightHeld;
 	}
 
-	// Only the initial filter reads DL; keep the actual event flags on the stack.
-	if (ShouldContinueCameraDrag(flags))
+	// Admit dragging and left clicks during the gesture; later code reads the original stack flags.
+	const bool isHoldingRightButton = IsDraggingCamera && (flags & GadgetFlag::RightHeld);
+	if (isHoldingRightButton && !(flags & GadgetFlag::LeftHeld))
 		R->DL(0);
 
 	return 0;
@@ -59,12 +48,39 @@ DEFINE_HOOK(0x653ADC, RadarClass_RTacticalClass_Action_ContinueCameraDrag, 0x6)
 	return 0;
 }
 
+// Queue held-button movement like normal scrolling instead of forcing a full redraw on every input poll.
+DEFINE_HOOK(0x653E81, RadarClass_RTacticalClass_Action_QueueCameraDrag, 0x6)
+{
+	enum { FinishCameraMovement = 0x653EC1 };
+
+	GET_STACK(GadgetFlag, flags, STACK_OFFSET(0x54, 0x4));
+	GET(const CoordStruct*, pCameraCoords, EAX);
+
+	if (ShouldContinueCameraDrag(flags))
+	{
+		TacticalClass::Instance->TacticalCoord2 = TacticalClass::CoordsToScreen(*pCameraCoords);
+		return FinishCameraMovement;
+	}
+
+	return 0;
+}
+
 // Start dragging only when the initial right press actually takes the camera movement path.
-DEFINE_HOOK(0x653D7A, RadarClass_RTacticalClass_Action_StartCameraDrag, 0xA)
+DEFINE_HOOK(0x653D7A, RadarClass_RTacticalClass_Action_StartCameraDrag, 0x5)
 {
 	GET_STACK(GadgetFlag, flags, STACK_OFFSET(0x54, 0x4));
 	if (flags & GadgetFlag::RightPress)
 		IsDraggingCamera = true;
+
+	return 0;
+}
+
+// End the previous gesture before dispatching input, even when the cursor is outside the radar.
+DEFINE_HOOK(0x4E1822, GadgetClass_Input_ResetRadarCameraDrag, 0x6)
+{
+	GET(GadgetFlag, flags, EDI);
+	if (flags & resetDragFlags)
+		IsDraggingCamera = false;
 
 	return 0;
 }
