@@ -47,6 +47,7 @@
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\Observers.Visibility.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\QuickExit.cpp" />
+    <ClCompile Include="$(ThisDir)\src\Misc\Radar.CameraDrag.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SavedGamesInSubdir.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SilentCheer.cpp" />
     <ClCompile Include="$(ThisDir)\src\Misc\SkipCreateAppMutex.cpp" />
