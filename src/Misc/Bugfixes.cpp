@@ -53,6 +53,35 @@ DEFINE_HOOK(0x55E08F, KeyboardProcess_PressTab, 0x5)
 	return 0x55E099;
 }
 
+// Allow Tab presses while input is locked, preserving the normal Escape press/release events.
+DEFINE_HOOK(0x54F21F, WWKeyboardClass_PutKeyMessage_AllowLockedTab, 0xA)
+{
+	enum { QueueKey = 0x54F229, IgnoreKey = 0x54F2D7 };
+	GET(unsigned short, key, ESI);
+	GET_STACK(bool, release, STACK_OFFSET(0xC, 0x8));
+
+	if (key == VK_ESCAPE || (key == VK_TAB && !release))
+		return QueueKey;
+
+	return IgnoreKey;
+}
+
+// Ignore Escape releases in locked gameplay input; movies still need them to skip playback.
+DEFINE_HOOK(0x55DEED, KeyboardProcess_IgnoreLockedEscapeRelease, 0x5)
+{
+	if (!Unsorted::UserInputLocked)
+		return 0;
+
+	enum { IgnoreKey = 0x55E155 };
+	GET(const int*, pKey, EBP);
+
+	const bool isEscapeRelease = (*pKey & 0xFF) == VK_ESCAPE && (*pKey & static_cast<int>(WWKey::Release)) != 0;
+	if (isEscapeRelease)
+		return IgnoreKey;
+
+	return 0;
+}
+
 // Do_Blit's 50ms wait guards the cursor restore after the primary-surface blit, but that restore
 // (0x7B92D0) and the draw before it (0x7B90C0) are both no-ops unless IsCaptured(). Loading screens
 // pass mouse_captured = true while the mouse is uncaptured, so vanilla sleeps 40+ times per scenario
