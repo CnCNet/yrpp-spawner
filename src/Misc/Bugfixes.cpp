@@ -53,6 +53,20 @@ DEFINE_HOOK(0x55E08F, KeyboardProcess_PressTab, 0x5)
 	return 0x55E099;
 }
 
+// Allow Tab presses while input is locked.
+// Ignore Escape releases so closing a menu does not immediately reopen it.
+DEFINE_HOOK(0x54F21F, WWKeyboardClass_PutKeyMessage_AllowLockedTab, 0xA)
+{
+	enum { QueueKey = 0x54F229, IgnoreKey = 0x54F2D7 };
+	GET(unsigned short, key, ESI);
+	GET_STACK(bool, release, STACK_OFFSET(0xC, 0x8));
+
+	if (!release && (key == VK_ESCAPE || key == VK_TAB))
+		return QueueKey;
+
+	return IgnoreKey;
+}
+
 // Do_Blit's 50ms wait guards the cursor restore after the primary-surface blit, but that restore
 // (0x7B92D0) and the draw before it (0x7B90C0) are both no-ops unless IsCaptured(). Loading screens
 // pass mouse_captured = true while the mouse is uncaptured, so vanilla sleeps 40+ times per scenario
