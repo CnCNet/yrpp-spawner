@@ -34,7 +34,6 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 	{
 		Spawner::Init();
 
-
 		Patch::Apply_CALL(0x48CDD3, Spawner::StartGame); // Main_Game
 		Patch::Apply_CALL(0x48CFAA, Spawner::StartGame); // Main_Game
 
@@ -51,6 +50,9 @@ DEFINE_HOOK(0x6BD7C5, WinMain_SpawnerInit, 0x6)
 			Patch::Apply_CALL(0x7B3D75, NetHack::SendTo);   // UDPInterfaceClass::Message_Handler
 			Patch::Apply_CALL(0x7B3EEC, NetHack::RecvFrom); // UDPInterfaceClass::Message_Handler
 		}
+
+		// Keep the spawner-provided seed instead of generating a new one for campaign/skirmish.
+		Patch::Apply_LJMP(0x52FC5C, 0x52FDF9); // InitRandom
 
 		{ // Skip Intro, EA_WWLOGO and LoadScreen
 			Patch::Apply_LJMP(0x52CB50, 0x52CB6E); // InitIntro_Skip
