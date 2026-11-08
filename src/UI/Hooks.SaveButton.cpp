@@ -78,3 +78,21 @@ DEFINE_HOOK(0x609299, UI_IsStaticAndOrOwnerDraw_MultiplayerGameOptionsDialog, 0x
 
 	return 0;
 }
+
+// The description lookup of dialog 3002 has no entry for the save button, so the bottom text
+// area stays empty. Reuse the description of the single-player save button for it.
+DEFINE_HOOK(0x6050CD, MultiplayerGameOptionsDialog_SaveButtonDescription, 0x5)
+{
+	// Case 181, control 1311: pop edi, load "STT:IGSingleOptButtonSave", pop esi/ecx, return.
+	enum { ReturnSinglePlayerSaveDescription = 0x605088 };
+
+	if (!Spawner::Enabled)
+		return 0;
+
+	GET(int, dlgCtrlID, EAX);
+
+	if (dlgCtrlID == SaveGameButton)
+		return ReturnSinglePlayerSaveDescription;
+
+	return 0;
+}
