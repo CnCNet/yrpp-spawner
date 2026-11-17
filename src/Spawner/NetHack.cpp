@@ -108,6 +108,8 @@ int WINAPI Tunnel::SendTo(
 	// no processing if no tunnel
 	if (!Tunnel::Port)
 		return sendto(sockfd, buf, len, flags, (struct sockaddr*)dest_addr, addrlen);
+	if (len > sizeof(TempBuf) - 4)
+		return SOCKET_ERROR;
 
 	// copy packet to our buffer
 	memcpy(TempBuf + 4, buf, len);
@@ -145,6 +147,8 @@ int WINAPI Tunnel::RecvFrom(
 	// no processing if returning error or less than 5 bytes of data
 	if (ret < 5 || *BufTo != Tunnel::Id)
 		return -1;
+	if (static_cast<size_t>(ret - 4) > len)
+		return SOCKET_ERROR;
 
 	memcpy(buf, TempBuf + 4, ret - 4);
 
