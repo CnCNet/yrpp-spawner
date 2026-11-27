@@ -17,6 +17,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <Main.h>
 #include <Spawner/Spawner.h>
 #include <Utilities/Macro.h>
 #include <HouseClass.h>
@@ -56,6 +57,17 @@ DEFINE_HOOK(0x4E20BA, GameControlsDialog__Init_SetGameSpeedAvailability, 0x5)
 				return AllowControlSpeed;
 		}
 	}
+
+	return 0;
+}
+
+// Preserve user-selected Campaign game speed when resuming/loading if SpeedControl is enabled.
+DEFINE_HOOK(0x69BAE2, SessionClass_Resume_PreserveCampaignGameSpeed, 0x5)
+{
+	enum { SkipDefaultSpeedReset = 0x69BAF1 };
+
+	if (Spawner::Enabled && SessionClass::IsCampaign() && Main::GetConfig()->SpeedControl)
+		return SkipDefaultSpeedReset;
 
 	return 0;
 }
