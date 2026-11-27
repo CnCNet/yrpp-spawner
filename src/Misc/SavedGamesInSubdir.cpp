@@ -22,6 +22,8 @@
 #include <Utilities/Macro.h>
 #include <Spawner/Spawner.h>
 
+#include <GameModeOptionsClass.h>
+#include <GameOptionsClass.h>
 #include <HouseClass.h>
 #include <LoadOptionsClass.h>
 
@@ -184,6 +186,21 @@ namespace SavedGames
 		operator int() const { return Number; }
 	};
 
+	struct GameSpeed
+	{
+		static constexpr const wchar_t* SaveName = L"GameSpeed";
+
+		int Value;
+
+		GameSpeed() : Value { GameOptionsClass::Instance.GameSpeed } { }
+
+		GameSpeed(int value) : Value { value } { }
+
+		operator int() const { return Value; }
+	};
+
+	inline std::optional<int> LoadedGameSpeed = std::nullopt;
+
 
 	template<typename T> requires std::is_trivially_copyable_v<T>
 	bool WriteToStorage(IStorage* pStorage)
@@ -286,10 +303,13 @@ DEFINE_HOOK(0x67D2E3, SaveGame_AdditionalInfoForClient, 0x6)
 	GET_STACK(IStorage*, pStorage, STACK_OFFSET(0x4A0, -0x490));
 	using namespace SavedGames;
 
-	if (pStorage && SessionClass::IsCampaign())
+	if (pStorage)
 	{
-		if (Spawner::GetConfig()->CustomMissionID)
+		if (SessionClass::IsCampaign() && Spawner::GetConfig()->CustomMissionID)
 			WriteToStorage<CustomMissionID>(pStorage);
+
+		if (SessionClass::IsSingleplayer())
+			WriteToStorage<GameSpeed>(pStorage);
 	}
 
 	return 0;
@@ -304,6 +324,8 @@ DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 	LEA_STACK(const wchar_t*, filename, STACK_OFFSET(0x518, -0x4F4));
 	IStoragePtr pStorage = nullptr;
 	using namespace SavedGames;
+
+	LoadedGameSpeed.reset();
 
 	if (SUCCEEDED(StgOpenStorage(filename, NULL,
 		STGM_READWRITE | STGM_SHARE_EXCLUSIVE,
@@ -321,6 +343,44 @@ DEFINE_HOOK(0x67E4DC, LoadGame_AdditionalInfoForClient, 0x7)
 		{
 			Spawner::GetConfig()->CustomMissionID = 0;
 		}
+
+		if (auto speed = ReadFromStorage<GameSpeed>(pStorage))
+		{
+			int value = speed->Value;
+			if (value >= 0 && value <= 6)
+			{
+				Debug::Log("sav file GameSpeed = %d\n", value);
+				LoadedGameSpeed = value;
+			}
+		}
+	}
+
+	return 0;
+}
+
+DEFINE_HOOK(0x67E6DA, LoadGame_AfterInit_RestoreGameSpeed, 0x6)
+{
+	if (!Spawner::Enabled)
+		return 0;
+
+	if (SavedGames::LoadedGameSpeed.has_value())
+	{
+		const int speed = *SavedGames::LoadedGameSpeed;
+		SavedGames::LoadedGameSpeed.reset();
+
+		if (SessionClass::IsSkirmish() || (SessionClass::IsCampaign() && Main::GetConfig()->SpeedControl))
+		{
+			GameOptionsClass::Instance.GameSpeed = speed;
+			GameModeOptionsClass::Instance.GameSpeed = speed;
+		}
+	}
+	else if (SessionClass::IsSkirmish())
+	{
+		// Legacy Skirmish saves without a GameSpeed stream still store
+		// the initial lobby GameSpeed in GameModeOptionsClass::Instance.
+		const int speed = GameModeOptionsClass::Instance.GameSpeed;
+		if (speed >= 0 && speed <= 6)
+			GameOptionsClass::Instance.GameSpeed = speed;
 	}
 
 	return 0;
